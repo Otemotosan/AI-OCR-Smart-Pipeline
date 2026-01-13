@@ -1,0 +1,114 @@
+# Quality Linter Rules Configuration
+# Version: 1.0
+# Last Updated: 2025-01-09
+#
+# These rules are evaluated AFTER Gate Linter passes.
+# Failures produce warnings, not blocking errors.
+
+version: "1.0"
+description: "Quality validation rules for document extraction"
+
+# Changelog
+changelog:
+  - version: "1.0"
+    date: "2025-01-09"
+    changes:
+      - "Initial rules: Q1-Q4"
+
+rules:
+  # Q1: Date Sequence Validation
+  # Ensures chronological order: issue → delivery → payment
+  - id: Q1
+    name: "Date Sequence Validation"
+    description: "Ensure dates follow logical order (issue ≤ delivery ≤ payment_due)"
+    field: "dates"
+    condition: "date_sequence"
+    severity: "warning"
+    params:
+      fields:
+        - "issue_date"
+        - "delivery_date"
+        - "payment_due_date"
+
+  # Q2: Amount Strict Match
+  # No tolerance for discrepancies in amounts
+  - id: Q2
+    name: "Amount Strict Match"
+    description: "Amounts must be exact (no tolerance for rounding)"
+    field: "total_amount"
+    condition: "amount_tolerance"
+    severity: "warning"
+    params:
+      tolerance: 0
+      unit: "JPY"
+
+  # Q3: Vendor Master Validation
+  # Company name must exist in master database
+  - id: Q3
+    name: "Vendor Master Validation"
+    description: "Company must exist in vendor master database"
+    field: "company_name"
+    condition: "vendor_exists"
+    severity: "warning"
+    params:
+      master_table: "vendors"
+      match_field: "name"
+      fuzzy_threshold: 0.95
+      # Connection details from environment variables:
+      # VENDOR_DB_HOST, VENDOR_DB_NAME, VENDOR_DB_USER
+
+  # Q4: Amount Reasonableness
+  # Flag unusually large amounts for human review
+  - id: Q4
+    name: "Amount Reasonableness"
+    description: "Flag amounts outside typical range"
+    field: "total_amount"
+    condition: "range_check"
+    severity: "info"
+    params:
+      min: 0
+      max: 100000000  # 100 million JPY
+      message: "Amount exceeds typical range - verify manually"
+
+  # Q5: Tax Amount Consistency (for invoices)
+  # Tax should be ~10% of subtotal
+  - id: Q5
+    name: "Tax Amount Consistency"
+    description: "Tax amount should be approximately 10% of subtotal"
+    field: "tax_amount"
+    condition: "percentage_check"
+    severity: "info"
+    enabled: true
+    document_types:
+      - "invoice"
+    params:
+      base_field: "subtotal"
+      expected_percentage: 10
+      tolerance_percentage: 1  # Allow 9-11%
+      message: "Tax amount does not match expected 10%"
+
+  # Q6: Payment Due Date Reasonableness
+  # Payment due should be within 90 days of issue
+  - id: Q6
+    name: "Payment Due Reasonableness"
+    description: "Payment due date should be within reasonable timeframe"
+    field: "payment_due_date"
+    condition: "date_range_from_field"
+    severity: "info"
+    params:
+      base_field: "issue_date"
+      min_days: 0
+      max_days: 90
+      message: "Payment due date is more than 90 days from issue date"
+
+# Future rules (commented out for reference)
+# 
+# - id: Q7
+#   name: "Duplicate Detection"
+#   description: "Check for potential duplicate documents"
+#   field: "management_id"
+#   condition: "unique_check"
+#   severity: "warning"
+#   params:
+#     lookback_days: 30
+#     similarity_threshold: 0.9

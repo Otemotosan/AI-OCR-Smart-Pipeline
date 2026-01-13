@@ -1,0 +1,247 @@
+# Alert Configuration
+# Version: 1.0
+# Last Updated: 2025-01-09
+#
+# Severity Levels:
+# - P0: Critical - Immediate response required (24/7)
+# - P1: High - Respond within 1 hour
+# - P2: Medium - Respond within 4 hours
+# - P3: Low - Next business day
+
+version: "1.0"
+
+# Notification Channels
+channels:
+  slack:
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+    default_channel: "#ocr-alerts"
+    
+  pagerduty:
+    service_key: "${PAGERDUTY_SERVICE_KEY}"
+    escalation_policy: "ocr-oncall"
+    
+  email:
+    recipients:
+      - "ocr-team@example.com"
+
+# Alert Definitions
+alerts:
+  # ============================================================
+  # P0 - Critical (Immediate Response)
+  # ============================================================
+  
+  - id: "P0-001"
+    name: "Queue Backlog Critical"
+    description: "Document processing queue has excessive backlog"
+    condition:
+      metric: "pending_documents"
+      operator: ">"
+      threshold: 100
+    window: "5m"
+    severity: "P0"
+    channels:
+      - type: "slack"
+        channel: "#ocr-alerts"
+      - type: "pagerduty"
+    message: |
+      🚨 CRITICAL: Document processing queue has >100 pending items.
+      
+      Immediate action required:
+      1. Check Cloud Function logs for errors
+      2. Verify Gemini API status
+      3. Check for stuck Firestore locks
+    runbook: "https://wiki.example.com/runbooks/ocr-backlog"
+
+  - id: "P0-002"
+    name: "Pipeline Down"
+    description: "No documents processed despite incoming uploads"
+    condition:
+      metric: "processed_count"
+      operator: "=="
+      threshold: 0
+      additional:
+        metric: "incoming_count"
+        operator: ">"
+        threshold: 0
+    window: "15m"
+    severity: "P0"
+    channels:
+      - type: "slack"
+        channel: "#ocr-alerts"
+      - type: "pagerduty"
+    message: |
+      🚨 CRITICAL: Pipeline appears to be down.
+      No documents processed in 15 minutes despite incoming uploads.
+    runbook: "https://wiki.example.com/runbooks/ocr-pipeline-down"
+
+  # ============================================================
+  # P1 - High (Respond within 1 hour)
+  # ============================================================
+
+  - id: "P1-001"
+    name: "High Failure Rate"
+    description: "Document failure rate exceeds threshold"
+    condition:
+      metric: "failure_rate"
+      operator: ">"
+      threshold: 0.05
+    window: "1h"
+    severity: "P1"
+    channels:
+      - type: "slack"
+        channel: "#ocr-alerts"
+      - type: "pagerduty"
+    message: |
+      ⚠️ HIGH: Document failure rate exceeds 5% in the last hour.
+      
+      Check:
+      - Recent code/config changes
+      - Document quality trends
+      - Gemini API response patterns
+    runbook: "https://wiki.example.com/runbooks/ocr-high-failure"
+
+  - id: "P1-002"
+    name: "Saga Compensation Spike"
+    description: "Multiple saga rollbacks detected"
+    condition:
+      metric: "compensation_count"
+      operator: ">"
+      threshold: 5
+    window: "1h"
+    severity: "P1"
+    channels:
+      - type: "slack"
+        channel: "#ocr-alerts"
+    message: |
+      ⚠️ HIGH: Multiple saga rollbacks detected.
+      Potential data integrity issue.
+
+  - id: "P1-003"
+    name: "Gemini API Errors"
+    description: "High rate of Gemini API errors"
+    condition:
+      metric: "gemini_error_rate"
+      operator: ">"
+      threshold: 0.10
+    window: "30m"
+    severity: "P1"
+    channels:
+      - type: "slack"
+        channel: "#ocr-alerts"
+    message: |
+      ⚠️ HIGH: Gemini API error rate exceeds 10%.
+
+  # ============================================================
+  # P2 - Medium (Respond within 4 hours)
+  # ============================================================
+
+  - id: "P2-001"
+    name: "Pro Budget Warning"
+    description: "Pro API usage approaching daily limit"
+    condition:
+      metric: "daily_pro_calls"
+      operator: ">"
+      threshold: 40
+    window: "1d"
+    severity: "P2"
+    channels:
+      - type: "slack"
+        channel: "#ocr-alerts"
+    message: |
+      ⚡ MEDIUM: Pro API usage at 80% of daily budget (40/50 calls).
+
+  - id: "P2-002"
+    name: "Processing Latency Spike"
+    description: "99th percentile latency exceeds threshold"
+    condition:
+      metric: "p99_latency"
+      operator: ">"
+      threshold: 30
+    window: "15m"
+    severity: "P2"
+    channels:
+      - type: "slack"
+        channel: "#ocr-alerts"
+    message: |
+      ⚡ MEDIUM: 99th percentile latency exceeds 30 seconds.
+
+  - id: "P2-003"
+    name: "Low Confidence Trend"
+    description: "High rate of low-confidence OCR results"
+    condition:
+      metric: "low_confidence_rate"
+      operator: ">"
+      threshold: 0.30
+    window: "1d"
+    severity: "P2"
+    channels:
+      - type: "slack"
+        channel: "#ocr-alerts"
+    message: |
+      ⚡ MEDIUM: 30%+ documents have low OCR confidence.
+
+  - id: "P2-004"
+    name: "Pro Escalation Rate High"
+    description: "Too many documents requiring Pro escalation"
+    condition:
+      metric: "pro_escalation_rate"
+      operator: ">"
+      threshold: 0.20
+    window: "1d"
+    severity: "P2"
+    channels:
+      - type: "slack"
+        channel: "#ocr-alerts"
+    message: |
+      ⚡ MEDIUM: Pro escalation rate exceeds 20%.
+
+  # ============================================================
+  # P3 - Low (Next business day)
+  # ============================================================
+
+  - id: "P3-001"
+    name: "Quarantine Growth"
+    description: "Quarantine folder growing rapidly"
+    condition:
+      metric: "quarantine_daily_count"
+      operator: ">"
+      threshold: 10
+    window: "1d"
+    severity: "P3"
+    channels:
+      - type: "slack"
+        channel: "#ocr-alerts"
+      - type: "email"
+    message: |
+      📋 LOW: More than 10 documents quarantined today.
+
+  - id: "P3-002"
+    name: "Vendor Master Misses"
+    description: "High rate of vendor not found warnings"
+    condition:
+      metric: "vendor_not_found_rate"
+      operator: ">"
+      threshold: 0.10
+    window: "7d"
+    severity: "P3"
+    channels:
+      - type: "email"
+    message: |
+      📋 LOW: 10%+ documents have unknown vendors.
+
+# Daily Summary Report
+daily_summary:
+  enabled: true
+  schedule: "0 9 * * *"
+  timezone: "Asia/Tokyo"
+  channels:
+    - type: "email"
+    - type: "slack"
+      channel: "#ocr-daily"
+  include:
+    - total_processed
+    - success_rate
+    - failure_breakdown
+    - pro_usage
+    - top_errors
+    - pending_review_count

@@ -1,0 +1,182 @@
+# Cloud Build Configuration
+# Triggers: Push to main branch
+# Pipeline: Lint → Test → Build → Deploy Staging → Integration Test → Deploy Prod
+
+steps:
+  # ============================================================
+  # Stage 1: Lint & Format Check
+  # ============================================================
+  - name: 'python:3.11-slim'
+    id: 'lint'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install ruff black mypy --quiet
+        echo "=== Running Ruff ==="
+        ruff check . --config pyproject.toml
+        echo "=== Running Black ==="
+        black --check .
+        echo "=== Running MyPy ==="
+        mypy src/ --strict --ignore-missing-imports
+
+  # ============================================================
+  # Stage 2: Unit Tests
+  # ============================================================
+  - name: 'python:3.11-slim'
+    id: 'unit-tests'
+    waitFor: ['lint']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install -r requirements-dev.txt --quiet
+        echo "=== Running Unit Tests ==="
+        pytest tests/unit \
+          --cov=src/core \
+          --cov-report=xml \
+          --cov-report=term \
+          --cov-fail-under=90 \
+          --junitxml=test-results/unit.xml \
+          -v
+    
+  # ============================================================
+  # Stage 3: Security Scan
+  # ============================================================
+  - name: 'python:3.11-slim'
+    id: 'security-scan'
+    waitFor: ['lint']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install bandit safety --quiet
+        echo "=== Running Bandit ==="
+        bandit -r src/ -ll
+        echo "=== Running Safety ==="
+        safety check -r requirements.txt
+
+  # ============================================================
+  # Stage 4: Build Docker Images
+  # ============================================================
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-processor'
+    waitFor: ['unit-tests', 'security-scan']
+    args:
+      - 'build'
+      - '-t'
+      - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/processor:$SHORT_SHA'
+      - '-t'
+      - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/processor:latest'
+      - '-f'
+      - 'src/functions/Dockerfile'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-review-ui'
+    waitFor: ['unit-tests', 'security-scan']
+    args:
+      - 'build'
+      - '-t'
+      - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/review-ui:$SHORT_SHA'
+      - '-t'
+      - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/review-ui:latest'
+      - '-f'
+      - 'src/ui/Dockerfile'
+      - '.'
+
+  # ============================================================
+  # Stage 5: Push to Artifact Registry
+  # ============================================================
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-processor'
+    waitFor: ['build-processor']
+    args:
+      - 'push'
+      - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/processor:$SHORT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-review-ui'
+    waitFor: ['build-review-ui']
+    args:
+      - 'push'
+      - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/review-ui:$SHORT_SHA'
+
+  # ============================================================
+  # Stage 6: Deploy to Staging
+  # ============================================================
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-staging-function'
+    waitFor: ['push-processor']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud functions deploy ocr-processor-staging \
+          --gen2 \
+          --runtime=python311 \
+          --region=asia-northeast1 \
+          --source=src/functions \
+          --entry-point=main \
+          --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" \
+          --trigger-event-filters="bucket=ocr-input-staging-$PROJECT_ID" \
+          --service-account=sa-ocr-processor@$PROJECT_ID.iam.gserviceaccount.com \
+          --set-env-vars="ENVIRONMENT=staging"
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-staging-ui'
+    waitFor: ['push-review-ui']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud run deploy review-ui-staging \
+          --image=asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/review-ui:$SHORT_SHA \
+          --region=asia-northeast1 \
+          --platform=managed \
+          --no-allow-unauthenticated \
+          --service-account=sa-review-ui@$PROJECT_ID.iam.gserviceaccount.com \
+          --set-env-vars="ENVIRONMENT=staging,PROJECT_ID=$PROJECT_ID"
+
+  # ============================================================
+  # Stage 7: Integration Tests (Staging)
+  # ============================================================
+  - name: 'python:3.11-slim'
+    id: 'integration-tests'
+    waitFor: ['deploy-staging-function', 'deploy-staging-ui']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install -r requirements-dev.txt --quiet
+        echo "=== Running Integration Tests ==="
+        pytest tests/integration \
+          --env=staging \
+          --junitxml=test-results/integration.xml \
+          -v
+
+  # ============================================================
+  # Stage 8: Deploy to Production (Manual Approval Required)
+  # ============================================================
+  # Note: Production deployment requires manual approval via Cloud Build UI
+  # or can be triggered by a separate pipeline after approval
+
+# Build artifacts
+artifacts:
+  objects:
+    location: 'gs://$PROJECT_ID-build-artifacts/$BUILD_ID/'
+    paths:
+      - 'test-results/*.xml'
+      - 'coverage.xml'
+
+# Build options
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+
+# Timeout (30 minutes)
+timeout: '1800s'
+
+# Substitutions (can be overridden)
+substitutions:
+  _REGION: 'asia-northeast1'

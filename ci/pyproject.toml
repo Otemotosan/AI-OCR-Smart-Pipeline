@@ -1,0 +1,188 @@
+# Project Configuration
+# AI-OCR Smart Pipeline
+
+[project]
+name = "ocr-pipeline"
+version = "2.1.0"
+description = "AI-native document classification and extraction pipeline"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Proprietary"}
+
+dependencies = [
+    "google-cloud-documentai>=2.20.0",
+    "google-cloud-aiplatform>=1.38.0",
+    "google-cloud-storage>=2.14.0",
+    "google-cloud-firestore>=2.14.0",
+    "google-cloud-bigquery>=3.14.0",
+    "google-cloud-logging>=3.9.0",
+    "google-cloud-monitoring>=2.18.0",
+    "pydantic>=2.5.0",
+    "tenacity>=8.2.0",
+    "structlog>=24.1.0",
+    "pyyaml>=6.0.0",
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+    "python-multipart>=0.0.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.23.0",
+    "hypothesis>=6.92.0",
+    "ruff>=0.1.9",
+    "black>=24.1.0",
+    "mypy>=1.8.0",
+    "bandit>=1.7.0",
+    "safety>=2.3.0",
+]
+
+# ============================================================
+# Ruff Configuration
+# ============================================================
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "SIM",    # flake8-simplify
+    "ANN",    # flake8-annotations
+    "S",      # flake8-bandit (security)
+    "C90",    # mccabe complexity
+    "N",      # pep8-naming
+    "ASYNC",  # flake8-async
+    "PTH",    # flake8-use-pathlib
+    "RUF",    # ruff-specific rules
+]
+
+ignore = [
+    "ANN101",  # Missing type annotation for self
+    "ANN102",  # Missing type annotation for cls
+    "ANN401",  # Dynamically typed expressions (Any)
+    "S101",    # Use of assert (allowed in tests)
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "S101",    # Assert allowed in tests
+    "ANN",     # Type annotations optional in tests
+    "S105",    # Hardcoded passwords in tests OK
+    "S106",    # Hardcoded passwords in tests OK
+]
+"src/api/*" = [
+    "B008",    # Function call in default argument (FastAPI Depends)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["core", "api", "functions"]
+
+# ============================================================
+# Black Configuration
+# ============================================================
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.ruff_cache
+  | \.venv
+  | venv
+  | build
+  | dist
+)/
+'''
+
+# ============================================================
+# MyPy Configuration
+# ============================================================
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "google.cloud.*",
+    "google.api.*",
+    "tenacity.*",
+    "structlog.*",
+]
+ignore_missing_imports = true
+
+# ============================================================
+# Pytest Configuration
+# ============================================================
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+]
+markers = [
+    "unit: Unit tests (fast, no external dependencies)",
+    "integration: Integration tests (require staging environment)",
+    "slow: Slow tests (>10 seconds)",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+# ============================================================
+# Coverage Configuration
+# ============================================================
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+fail_under = 90
+show_missing = true
+
+[tool.coverage.html]
+directory = "coverage_html"
+
+# ============================================================
+# Bandit Configuration (Security)
+# ============================================================
+[tool.bandit]
+exclude_dirs = ["tests", "venv", ".venv"]
+skips = ["B101"]  # Skip assert warnings (covered by ruff)
