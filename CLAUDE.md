@@ -434,6 +434,122 @@ pytest tests/unit/test_confidence.py -v
 
 ---
 
+## Implementation Progress Management
+
+### 📋 Implementation Plan
+
+**Current Status**: Phase 1 (Foundation) - 0/15 tasks complete
+
+**Primary Document**: [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md)
+
+This file contains:
+- 62 detailed tasks across 5 phases (10 weeks)
+- Checkbox tracking for each task
+- Dependencies and completion criteria
+- Risk management and assumptions
+- Session recovery instructions
+
+**Progress Tracking**:
+- Update checkboxes in `IMPLEMENTATION_PLAN.md` as you complete tasks
+- Commit changes after each significant milestone
+- Use Serena memory to checkpoint progress every 30 minutes
+
+### 🔄 Session Recovery Protocol
+
+When starting a new Claude Code session:
+
+1. **Load Context**
+   ```bash
+   # Read implementation plan to see current progress
+   cat docs/IMPLEMENTATION_PLAN.md | grep -A 5 "Progress Overview"
+
+   # Restore Serena memory (if available)
+   /sc:load
+   ```
+
+2. **Check Git Status**
+   ```bash
+   git status
+   git log --oneline -5
+   ```
+
+3. **Review Last Checkpoint**
+   - Check Serena memory keys: `plan_phase`, `plan_task`, `plan_checkpoint`
+   - Read "Last Session" section at bottom of IMPLEMENTATION_PLAN.md
+   - Review last commit message for context
+
+4. **Resume Work**
+   - Identify next unchecked task in implementation plan
+   - Read relevant spec docs (📖 Read First links)
+   - Continue implementation with TodoWrite tracking
+
+### 💾 Checkpointing Strategy
+
+**Every 30 minutes during implementation**:
+```python
+# Use Serena to save checkpoint
+write_memory("plan_checkpoint", {
+    "phase": "1",
+    "task": "1.2",
+    "description": "Implementing BaseDocumentSchema",
+    "timestamp": "2025-01-13T10:30:00+09:00",
+    "next_steps": ["Add validation tests", "Test registry lookup"]
+})
+```
+
+**After completing a task**:
+1. Mark checkbox in IMPLEMENTATION_PLAN.md
+2. Run tests and ensure they pass
+3. Commit with descriptive message (see format below)
+4. Update Serena memory with new checkpoint
+5. Push to GitHub
+
+**Commit Message Format for Progress**:
+```
+feat(core): implement distributed lock with heartbeat
+
+Complete task 1.5 from implementation plan.
+- Add Firestore-backed locking
+- Implement heartbeat refresh thread
+- Add unit tests with emulator
+
+Refs: docs/specs/01_idempotency.md
+Progress: Phase 1 - 5/15 tasks complete
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+```
+
+### 📊 Progress Visibility
+
+**Quick Status Check**:
+```bash
+# Count completed tasks
+grep -c "- \[x\]" docs/IMPLEMENTATION_PLAN.md
+
+# View current phase progress
+grep "^| Phase" docs/IMPLEMENTATION_PLAN.md
+```
+
+**Serena Memory Keys**:
+- `plan_phase`: Current phase number (1-5)
+- `plan_task`: Current task ID (e.g., "1.5")
+- `plan_checkpoint`: Last completed milestone with timestamp
+- `plan_blockers`: Any active impediments requiring attention
+- `plan_decisions`: Key architectural decisions made during implementation
+- `plan_deviations`: Any deviations from original plan with rationale
+
+### ⚠️ Important Notes
+
+- **Never skip spec reading**: Each task has "📖 Read First" links - read before implementing
+- **Test before marking complete**: All tasks require tests passing
+- **Update plan for deviations**: If you deviate from plan, document why in IMPLEMENTATION_PLAN.md
+- **Commit frequently**: Small, incremental commits are better than large ones
+- **Checkpoint regularly**: Save to Serena every 30 min to prevent losing progress
+
+---
+
 ## When You Have Questions
 
 1. First, read the relevant `docs/specs/*.md`
