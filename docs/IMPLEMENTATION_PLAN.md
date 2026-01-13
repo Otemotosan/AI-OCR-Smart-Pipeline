@@ -11,13 +11,13 @@
 
 | Phase | Status | Progress | Duration |
 |-------|--------|----------|----------|
-| Phase 1: Foundation | 🔄 In Progress | 2/7 | Week 1-2 |
+| Phase 1: Foundation | 🔄 In Progress | 3/7 | Week 1-2 |
 | Phase 2: Core Pipeline | ⏳ Pending | 0/7 | Week 3-4 |
 | Phase 3: Escalation | ⏳ Pending | 0/7 | Week 5-6 |
 | Phase 4: Review UI | ⏳ Pending | 0/10 | Week 7-8 |
 | Phase 5: Hardening | ⏳ Pending | 0/7 | Week 9-10 |
 
-**Total Progress**: 2/38 tasks (5%)
+**Total Progress**: 3/38 tasks (8%)
 
 ---
 
@@ -87,28 +87,33 @@
 
 **📖 Read First**: `docs/specs/06_linters.md`
 
-- [ ] Create `LinterResult` dataclass
-  - [ ] `passed: bool`
-  - [ ] `errors: list[str]`
-  - [ ] `warnings: list[str]`
-- [ ] Implement `GateLinter` class
-  - [ ] `check_required_fields()` - No None values
-  - [ ] `check_management_id_format()` - Matches `^[A-Z0-9]{6,12}$`
-  - [ ] `check_date_range()` - Between 2020-01-01 and today+30 days
-  - [ ] `check_company_name_length()` - Between 2-100 chars
-  - [ ] `check_confidence_minimum()` - >= 0.5
-- [ ] Add `validate(schema: BaseDocumentSchema) -> LinterResult`
-- [ ] Write unit tests (≥90% coverage)
-  - [ ] Test each rule individually
-  - [ ] Test edge cases (boundary values)
-  - [ ] Test multiple failures
+- [x] Create `GateLinterResult` dataclass
+  - [x] `passed: bool`
+  - [x] `errors: list[str]`
+- [x] Implement `GateLinter` class with 6 immutable rules
+  - [x] G1: management_id non-empty
+  - [x] G2: management_id format (6-20 alphanumeric + hyphens/underscores)
+  - [x] G3: company_name non-empty
+  - [x] G4: issue_date valid date format
+  - [x] G5: issue_date not future
+  - [x] G6: document_type in registry
+- [x] Add `validate(data: dict) -> GateLinterResult` method
+- [x] Add `_parse_date()` helper for multiple date formats
+- [x] Write comprehensive unit tests (≥90% coverage)
+  - [x] Test each rule individually (G1-G6)
+  - [x] Test edge cases and boundary values
+  - [x] Test multiple failures
+  - [x] Test date parsing variations
+  - [x] Test valid ID formats
 
 **Completion Criteria**:
-- All immutable rules implemented
-- Tests achieve ≥90% coverage
-- No false positives on valid data
+- All immutable rules implemented ✅
+- Tests achieve ≥90% coverage ✅
+- No false positives on valid data ✅
 
 **Dependencies**: 1.2 (schemas.py)
+
+**Status**: ✅ Completed (2025-01-13)
 
 ---
 
@@ -1237,10 +1242,11 @@ If Claude Code session is interrupted:
 
 ---
 
-**Last Session**: 2025-01-13 12:00 JST
+**Last Session**: 2025-01-13 13:00 JST
 **Current Phase**: Phase 1 (Foundation)
-**Current Task**: 1.3 (Gate Linter)
+**Current Task**: 1.4 (Quality Linter)
 **Completed**:
 - 1.1 (Project Setup) ✅
 - 1.2 (Schema Registry) ✅
-**Next Milestone**: Complete Gate Linter with immutable validation (1.3)
+- 1.3 (Gate Linter) ✅
+**Next Milestone**: Complete Quality Linter with configurable validation (1.4)

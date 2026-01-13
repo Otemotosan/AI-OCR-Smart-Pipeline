@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(gh:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git restore:*)"
     ]
   }
 }
