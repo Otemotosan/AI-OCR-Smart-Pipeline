@@ -10,7 +10,10 @@
       "Bash(git ls-tree:*)",
       "Bash(git restore:*)",
       "Bash(python -m pytest:*)",
-      "Bash(set PYTHONPATH=src:*)"
+      "Bash(set PYTHONPATH=src:*)",
+      "Bash(ruff check:*)",
+      "Bash(python fix_sim117.py:*)",
+      "Bash(del fix_sim117.py)"
     ]
   }
 }

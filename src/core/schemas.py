@@ -5,12 +5,11 @@ This module defines all document schemas with version tracking and migration sup
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date, datetime
-from typing import Callable
 
 from pydantic import BaseModel, Field
-
 
 # ============================================================
 # Migration Metadata

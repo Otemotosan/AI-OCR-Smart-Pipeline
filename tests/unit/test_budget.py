@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -15,7 +15,6 @@ from core.budget import (
     BudgetManager,
     ProBudgetExhaustedError,
 )
-
 
 # ============================================================
 # Budget Checking Tests
@@ -58,8 +57,10 @@ class TestBudgetChecking:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 result = budget.check_pro_budget()
 
         assert result is True
@@ -81,8 +82,10 @@ class TestBudgetChecking:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 result = budget.check_pro_budget()
 
         assert result is False
@@ -104,8 +107,10 @@ class TestBudgetChecking:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 result = budget.check_pro_budget()
 
         assert result is False
@@ -127,8 +132,10 @@ class TestBudgetChecking:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 result = budget.check_pro_budget()
 
         assert result is False
@@ -150,8 +157,10 @@ class TestBudgetChecking:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 result = budget.check_pro_budget()
 
         assert result is False
@@ -173,8 +182,10 @@ class TestIncrement:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 budget.increment_pro_usage()
 
         # Verify set was called with correct structure
@@ -195,8 +206,10 @@ class TestIncrement:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 budget.increment_pro_usage()
 
         # Verify set was called with merge=True
@@ -341,8 +354,10 @@ class TestUsageStatistics:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 stats = budget.get_usage_stats()
 
         assert stats["daily"] == 0
@@ -371,8 +386,10 @@ class TestUsageStatistics:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 stats = budget.get_usage_stats()
 
         assert stats["daily"] == 15
@@ -399,8 +416,10 @@ class TestUsageStatistics:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 stats = budget.get_usage_stats()
 
         assert stats["daily"] == 50
@@ -425,8 +444,10 @@ class TestUsageStatistics:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 stats = budget.get_usage_stats()
 
         assert stats["daily"] == 60
@@ -445,7 +466,7 @@ class TestTimezone:
 
     def test_budget_timezone_is_jst(self) -> None:
         """Test that budget timezone is Asia/Tokyo."""
-        assert BUDGET_TIMEZONE == ZoneInfo("Asia/Tokyo")
+        assert ZoneInfo("Asia/Tokyo") == BUDGET_TIMEZONE
 
     def test_get_budget_date_returns_jst_date(self) -> None:
         """Test that budget date is in JST timezone."""
@@ -546,8 +567,10 @@ class TestIntegrationScenarios:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 # Check budget (should be available)
                 assert budget.check_pro_budget() is True
 
@@ -565,8 +588,10 @@ class TestIntegrationScenarios:
 
         budget = BudgetManager(mock_db)
 
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 # Simulate approaching limit
                 for count in range(48, 52):
                     mock_snapshot = MagicMock()
@@ -602,8 +627,10 @@ class TestIntegrationScenarios:
         budget = BudgetManager(mock_db)
 
         # Check on new day
-        with patch.object(budget, "_get_budget_date", return_value="2025-01-13"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-01"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+        ):
                 result = budget.check_pro_budget()
 
         # Should be available (new date key)
@@ -627,8 +654,10 @@ class TestIntegrationScenarios:
         budget = BudgetManager(mock_db)
 
         # Check in new month
-        with patch.object(budget, "_get_budget_date", return_value="2025-02-01"):
-            with patch.object(budget, "_get_budget_month", return_value="2025-02"):
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-02-01"),
+            patch.object(budget, "_get_budget_month", return_value="2025-02"),
+        ):
                 result = budget.check_pro_budget()
 
         # Should be available (new month key)

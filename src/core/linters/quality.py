@@ -87,7 +87,7 @@ class QualityLinter:
         if not config_file.exists():
             return []
 
-        with open(config_file, encoding="utf-8") as f:
+        with config_file.open(encoding="utf-8") as f:
             config = yaml.safe_load(f)
 
         rules = []

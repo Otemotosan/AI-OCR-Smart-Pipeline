@@ -6,15 +6,12 @@ from datetime import date
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-import pytest
-
 from core.linters.quality import (
     QualityLinter,
     QualityLinterResult,
     QualityRule,
     QualityWarning,
 )
-
 
 # ============================================================
 # YAML Loading Tests

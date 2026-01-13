@@ -2,15 +2,18 @@
 
 from __future__ import annotations
 
-import threading
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from core.lock import HEARTBEAT_INTERVAL_SECONDS, LOCK_TTL_SECONDS, DistributedLock, LockNotAcquiredError
-
+from core.lock import (
+    HEARTBEAT_INTERVAL_SECONDS,
+    LOCK_TTL_SECONDS,
+    DistributedLock,
+    LockNotAcquiredError,
+)
 
 # ============================================================
 # File Hash Tests
@@ -76,9 +79,8 @@ class TestLockAcquisition:
 
         with patch.object(lock, "_start_heartbeat"), patch.object(
             lock, "_stop_heartbeat_thread"
-        ):
-            with lock.acquire("sha256:test123") as doc_ref:
-                assert doc_ref == mock_doc_ref
+        ), lock.acquire("sha256:test123") as doc_ref:
+            assert doc_ref == mock_doc_ref
 
     def test_acquire_completed_document_fails(self) -> None:
         """Test that acquiring lock for completed document fails."""
@@ -94,9 +96,11 @@ class TestLockAcquisition:
 
         lock = DistributedLock(mock_db)
 
-        with pytest.raises(LockNotAcquiredError) as exc_info:
-            with lock.acquire("sha256:test123"):
-                pass
+        with (
+            pytest.raises(LockNotAcquiredError) as exc_info,
+            lock.acquire("sha256:test123"),
+        ):
+            pass
 
         assert "already being processed or completed" in str(exc_info.value)
 
@@ -107,7 +111,7 @@ class TestLockAcquisition:
         mock_db.collection.return_value.document.return_value = mock_doc_ref
 
         # Mock active lock (not expired)
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         future = now + timedelta(minutes=5)
         mock_snapshot = MagicMock()
         mock_snapshot.exists = True
@@ -119,9 +123,8 @@ class TestLockAcquisition:
 
         lock = DistributedLock(mock_db)
 
-        with pytest.raises(LockNotAcquiredError):
-            with lock.acquire("sha256:test123"):
-                pass
+        with pytest.raises(LockNotAcquiredError), lock.acquire("sha256:test123"):
+            pass
 
     def test_acquire_expired_lock_succeeds(self) -> None:
         """Test that acquiring expired lock succeeds (takeover)."""
@@ -130,7 +133,7 @@ class TestLockAcquisition:
         mock_db.collection.return_value.document.return_value = mock_doc_ref
 
         # Mock expired lock
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         past = now - timedelta(minutes=5)
         mock_snapshot = MagicMock()
         mock_snapshot.exists = True
@@ -144,9 +147,8 @@ class TestLockAcquisition:
 
         with patch.object(lock, "_start_heartbeat"), patch.object(
             lock, "_stop_heartbeat_thread"
-        ):
-            with lock.acquire("sha256:test123") as doc_ref:
-                assert doc_ref == mock_doc_ref
+        ), lock.acquire("sha256:test123") as doc_ref:
+            assert doc_ref == mock_doc_ref
 
 
 # ============================================================
@@ -265,10 +267,9 @@ class TestContextManager:
 
         with patch.object(lock, "_start_heartbeat"), patch.object(
             lock, "_stop_heartbeat_thread"
-        ):
-            with lock.acquire("sha256:test123") as doc_ref:
-                assert doc_ref is not None
-                assert doc_ref == mock_doc_ref
+        ), lock.acquire("sha256:test123") as doc_ref:
+            assert doc_ref is not None
+            assert doc_ref == mock_doc_ref
 
     def test_context_manager_cleans_up_on_exception(self) -> None:
         """Test that context manager cleans up even on exception."""
@@ -382,7 +383,7 @@ class TestIntegration:
 
         # First attempt: new document
         # Second attempt: already locked
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         future = now + timedelta(minutes=5)
 
         snapshots = [
@@ -402,14 +403,12 @@ class TestIntegration:
         # First lock succeeds
         with patch.object(lock1, "_start_heartbeat"), patch.object(
             lock1, "_stop_heartbeat_thread"
-        ):
-            with lock1.acquire("sha256:test123"):
-                pass
+        ), lock1.acquire("sha256:test123"):
+            pass
 
         # Second lock fails
-        with pytest.raises(LockNotAcquiredError):
-            with lock2.acquire("sha256:test123"):
-                pass
+        with pytest.raises(LockNotAcquiredError), lock2.acquire("sha256:test123"):
+            pass
 
 
 # ============================================================

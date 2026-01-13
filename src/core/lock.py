@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import hashlib
 import threading
-import time
-from contextlib import contextmanager
-from datetime import datetime, timedelta, timezone
-from typing import TYPE_CHECKING, Iterator
+from collections.abc import Iterator
+from contextlib import contextmanager, suppress
+from datetime import UTC, datetime, timedelta
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from google.cloud import firestore
@@ -134,7 +134,7 @@ class DistributedLock:
         @firestore.transactional
         def _acquire(trans: firestore.Transaction) -> bool:
             snapshot = doc_ref.get(transaction=trans)
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
 
             if snapshot.exists:
                 data = snapshot.to_dict()
@@ -146,7 +146,7 @@ class DistributedLock:
                 # Lock held by another instance — check expiry
                 if data.get("status") == "PENDING":
                     expires_at = data.get("lock_expires_at")
-                    if expires_at and expires_at.replace(tzinfo=timezone.utc) > now:
+                    if expires_at and expires_at.replace(tzinfo=UTC) > now:
                         return False  # Lock still valid
 
                     # Lock expired — take over
@@ -187,18 +187,16 @@ class DistributedLock:
                     break
 
                 # Extend lock TTL
-                try:
+                # Log but don't crash — lock will eventually expire
+                # In production, use structlog here
+                with suppress(Exception):
                     doc_ref.update(
                         {
-                            "lock_expires_at": datetime.now(timezone.utc)
+                            "lock_expires_at": datetime.now(UTC)
                             + timedelta(seconds=self.ttl_seconds),
-                            "updated_at": datetime.now(timezone.utc),
+                            "updated_at": datetime.now(UTC),
                         }
                     )
-                except Exception:
-                    # Log but don't crash — lock will eventually expire
-                    # In production, use structlog here
-                    pass
 
         self._heartbeat_thread = threading.Thread(
             target=_heartbeat_worker, daemon=True
@@ -228,7 +226,7 @@ class DistributedLock:
         """
         update_data = {
             "status": status,
-            "updated_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(UTC),
             "lock_expires_at": None,  # Clear expiry on completion
         }
 

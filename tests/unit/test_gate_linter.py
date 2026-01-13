@@ -8,7 +8,6 @@ import pytest
 
 from core.linters.gate import GateLinter, GateLinterResult
 
-
 # ============================================================
 # Happy Path Tests
 # ============================================================

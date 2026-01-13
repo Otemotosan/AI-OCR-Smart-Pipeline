@@ -7,12 +7,11 @@ alignment for business day budget resets.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
 if TYPE_CHECKING:
     from google.cloud import firestore
-    from google.cloud.firestore import Increment
 
 # Constants
 PRO_DAILY_LIMIT = 50
@@ -71,13 +70,9 @@ class BudgetManager:
         daily_count = data.get("daily", {}).get(today, 0)
         monthly_count = data.get("monthly", {}).get(month, 0)
 
-        if daily_count >= PRO_DAILY_LIMIT:
-            return False
-
-        if monthly_count >= PRO_MONTHLY_LIMIT:
-            return False
-
-        return True
+        return not (
+            daily_count >= PRO_DAILY_LIMIT or monthly_count >= PRO_MONTHLY_LIMIT
+        )
 
     def increment_pro_usage(self) -> None:
         """Atomically increment Pro usage counters.
@@ -92,7 +87,8 @@ class BudgetManager:
             from google.cloud.firestore import Increment
         except ImportError:
             # Fallback for testing without google-cloud-firestore installed
-            Increment = lambda x: x  # noqa: E731
+            def Increment(x: int) -> int:  # noqa: N802
+                return x
 
         today = self._get_budget_date()
         month = self._get_budget_month()

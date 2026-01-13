@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-from datetime import date, datetime
-from typing import Any
+from datetime import date
 
 import pytest
 from pydantic import ValidationError
 
 from core.schemas import (
     SCHEMA_REGISTRY,
-    DeprecatedSchemaError,
     DeliveryNoteV1,
     DeliveryNoteV2,
+    DeprecatedSchemaError,
     InvoiceV1,
     MigrationMetadata,
     SchemaConfig,
@@ -24,7 +23,6 @@ from core.schemas import (
     migrate_delivery_note_v1_to_v2,
     validate_new_document,
 )
-
 
 # ============================================================
 # Schema Validation Tests
