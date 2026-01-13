@@ -83,7 +83,7 @@ class DeliveryNoteV2(BaseModel):
     total_amount: int = Field(..., description="合計金額", ge=0)
 
     # Migration tracking (excluded from validation)
-    _migration_metadata: MigrationMetadata | None = Field(
+    migration_metadata: MigrationMetadata | None = Field(
         default=None, exclude=True, repr=False
     )
 
@@ -147,7 +147,7 @@ def migrate_delivery_note_v1_to_v2(data: dict) -> dict:
 
     # Attach migration metadata
     if defaulted_fields:
-        migrated["_migration_metadata"] = {
+        migrated["migration_metadata"] = {
             "is_migrated": True,
             "source_version": data.get("schema_version", "v1"),
             "migrated_at": datetime.utcnow().isoformat(),
@@ -293,8 +293,8 @@ def migrate_data(document_type: str, data: dict) -> dict:
         data = migration_fn(data)
 
         # Collect defaulted fields
-        if "_migration_metadata" in data:
-            metadata = data["_migration_metadata"]
+        if "migration_metadata" in data:
+            metadata = data["migration_metadata"]
             if isinstance(metadata, dict):
                 all_defaulted.extend(metadata.get("fields_defaulted", []))
 
@@ -302,7 +302,7 @@ def migrate_data(document_type: str, data: dict) -> dict:
 
     # Final metadata
     if all_defaulted:
-        data["_migration_metadata"] = {
+        data["migration_metadata"] = {
             "is_migrated": True,
             "source_version": original_version,
             "migrated_at": datetime.utcnow().isoformat(),

@@ -248,7 +248,7 @@ class TestDeliveryNoteV1ToV2Migration:
         assert v2_data["schema_version"] == "v2"
         assert v2_data["delivery_date"] == "2025-01-15"
         assert v2_data["total_amount"] == 10000
-        assert "_migration_metadata" not in v2_data  # No defaults needed
+        assert "migration_metadata" not in v2_data  # No defaults needed
 
     def test_migration_with_defaults(self) -> None:
         """Test migration with defaulted fields."""
@@ -266,7 +266,7 @@ class TestDeliveryNoteV1ToV2Migration:
         assert v2_data["payment_due_date"] is None
 
         # Check migration metadata
-        metadata = v2_data["_migration_metadata"]
+        metadata = v2_data["migration_metadata"]
         assert metadata["is_migrated"] is True
         assert metadata["source_version"] == "v1"
         assert "total_amount" in metadata["fields_defaulted"]
@@ -284,7 +284,7 @@ class TestDeliveryNoteV1ToV2Migration:
         }
         v2_data = migrate_delivery_note_v1_to_v2(v1_data)
 
-        metadata = v2_data["_migration_metadata"]
+        metadata = v2_data["migration_metadata"]
         assert "total_amount" not in metadata["fields_defaulted"]
         assert "delivery_date" in metadata["fields_defaulted"]
 
@@ -317,7 +317,7 @@ class TestMigrateData:
         result = migrate_data("delivery_note", v1_data)
 
         assert result["schema_version"] == "v2"
-        assert "_migration_metadata" in result
+        assert "migration_metadata" in result
 
     def test_missing_schema_version_defaults_to_v1(self) -> None:
         """Test that missing schema_version defaults to v1."""
@@ -396,7 +396,7 @@ class TestGenerateSchemaDescription:
         """Test that private fields are excluded from description."""
         description = generate_schema_description(DeliveryNoteV2)
 
-        assert "_migration_metadata" not in description
+        assert "migration_metadata" not in description
 
 
 # ============================================================

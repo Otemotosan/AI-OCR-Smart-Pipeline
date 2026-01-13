@@ -8,7 +8,9 @@
       "Bash(git push:*)",
       "Bash(git fetch:*)",
       "Bash(git ls-tree:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(set PYTHONPATH=src:*)"
     ]
   }
 }
