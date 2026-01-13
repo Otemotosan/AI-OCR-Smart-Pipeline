@@ -11,13 +11,13 @@
 
 | Phase | Status | Progress | Duration |
 |-------|--------|----------|----------|
-| Phase 1: Foundation | 🔄 In Progress | 5/7 | Week 1-2 |
+| Phase 1: Foundation | 🔄 In Progress | 6/7 | Week 1-2 |
 | Phase 2: Core Pipeline | ⏳ Pending | 0/7 | Week 3-4 |
 | Phase 3: Escalation | ⏳ Pending | 0/7 | Week 5-6 |
 | Phase 4: Review UI | ⏳ Pending | 0/10 | Week 7-8 |
 | Phase 5: Hardening | ⏳ Pending | 0/7 | Week 9-10 |
 
-**Total Progress**: 5/38 tasks (13%)
+**Total Progress**: 6/38 tasks (16%)
 
 ---
 
@@ -194,32 +194,41 @@
 
 **📖 Read First**: `docs/specs/02_retry.md` §4
 
-- [ ] Implement `BudgetManager` class
-  - [ ] `check_pro_budget() -> bool`
-  - [ ] `increment_pro_usage() -> None`
-  - [ ] `get_daily_usage() -> int`
-  - [ ] `get_monthly_usage() -> int`
-  - [ ] `reset_if_needed() -> None` (daily/monthly)
-- [ ] Add Firestore backend
-  - [ ] Collection: `budget`
-  - [ ] Document: `{date, count}` for daily
-  - [ ] Document: `{month, count}` for monthly
-- [ ] Set timezone to `Asia/Tokyo`
-- [ ] Add constants
-  - [ ] `PRO_DAILY_LIMIT = 50`
-  - [ ] `PRO_MONTHLY_LIMIT = 1000`
-- [ ] Write unit tests
-  - [ ] Test daily/monthly counting
-  - [ ] Test reset logic
-  - [ ] Test timezone handling (JST)
-  - [ ] Test budget enforcement
+- [x] Implement `BudgetManager` class
+  - [x] `check_pro_budget() -> bool` - Check if within limits
+  - [x] `increment_pro_usage() -> None` - Atomic increment with Firestore
+  - [x] `get_daily_usage() -> int` - Get current daily count
+  - [x] `get_monthly_usage() -> int` - Get current monthly count
+  - [x] `get_usage_stats() -> dict` - Comprehensive statistics
+  - [x] `reset_if_needed() -> None` - Natural reset with date/month keys
+- [x] Add Firestore backend
+  - [x] Collection: `system_config`, Document: `pro_budget`
+  - [x] Structure: `{daily: {date: count}, monthly: {month: count}}`
+  - [x] Atomic increment using `firestore.Increment()`
+- [x] Set timezone to `Asia/Tokyo`
+  - [x] Use `zoneinfo.ZoneInfo("Asia/Tokyo")`
+  - [x] Budget resets at JST midnight/month-start
+- [x] Add constants
+  - [x] `PRO_DAILY_LIMIT = 50`
+  - [x] `PRO_MONTHLY_LIMIT = 1000`
+  - [x] `BUDGET_TIMEZONE = ZoneInfo("Asia/Tokyo")`
+- [x] Write comprehensive unit tests (28 tests, 100% pass)
+  - [x] Test daily/monthly budget checking (6 scenarios)
+  - [x] Test atomic increment operations
+  - [x] Test usage retrieval methods
+  - [x] Test usage statistics with remaining counts
+  - [x] Test JST timezone handling and boundary conditions
+  - [x] Test constants and exception types
+  - [x] Test integration scenarios (limit enforcement, natural resets)
 
 **Completion Criteria**:
-- Pro calls blocked when budget exceeded
-- Resets correctly at JST midnight/month-start
-- Tests pass
+- Pro calls blocked when budget exceeded ✅
+- Resets correctly at JST midnight/month-start ✅
+- Tests pass (28/28) ✅
 
 **Dependencies**: None
+
+**Status**: ✅ Completed (2025-01-13)
 
 ---
 
@@ -1256,13 +1265,14 @@ If Claude Code session is interrupted:
 
 ---
 
-**Last Session**: 2025-01-13 15:30 JST
+**Last Session**: 2025-01-13 16:00 JST
 **Current Phase**: Phase 1 (Foundation)
-**Current Task**: 1.6 (Budget Manager)
+**Current Task**: 1.7 (Test Infrastructure)
 **Completed**:
 - 1.1 (Project Setup) ✅
 - 1.2 (Schema Registry) ✅
 - 1.3 (Gate Linter) ✅
 - 1.4 (Quality Linter) ✅
 - 1.5 (Distributed Lock) ✅
-**Next Milestone**: Complete Budget Manager for Pro API limits (1.6)
+- 1.6 (Budget Manager) ✅
+**Next Milestone**: Complete Test Infrastructure with CI/CD (1.7)
