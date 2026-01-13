@@ -8,10 +8,12 @@ from __future__ import annotations
 
 import hashlib
 import threading
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from contextlib import contextmanager, suppress
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypeVar
+
+_F = TypeVar("_F", bound=Callable)
 
 if TYPE_CHECKING:
     from google.cloud import firestore
@@ -23,7 +25,7 @@ else:
         # Create a mock module with transactional decorator
         from types import SimpleNamespace
 
-        def _mock_transactional(func):  # type: ignore[no-untyped-def]
+        def _mock_transactional(func: _F) -> _F:
             """Mock transactional decorator for testing."""
             return func
 
