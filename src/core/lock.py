@@ -15,6 +15,19 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from google.cloud import firestore
+else:
+    try:
+        from google.cloud import firestore
+    except ImportError:
+        # Allow tests to run without google-cloud-firestore installed
+        # Create a mock module with transactional decorator
+        from types import SimpleNamespace
+
+        def _mock_transactional(func):  # type: ignore[no-untyped-def]
+            """Mock transactional decorator for testing."""
+            return func
+
+        firestore = SimpleNamespace(transactional=_mock_transactional)  # type: ignore[assignment]
 
 
 # Constants

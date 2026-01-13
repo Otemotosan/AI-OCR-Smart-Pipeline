@@ -14,7 +14,8 @@
       "Bash(ruff check:*)",
       "Bash(python fix_sim117.py:*)",
       "Bash(del fix_sim117.py)",
-      "Bash(python -m black:*)"
+      "Bash(python -m black:*)",
+      "Bash(pip install:*)"
     ]
   }
 }

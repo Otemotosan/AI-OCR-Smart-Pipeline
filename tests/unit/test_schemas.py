@@ -239,12 +239,14 @@ class TestDeliveryNoteV1ToV2Migration:
             "company_name": "テスト株式会社",
             "issue_date": "2025-01-13",
             "delivery_date": "2025-01-15",
+            "payment_due_date": None,  # Explicitly provided as None
             "total_amount": 10000,
         }
         v2_data = migrate_delivery_note_v1_to_v2(v1_data)
 
         assert v2_data["schema_version"] == "v2"
         assert v2_data["delivery_date"] == "2025-01-15"
+        assert v2_data["payment_due_date"] is None
         assert v2_data["total_amount"] == 10000
         assert "migration_metadata" not in v2_data  # No defaults needed
 

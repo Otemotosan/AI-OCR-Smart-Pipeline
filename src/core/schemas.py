@@ -130,6 +130,8 @@ def migrate_delivery_note_v1_to_v2(data: dict) -> dict:
     if "delivery_date" not in data:
         defaulted_fields.append("delivery_date")
 
+    # Only count payment_due_date as defaulted if key is missing
+    # (None is a valid explicit value)
     if "payment_due_date" not in data:
         defaulted_fields.append("payment_due_date")
 
@@ -355,8 +357,9 @@ def generate_schema_description(schema_class: type[BaseModel]) -> str:
     lines = [f"## {schema_class.__name__}", ""]
 
     for field_name, field_info in schema_class.model_fields.items():
-        if field_name.startswith("_"):
-            continue  # Skip private fields
+        # Skip private fields and excluded fields
+        if field_name.startswith("_") or field_info.exclude:
+            continue
 
         required = "required" if field_info.is_required() else "optional"
         description = field_info.description or ""

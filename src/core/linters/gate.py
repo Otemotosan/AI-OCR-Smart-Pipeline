@@ -127,11 +127,12 @@ class GateLinter:
             >>> GateLinter._parse_date("invalid")
             None
         """
-        if isinstance(value, date):
-            return value
-
+        # Check datetime before date since datetime is a subclass of date
         if isinstance(value, datetime):
             return value.date()
+
+        if isinstance(value, date):
+            return value
 
         if isinstance(value, str):
             # Try ISO format first
