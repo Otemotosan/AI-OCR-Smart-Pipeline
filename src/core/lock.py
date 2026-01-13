@@ -113,9 +113,7 @@ class DistributedLock:
             # Stop heartbeat
             self._stop_heartbeat_thread()
 
-    def _acquire_lock(
-        self, doc_ref: firestore.DocumentReference, doc_hash: str
-    ) -> bool:
+    def _acquire_lock(self, doc_ref: firestore.DocumentReference, doc_hash: str) -> bool:
         """Atomically acquire processing lock.
 
         Args:
@@ -158,11 +156,7 @@ class DistributedLock:
                     "hash": doc_hash,
                     "status": "PENDING",
                     "lock_expires_at": now + timedelta(seconds=self.ttl_seconds),
-                    "created_at": (
-                        now
-                        if not snapshot.exists
-                        else data.get("created_at", now)
-                    ),
+                    "created_at": (now if not snapshot.exists else data.get("created_at", now)),
                     "updated_at": now,
                 },
                 merge=True,
@@ -198,9 +192,7 @@ class DistributedLock:
                         }
                     )
 
-        self._heartbeat_thread = threading.Thread(
-            target=_heartbeat_worker, daemon=True
-        )
+        self._heartbeat_thread = threading.Thread(target=_heartbeat_worker, daemon=True)
         self._heartbeat_thread.start()
 
     def _stop_heartbeat_thread(self) -> None:

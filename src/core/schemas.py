@@ -82,9 +82,7 @@ class DeliveryNoteV2(BaseModel):
     total_amount: int = Field(..., description="合計金額", ge=0)
 
     # Migration tracking (excluded from validation)
-    migration_metadata: MigrationMetadata | None = Field(
-        default=None, exclude=True, repr=False
-    )
+    migration_metadata: MigrationMetadata | None = Field(default=None, exclude=True, repr=False)
 
 
 # ============================================================

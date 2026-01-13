@@ -61,7 +61,7 @@ class TestBudgetChecking:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                result = budget.check_pro_budget()
+            result = budget.check_pro_budget()
 
         assert result is True
 
@@ -86,7 +86,7 @@ class TestBudgetChecking:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                result = budget.check_pro_budget()
+            result = budget.check_pro_budget()
 
         assert result is False
 
@@ -111,7 +111,7 @@ class TestBudgetChecking:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                result = budget.check_pro_budget()
+            result = budget.check_pro_budget()
 
         assert result is False
 
@@ -136,7 +136,7 @@ class TestBudgetChecking:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                result = budget.check_pro_budget()
+            result = budget.check_pro_budget()
 
         assert result is False
 
@@ -161,7 +161,7 @@ class TestBudgetChecking:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                result = budget.check_pro_budget()
+            result = budget.check_pro_budget()
 
         assert result is False
 
@@ -186,7 +186,7 @@ class TestIncrement:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                budget.increment_pro_usage()
+            budget.increment_pro_usage()
 
         # Verify set was called with correct structure
         mock_doc_ref.set.assert_called_once()
@@ -210,7 +210,7 @@ class TestIncrement:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                budget.increment_pro_usage()
+            budget.increment_pro_usage()
 
         # Verify set was called with merge=True
         mock_doc_ref.set.assert_called_once()
@@ -358,7 +358,7 @@ class TestUsageStatistics:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                stats = budget.get_usage_stats()
+            stats = budget.get_usage_stats()
 
         assert stats["daily"] == 0
         assert stats["daily_limit"] == PRO_DAILY_LIMIT
@@ -390,7 +390,7 @@ class TestUsageStatistics:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                stats = budget.get_usage_stats()
+            stats = budget.get_usage_stats()
 
         assert stats["daily"] == 15
         assert stats["daily_limit"] == 50
@@ -420,7 +420,7 @@ class TestUsageStatistics:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                stats = budget.get_usage_stats()
+            stats = budget.get_usage_stats()
 
         assert stats["daily"] == 50
         assert stats["daily_remaining"] == 0
@@ -448,7 +448,7 @@ class TestUsageStatistics:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                stats = budget.get_usage_stats()
+            stats = budget.get_usage_stats()
 
         assert stats["daily"] == 60
         assert stats["daily_remaining"] == 0  # Never negative
@@ -571,14 +571,14 @@ class TestIntegrationScenarios:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                # Check budget (should be available)
-                assert budget.check_pro_budget() is True
+            # Check budget (should be available)
+            assert budget.check_pro_budget() is True
 
-                # Increment usage
-                budget.increment_pro_usage()
+            # Increment usage
+            budget.increment_pro_usage()
 
-                # Check again (should still be available)
-                assert budget.check_pro_budget() is True
+            # Check again (should still be available)
+            assert budget.check_pro_budget() is True
 
     def test_daily_limit_enforcement(self) -> None:
         """Test that daily limit is enforced correctly."""
@@ -592,22 +592,22 @@ class TestIntegrationScenarios:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                # Simulate approaching limit
-                for count in range(48, 52):
-                    mock_snapshot = MagicMock()
-                    mock_snapshot.exists = True
-                    mock_snapshot.to_dict.return_value = {
-                        "daily": {"2025-01-13": count},
-                        "monthly": {"2025-01": count},
-                    }
-                    mock_doc_ref.get.return_value = mock_snapshot
+            # Simulate approaching limit
+            for count in range(48, 52):
+                mock_snapshot = MagicMock()
+                mock_snapshot.exists = True
+                mock_snapshot.to_dict.return_value = {
+                    "daily": {"2025-01-13": count},
+                    "monthly": {"2025-01": count},
+                }
+                mock_doc_ref.get.return_value = mock_snapshot
 
-                    result = budget.check_pro_budget()
+                result = budget.check_pro_budget()
 
-                    if count < 50:
-                        assert result is True, f"Should allow at count {count}"
-                    else:
-                        assert result is False, f"Should block at count {count}"
+                if count < 50:
+                    assert result is True, f"Should allow at count {count}"
+                else:
+                    assert result is False, f"Should block at count {count}"
 
     def test_new_day_resets_daily_counter(self) -> None:
         """Test that daily counter naturally resets with new date."""
@@ -631,7 +631,7 @@ class TestIntegrationScenarios:
             patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
             patch.object(budget, "_get_budget_month", return_value="2025-01"),
         ):
-                result = budget.check_pro_budget()
+            result = budget.check_pro_budget()
 
         # Should be available (new date key)
         assert result is True
@@ -658,7 +658,7 @@ class TestIntegrationScenarios:
             patch.object(budget, "_get_budget_date", return_value="2025-02-01"),
             patch.object(budget, "_get_budget_month", return_value="2025-02"),
         ):
-                result = budget.check_pro_budget()
+            result = budget.check_pro_budget()
 
         # Should be available (new month key)
         assert result is True

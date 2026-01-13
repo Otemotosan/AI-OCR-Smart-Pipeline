@@ -70,9 +70,7 @@ class BudgetManager:
         daily_count = data.get("daily", {}).get(today, 0)
         monthly_count = data.get("monthly", {}).get(month, 0)
 
-        return not (
-            daily_count >= PRO_DAILY_LIMIT or monthly_count >= PRO_MONTHLY_LIMIT
-        )
+        return not (daily_count >= PRO_DAILY_LIMIT or monthly_count >= PRO_MONTHLY_LIMIT)
 
     def increment_pro_usage(self) -> None:
         """Atomically increment Pro usage counters.

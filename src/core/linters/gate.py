@@ -97,8 +97,7 @@ class GateLinter:
         if document_type and document_type not in SCHEMA_REGISTRY:
             available = list(SCHEMA_REGISTRY.keys())
             errors.append(
-                f"document_type: Unknown type '{document_type}'. "
-                f"Valid types: {available}"
+                f"document_type: Unknown type '{document_type}'. " f"Valid types: {available}"
             )
 
         return GateLinterResult(passed=len(errors) == 0, errors=errors)

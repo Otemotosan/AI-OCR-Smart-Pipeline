@@ -77,9 +77,11 @@ class TestLockAcquisition:
 
         lock = DistributedLock(mock_db, ttl_seconds=60, heartbeat_interval=10)
 
-        with patch.object(lock, "_start_heartbeat"), patch.object(
-            lock, "_stop_heartbeat_thread"
-        ), lock.acquire("sha256:test123") as doc_ref:
+        with (
+            patch.object(lock, "_start_heartbeat"),
+            patch.object(lock, "_stop_heartbeat_thread"),
+            lock.acquire("sha256:test123") as doc_ref,
+        ):
             assert doc_ref == mock_doc_ref
 
     def test_acquire_completed_document_fails(self) -> None:
@@ -145,9 +147,11 @@ class TestLockAcquisition:
 
         lock = DistributedLock(mock_db, ttl_seconds=60, heartbeat_interval=10)
 
-        with patch.object(lock, "_start_heartbeat"), patch.object(
-            lock, "_stop_heartbeat_thread"
-        ), lock.acquire("sha256:test123") as doc_ref:
+        with (
+            patch.object(lock, "_start_heartbeat"),
+            patch.object(lock, "_stop_heartbeat_thread"),
+            lock.acquire("sha256:test123") as doc_ref,
+        ):
             assert doc_ref == mock_doc_ref
 
 
@@ -195,10 +199,7 @@ class TestHeartbeat:
 
         # Heartbeat should be stopped
         time.sleep(0.1)  # Give thread time to clean up
-        assert (
-            lock._heartbeat_thread is None
-            or not lock._heartbeat_thread.is_alive()
-        )
+        assert lock._heartbeat_thread is None or not lock._heartbeat_thread.is_alive()
 
     def test_heartbeat_extends_lock(self) -> None:
         """Test that heartbeat extends lock TTL."""
@@ -265,9 +266,11 @@ class TestContextManager:
 
         lock = DistributedLock(mock_db, ttl_seconds=60, heartbeat_interval=10)
 
-        with patch.object(lock, "_start_heartbeat"), patch.object(
-            lock, "_stop_heartbeat_thread"
-        ), lock.acquire("sha256:test123") as doc_ref:
+        with (
+            patch.object(lock, "_start_heartbeat"),
+            patch.object(lock, "_stop_heartbeat_thread"),
+            lock.acquire("sha256:test123") as doc_ref,
+        ):
             assert doc_ref is not None
             assert doc_ref == mock_doc_ref
 
@@ -284,9 +287,10 @@ class TestContextManager:
 
         lock = DistributedLock(mock_db, ttl_seconds=60, heartbeat_interval=10)
 
-        with patch.object(lock, "_start_heartbeat"), patch.object(
-            lock, "_stop_heartbeat_thread"
-        ) as mock_stop:
+        with (
+            patch.object(lock, "_start_heartbeat"),
+            patch.object(lock, "_stop_heartbeat_thread") as mock_stop,
+        ):
             try:
                 with lock.acquire("sha256:test123"):
                     raise ValueError("Test error")
@@ -356,9 +360,10 @@ class TestIntegration:
         lock = DistributedLock(mock_db, ttl_seconds=60, heartbeat_interval=10)
 
         # Acquire lock
-        with patch.object(lock, "_start_heartbeat") as mock_start, patch.object(
-            lock, "_stop_heartbeat_thread"
-        ) as mock_stop:
+        with (
+            patch.object(lock, "_start_heartbeat") as mock_start,
+            patch.object(lock, "_stop_heartbeat_thread") as mock_stop,
+        ):
             with lock.acquire("sha256:test123") as doc_ref:
                 # Verify heartbeat started
                 mock_start.assert_called_once()
@@ -390,9 +395,7 @@ class TestIntegration:
             Mock(exists=False),  # First attempt
             Mock(
                 exists=True,
-                to_dict=Mock(
-                    return_value={"status": "PENDING", "lock_expires_at": future}
-                ),
+                to_dict=Mock(return_value={"status": "PENDING", "lock_expires_at": future}),
             ),  # Second attempt
         ]
         mock_doc_ref.get.side_effect = snapshots
@@ -401,9 +404,11 @@ class TestIntegration:
         lock2 = DistributedLock(mock_db, ttl_seconds=60, heartbeat_interval=10)
 
         # First lock succeeds
-        with patch.object(lock1, "_start_heartbeat"), patch.object(
-            lock1, "_stop_heartbeat_thread"
-        ), lock1.acquire("sha256:test123"):
+        with (
+            patch.object(lock1, "_start_heartbeat"),
+            patch.object(lock1, "_stop_heartbeat_thread"),
+            lock1.acquire("sha256:test123"),
+        ):
             pass
 
         # Second lock fails
