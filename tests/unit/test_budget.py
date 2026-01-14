@@ -662,3 +662,59 @@ class TestIntegrationScenarios:
 
         # Should be available (new month key)
         assert result is True
+
+
+# ============================================================
+# Fallback and Edge Cases
+# ============================================================
+
+
+class TestFallbackBehavior:
+    """Test fallback behavior when google-cloud-firestore is not available."""
+
+    def test_increment_with_import_error_fallback(self) -> None:
+        """Test that increment works with fallback when Firestore import fails."""
+
+        mock_db = MagicMock()
+        mock_doc_ref = MagicMock()
+        mock_db.collection.return_value.document.return_value = mock_doc_ref
+
+        budget = BudgetManager(mock_db)
+
+        # Create a custom importer that blocks google.cloud.firestore
+        original_import = __import__
+
+        def mock_import(name, *args, **kwargs):
+            if name == "google.cloud.firestore":
+                raise ImportError("Mocked import error for testing fallback")
+            return original_import(name, *args, **kwargs)
+
+        with (
+            patch.object(budget, "_get_budget_date", return_value="2025-01-13"),
+            patch.object(budget, "_get_budget_month", return_value="2025-01"),
+            patch("builtins.__import__", mock_import),
+        ):
+            # Should still work with fallback (Increment returns plain int)
+            budget.increment_pro_usage()
+
+        # Verify set was called
+        call_args = mock_doc_ref.set.call_args
+        assert call_args is not None
+        data = call_args[0][0]
+        assert "daily" in data
+        assert "monthly" in data
+
+    def test_reset_if_needed_no_op(self) -> None:
+        """Test reset_if_needed is a no-op (counters reset naturally)."""
+        mock_db = MagicMock()
+        budget = BudgetManager(mock_db)
+
+        # Reset mock calls from __init__
+        mock_db.reset_mock()
+
+        # Should not raise any errors
+        budget.reset_if_needed()
+
+        # No additional Firestore operations should occur
+        mock_db.collection.assert_not_called()
+        mock_db.collection.return_value.document.assert_not_called()
