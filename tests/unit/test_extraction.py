@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import json
 
 from core.extraction import (
@@ -10,11 +11,14 @@ from core.extraction import (
     FLASH_HTTP429_RETRIES,
     FLASH_SYNTAX_RETRIES,
     FRAGILE_DOCUMENT_TYPES,
+    ExtractionAttempt,
+    ExtractionResult,
     GeminiInput,
     ProBudgetExhaustedError,
     SemanticValidationError,
     SyntaxValidationError,
     classify_error,
+    extract_with_retry,
     select_model,
     should_attach_image,
 )
@@ -346,3 +350,628 @@ class ExceptionRaised:
         if self.message not in str(exc_val):
             raise AssertionError(f"Expected message '{self.message}' not found in '{exc_val}'")
         return True
+
+
+# ============================================================
+# Extraction Result Tests
+# ============================================================
+
+
+class TestExtractionDataclasses:
+    """Test ExtractionAttempt and ExtractionResult dataclasses."""
+
+    def test_extraction_attempt_creation(self) -> None:
+        """Test creating ExtractionAttempt."""
+
+        attempt = ExtractionAttempt(
+            model="flash",
+            prompt_tokens=2000,
+            output_tokens=100,
+            cost_usd=0.0001,
+            error=None,
+            data={"management_id": "INV-001"},
+        )
+
+        assert attempt.model == "flash"
+        assert attempt.prompt_tokens == 2000
+        assert attempt.output_tokens == 100
+        assert attempt.cost_usd == 0.0001
+        assert attempt.error is None
+        assert attempt.data == {"management_id": "INV-001"}
+
+    def test_extraction_attempt_with_error(self) -> None:
+        """Test ExtractionAttempt with error."""
+
+        attempt = ExtractionAttempt(
+            model="flash",
+            prompt_tokens=2000,
+            output_tokens=0,
+            cost_usd=0.0,
+            error="Syntax error: Invalid JSON",
+            data=None,
+        )
+
+        assert attempt.model == "flash"
+        assert attempt.error == "Syntax error: Invalid JSON"
+        assert attempt.data is None
+
+    def test_extraction_result_success(self) -> None:
+        """Test ExtractionResult for successful extraction."""
+        from unittest.mock import MagicMock
+
+        mock_schema = MagicMock()
+        attempt1 = ExtractionAttempt(
+            model="flash",
+            prompt_tokens=2000,
+            output_tokens=100,
+            cost_usd=0.0001,
+            data={"management_id": "INV-001"},
+        )
+
+        result = ExtractionResult(
+            schema=mock_schema,
+            status="SUCCESS",
+            attempts=[attempt1],
+            final_model="flash",
+            total_cost=0.0001,
+            reason=None,
+        )
+
+        assert result.schema == mock_schema
+        assert result.status == "SUCCESS"
+        assert len(result.attempts) == 1
+        assert result.final_model == "flash"
+        assert result.total_cost == 0.0001
+        assert result.reason is None
+
+    def test_extraction_result_failed(self) -> None:
+        """Test ExtractionResult for failed extraction."""
+
+        attempt1 = ExtractionAttempt(
+            model="flash",
+            prompt_tokens=2000,
+            output_tokens=0,
+            cost_usd=0.0,
+            error="Gate Linter failed",
+            data=None,
+        )
+        attempt2 = ExtractionAttempt(
+            model="pro",
+            prompt_tokens=10000,
+            output_tokens=0,
+            cost_usd=0.001,
+            error="Pro also failed",
+            data=None,
+        )
+
+        result = ExtractionResult(
+            schema=None,
+            status="FAILED",
+            attempts=[attempt1, attempt2],
+            final_model="pro",
+            total_cost=0.001,
+            reason="Pro failed Gate Linter",
+        )
+
+        assert result.schema is None
+        assert result.status == "FAILED"
+        assert len(result.attempts) == 2
+        assert result.final_model == "pro"
+        assert result.total_cost == 0.001
+        assert result.reason == "Pro failed Gate Linter"
+
+
+# ============================================================
+# extract_with_retry Tests
+# ============================================================
+
+
+class TestExtractWithRetry:
+    """Test extract_with_retry function with various scenarios."""
+
+    def test_successful_first_attempt(self) -> None:
+        """Test successful extraction on first Flash attempt."""
+        from unittest.mock import MagicMock
+
+        from core.extraction import GeminiInput, extract_with_retry
+
+        # Mock dependencies
+        gemini_input = GeminiInput(markdown="# Invoice...", include_image=False)
+        schema_class = MagicMock()
+        schema_class.__name__ = "DeliveryNoteV2"
+
+        # Mock GeminiClient response
+        mock_response = MagicMock()
+        mock_response.data = {"management_id": "INV-001", "company_name": "Acme Inc"}
+        mock_response.input_tokens = 2000
+        mock_response.output_tokens = 100
+        mock_response.cost_usd = 0.0001
+
+        gemini_client = MagicMock()
+        gemini_client.call_flash.return_value = mock_response
+
+        # Mock BudgetManager
+        budget_manager = MagicMock()
+        budget_manager.check_pro_budget.return_value = True
+
+        # Mock GateLinter
+        mock_gate_result = MagicMock()
+        mock_gate_result.passed = True
+        gate_linter = MagicMock()
+        gate_linter.validate.return_value = mock_gate_result
+
+        # Mock schema validation
+        mock_schema_instance = MagicMock()
+        schema_class.return_value = mock_schema_instance
+
+        # Execute
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "SUCCESS"
+        assert result.schema == mock_schema_instance
+        assert result.final_model == "flash"
+        assert len(result.attempts) == 1
+        assert result.attempts[0].model == "flash"
+        assert result.attempts[0].cost_usd == 0.0001
+        assert result.total_cost == 0.0001
+
+    def test_gate_linter_failure_then_pro_success(self) -> None:
+        """Test Flash fails Gate Linter, escalates to Pro successfully."""
+        from unittest.mock import MagicMock
+
+        from core.extraction import GeminiInput, extract_with_retry
+
+        gemini_input = GeminiInput(markdown="# Invoice...", include_image=False)
+        schema_class = MagicMock()
+        schema_class.__name__ = "DeliveryNoteV2"
+
+        # Flash response (Gate Linter will fail)
+        flash_response = MagicMock()
+        flash_response.data = {"management_id": ""}  # Empty management_id (Gate fails)
+        flash_response.input_tokens = 2000
+        flash_response.output_tokens = 100
+        flash_response.cost_usd = 0.0001
+
+        # Pro response (succeeds)
+        pro_response = MagicMock()
+        pro_response.data = {"management_id": "INV-001", "company_name": "Acme Inc"}
+        pro_response.input_tokens = 10000
+        pro_response.output_tokens = 200
+        pro_response.cost_usd = 0.001
+
+        gemini_client = MagicMock()
+        gemini_client.call_flash.return_value = flash_response
+        gemini_client.call_pro.return_value = pro_response
+
+        budget_manager = MagicMock()
+        budget_manager.check_pro_budget.return_value = True
+
+        # Gate Linter: fail Flash, pass Pro
+        gate_linter = MagicMock()
+        gate_linter.validate.side_effect = [
+            MagicMock(passed=False, errors=["management_id is empty"]),  # Flash
+            MagicMock(passed=True),  # Pro
+        ]
+
+        mock_schema_instance = MagicMock()
+        schema_class.return_value = mock_schema_instance
+
+        # Execute
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "SUCCESS"
+        assert result.final_model == "pro"
+        assert len(result.attempts) == 2
+        assert result.attempts[0].model == "flash"
+        assert result.attempts[0].error is not None
+        assert result.attempts[1].model == "pro"
+        budget_manager.increment_pro_usage.assert_called_once()
+
+    def test_pro_budget_exhausted(self) -> None:
+        """Test Pro escalation blocked by budget limit."""
+        from unittest.mock import MagicMock
+
+        from core.extraction import GeminiInput, extract_with_retry
+
+        gemini_input = GeminiInput(markdown="# Invoice...", include_image=False)
+        schema_class = MagicMock()
+        schema_class.__name__ = "DeliveryNoteV2"
+
+        # Flash response (fails schema validation to trigger Pro escalation)
+        flash_response = MagicMock()
+        flash_response.data = {"management_id": "INV-001", "company_name": "Acme Inc"}
+        flash_response.input_tokens = 2000
+        flash_response.output_tokens = 100
+        flash_response.cost_usd = 0.0001
+
+        gemini_client = MagicMock()
+        gemini_client.call_flash.return_value = flash_response
+
+        # Budget exhausted (returns False always)
+        budget_manager = MagicMock()
+        budget_manager.check_pro_budget.return_value = False
+
+        # Gate passes, but schema validation fails (to trigger Pro escalation)
+        gate_linter = MagicMock()
+        gate_linter.validate.return_value = MagicMock(passed=True)
+
+        # Schema validation fails to trigger Pro escalation
+        schema_class.side_effect = Exception("Schema validation error")
+
+        # Execute
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "FAILED"
+        assert result.reason == "Pro budget exhausted"
+        assert result.final_model == "flash"
+        gemini_client.call_pro.assert_not_called()
+
+    def test_syntax_error_retry_then_success(self) -> None:
+        """Test syntax error on first attempt, success on retry."""
+        from unittest.mock import MagicMock
+
+        from core.extraction import GeminiInput, extract_with_retry
+        from core.gemini import SyntaxValidationError
+
+        gemini_input = GeminiInput(markdown="# Invoice...", include_image=False)
+        schema_class = MagicMock()
+        schema_class.__name__ = "DeliveryNoteV2"
+
+        # Second attempt succeeds
+        success_response = MagicMock()
+        success_response.data = {"management_id": "INV-001", "company_name": "Acme Inc"}
+        success_response.input_tokens = 2000
+        success_response.output_tokens = 100
+        success_response.cost_usd = 0.0001
+
+        gemini_client = MagicMock()
+        gemini_client.call_flash.side_effect = [
+            SyntaxValidationError("Invalid JSON"),  # First attempt
+            success_response,  # Second attempt
+        ]
+
+        budget_manager = MagicMock()
+        budget_manager.check_pro_budget.return_value = True
+
+        gate_linter = MagicMock()
+        gate_linter.validate.return_value = MagicMock(passed=True)
+
+        mock_schema_instance = MagicMock()
+        schema_class.return_value = mock_schema_instance
+
+        # Execute
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "SUCCESS"
+        assert len(result.attempts) == 2
+        assert result.attempts[0].error is not None
+        assert "Syntax error" in result.attempts[0].error
+        assert gemini_client.call_flash.call_count == 2
+
+    def test_all_retries_exhausted(self) -> None:
+        """Test all Flash retries exhausted, no Pro escalation."""
+        from unittest.mock import MagicMock
+
+        from core.extraction import FLASH_SYNTAX_RETRIES, GeminiInput, extract_with_retry
+        from core.gemini import SyntaxValidationError
+
+        gemini_input = GeminiInput(markdown="# Invoice...", include_image=False)
+        schema_class = MagicMock()
+        schema_class.__name__ = "DeliveryNoteV2"
+
+        gemini_client = MagicMock()
+        # FLASH_SYNTAX_RETRIES = 2, so we get 2 attempts (initial fails immediately, then 1 retry)
+        gemini_client.call_flash.side_effect = [
+            SyntaxValidationError("Invalid JSON 1"),
+            SyntaxValidationError("Invalid JSON 2"),
+        ]
+
+        budget_manager = MagicMock()
+        gate_linter = MagicMock()
+
+        # Execute
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "FAILED"
+        assert "Syntax errors exhausted" in result.reason
+        assert len(result.attempts) == FLASH_SYNTAX_RETRIES  # Should be 2
+        gemini_client.call_pro.assert_not_called()
+
+    def test_flash_unexpected_error(self) -> None:
+        """Test Flash call with unexpected error."""
+        from unittest.mock import MagicMock
+
+        gemini_input = GeminiInput(markdown="# Test Doc")
+        schema_class = MagicMock()
+        schema_class.__name__ = "TestSchema"
+
+        # Mock GeminiClient to raise unexpected error
+        gemini_client = MagicMock()
+        gemini_client.call_flash.side_effect = RuntimeError("Database connection failed")
+
+        # Mock BudgetManager
+        budget_manager = MagicMock()
+        budget_manager.check_pro_budget.return_value = True
+
+        # Mock GateLinter
+        gate_linter = MagicMock()
+
+        # Call extract_with_retry
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "FAILED"
+        assert "Unexpected error" in result.reason
+        assert len(result.attempts) == 1
+        assert "Database connection failed" in result.attempts[0].error
+        gemini_client.call_pro.assert_not_called()
+
+    def test_pro_gate_linter_failure(self) -> None:
+        """Test Pro escalation where Pro also fails Gate Linter."""
+        from unittest.mock import MagicMock
+
+        gemini_input = GeminiInput(markdown="# Test Doc")
+        schema_class = MagicMock()
+        schema_class.__name__ = "TestSchema"
+
+        # Mock GeminiClient - Flash fails Gate, Pro also fails Gate
+        gemini_client = MagicMock()
+        flash_response = MagicMock()
+        flash_response.data = {"field": "invalid"}
+        flash_response.input_tokens = 2000
+        flash_response.output_tokens = 100
+        flash_response.cost_usd = 0.0001
+        gemini_client.call_flash.return_value = flash_response
+
+        pro_response = MagicMock()
+        pro_response.data = {"field": "still_invalid"}
+        pro_response.input_tokens = 10000
+        pro_response.output_tokens = 200
+        pro_response.cost_usd = 0.001
+        gemini_client.call_pro.return_value = pro_response
+
+        # Mock BudgetManager - has budget
+        budget_manager = MagicMock()
+        budget_manager.check_pro_budget.return_value = True
+
+        # Mock GateLinter - both fail
+        gate_linter = MagicMock()
+        flash_gate_result = MagicMock()
+        flash_gate_result.passed = False
+        flash_gate_result.errors = ["Flash: Missing management_id"]
+
+        pro_gate_result = MagicMock()
+        pro_gate_result.passed = False
+        pro_gate_result.errors = ["Pro: Missing management_id"]
+
+        gate_linter.validate.side_effect = [flash_gate_result, pro_gate_result]
+
+        # Call extract_with_retry
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "FAILED"
+        assert "Gate Linter failed" in result.attempts[-1].error
+        assert len(result.attempts) == 2  # Flash + Pro
+        assert result.final_model == "pro"
+        budget_manager.increment_pro_usage.assert_called_once()
+
+    def test_pro_schema_validation_failure(self) -> None:
+        """Test Pro escalation where Pro passes Gate but fails Pydantic schema."""
+        from unittest.mock import MagicMock
+
+        gemini_input = GeminiInput(markdown="# Test Doc")
+
+        # Schema that raises exception on invalid data
+        schema_class = MagicMock()
+        schema_class.__name__ = "TestSchema"
+        schema_class.side_effect = Exception("Schema validation: date format invalid")
+
+        # Mock GeminiClient - Flash fails Gate, Pro passes Gate
+        gemini_client = MagicMock()
+        flash_response = MagicMock()
+        flash_response.data = {"field": "invalid"}
+        flash_response.input_tokens = 2000
+        flash_response.output_tokens = 100
+        flash_response.cost_usd = 0.0001
+        gemini_client.call_flash.return_value = flash_response
+
+        pro_response = MagicMock()
+        pro_response.data = {"management_id": "INV-001", "date": "bad_date"}
+        pro_response.input_tokens = 10000
+        pro_response.output_tokens = 200
+        pro_response.cost_usd = 0.001
+        gemini_client.call_pro.return_value = pro_response
+
+        # Mock BudgetManager
+        budget_manager = MagicMock()
+        budget_manager.check_pro_budget.return_value = True
+
+        # Mock GateLinter - Flash fails, Pro passes
+        gate_linter = MagicMock()
+        flash_gate_result = MagicMock()
+        flash_gate_result.passed = False
+        flash_gate_result.errors = ["Flash: Missing management_id"]
+
+        pro_gate_result = MagicMock()
+        pro_gate_result.passed = True
+
+        gate_linter.validate.side_effect = [flash_gate_result, pro_gate_result]
+
+        # Call extract_with_retry
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "FAILED"
+        assert "Pro schema validation failed" in result.reason
+        assert "date format invalid" in result.reason
+        assert len(result.attempts) == 2  # Flash + Pro
+        assert result.final_model == "pro"
+
+    def test_pro_syntax_error(self) -> None:
+        """Test Pro escalation where Pro returns invalid JSON."""
+        from unittest.mock import MagicMock
+
+        from core.gemini import SyntaxValidationError
+
+        gemini_input = GeminiInput(markdown="# Test Doc")
+        schema_class = MagicMock()
+        schema_class.__name__ = "TestSchema"
+
+        # Mock GeminiClient - Flash fails Gate, Pro has syntax error
+        gemini_client = MagicMock()
+        flash_response = MagicMock()
+        flash_response.data = {"field": "invalid"}
+        flash_response.input_tokens = 2000
+        flash_response.output_tokens = 100
+        flash_response.cost_usd = 0.0001
+        gemini_client.call_flash.return_value = flash_response
+        gemini_client.call_pro.side_effect = SyntaxValidationError("Invalid JSON from Pro")
+
+        # Mock BudgetManager
+        budget_manager = MagicMock()
+        budget_manager.check_pro_budget.return_value = True
+
+        # Mock GateLinter - Flash fails
+        gate_linter = MagicMock()
+        flash_gate_result = MagicMock()
+        flash_gate_result.passed = False
+        flash_gate_result.errors = ["Flash: Missing management_id"]
+        gate_linter.validate.return_value = flash_gate_result
+
+        # Call extract_with_retry
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "FAILED"
+        assert "Pro syntax error" in result.reason
+        assert len(result.attempts) == 2  # Flash + Pro attempt
+        assert result.final_model == "pro"
+
+    def test_pro_unexpected_error(self) -> None:
+        """Test Pro escalation where Pro has unexpected error."""
+        from unittest.mock import MagicMock
+
+        gemini_input = GeminiInput(markdown="# Test Doc")
+        schema_class = MagicMock()
+        schema_class.__name__ = "TestSchema"
+
+        # Mock GeminiClient - Flash fails Gate, Pro has unexpected error
+        gemini_client = MagicMock()
+        flash_response = MagicMock()
+        flash_response.data = {"field": "invalid"}
+        flash_response.input_tokens = 2000
+        flash_response.output_tokens = 100
+        flash_response.cost_usd = 0.0001
+        gemini_client.call_flash.return_value = flash_response
+        gemini_client.call_pro.side_effect = RuntimeError("Pro API timeout")
+
+        # Mock BudgetManager
+        budget_manager = MagicMock()
+        budget_manager.check_pro_budget.return_value = True
+
+        # Mock GateLinter - Flash fails
+        gate_linter = MagicMock()
+        flash_gate_result = MagicMock()
+        flash_gate_result.passed = False
+        flash_gate_result.errors = ["Flash: Missing management_id"]
+        gate_linter.validate.return_value = flash_gate_result
+
+        # Call extract_with_retry
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "FAILED"
+        assert "Pro unexpected error" in result.reason
+        assert "Pro API timeout" in result.reason
+        assert len(result.attempts) == 2  # Flash + Pro attempt
+        assert result.final_model == "pro"
+
+    def test_pro_with_image_attachment(self) -> None:
+        """Test Pro escalation with image attachment."""
+        from unittest.mock import MagicMock
+
+        gemini_input = GeminiInput(
+            markdown="# Test Doc",
+            include_image=True,
+            image_base64=base64.b64encode(b"fake_image_data").decode("utf-8"),
+            reason="low_confidence:0.75",
+        )
+
+        # Mock schema class
+        schema_class = MagicMock()
+        schema_class.__name__ = "TestSchema"
+        validated_schema = MagicMock()
+        schema_class.return_value = validated_schema
+
+        # Mock GeminiClient - Flash fails Gate, Pro succeeds
+        gemini_client = MagicMock()
+        flash_response = MagicMock()
+        flash_response.data = {"field": "invalid"}
+        flash_response.input_tokens = 10000  # With image
+        flash_response.output_tokens = 100
+        flash_response.cost_usd = 0.001
+        gemini_client.call_flash.return_value = flash_response
+
+        pro_response = MagicMock()
+        pro_response.data = {"management_id": "INV-001"}
+        pro_response.input_tokens = 10000  # With image
+        pro_response.output_tokens = 200
+        pro_response.cost_usd = 0.01
+        gemini_client.call_pro.return_value = pro_response
+
+        # Mock BudgetManager
+        budget_manager = MagicMock()
+        budget_manager.check_pro_budget.return_value = True
+
+        # Mock GateLinter - Flash fails, Pro passes
+        gate_linter = MagicMock()
+        flash_gate_result = MagicMock()
+        flash_gate_result.passed = False
+        flash_gate_result.errors = ["Flash: Missing management_id"]
+
+        pro_gate_result = MagicMock()
+        pro_gate_result.passed = True
+
+        gate_linter.validate.side_effect = [flash_gate_result, pro_gate_result]
+
+        # Call extract_with_retry
+        result = extract_with_retry(
+            gemini_input, schema_class, gemini_client, budget_manager, gate_linter
+        )
+
+        # Verify
+        assert result.status == "SUCCESS"
+        assert result.schema == validated_schema
+        assert len(result.attempts) == 2  # Flash + Pro
+        assert result.final_model == "pro"
+
+        # Verify Pro was called with image bytes
+        gemini_client.call_pro.assert_called_once()
+        call_kwargs = gemini_client.call_pro.call_args[1]
+        assert call_kwargs["image"] == b"fake_image_data"

@@ -10,11 +10,16 @@ Handles document data extraction with:
 from __future__ import annotations
 
 import base64
-from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Any, Literal
+
+import structlog
 
 if TYPE_CHECKING:
     from google.cloud.documentai_v1 import Document
+    from pydantic import BaseModel
+
+logger = structlog.get_logger(__name__)
 
 # ============================================================
 # Constants
@@ -310,3 +315,425 @@ def select_model(
 
     # Max retries exhausted or unknown error
     return "human"
+
+
+# ============================================================
+# Extraction Result
+# ============================================================
+
+
+@dataclass
+class ExtractionAttempt:
+    """Record of a single extraction attempt.
+
+    Attributes:
+        model: Model used ("flash" or "pro")
+        prompt_tokens: Estimated input tokens
+        output_tokens: Estimated output tokens
+        cost_usd: Cost in USD
+        error: Error message if failed (None if successful)
+        data: Extracted data if successful (None if failed)
+
+    Examples:
+        >>> attempt = ExtractionAttempt(
+        ...     model="flash",
+        ...     prompt_tokens=2000,
+        ...     output_tokens=100,
+        ...     cost_usd=0.0001,
+        ...     error=None,
+        ...     data={"management_id": "INV-001"}
+        ... )
+    """
+
+    model: str
+    prompt_tokens: int
+    output_tokens: int
+    cost_usd: float
+    error: str | None = None
+    data: dict[str, Any] | None = None
+
+
+@dataclass
+class ExtractionResult:
+    """Result of extraction with audit trail.
+
+    Attributes:
+        schema: Validated schema instance if successful (None if failed)
+        status: Final status ("SUCCESS" or "FAILED")
+        attempts: List of all extraction attempts
+        final_model: Final model used ("flash", "pro", or "none")
+        total_cost: Total cost across all attempts in USD
+        reason: Reason for failure (None if successful)
+
+    Examples:
+        >>> result = ExtractionResult(
+        ...     schema=DeliveryNoteV2(...),
+        ...     status="SUCCESS",
+        ...     attempts=[attempt1, attempt2],
+        ...     final_model="pro",
+        ...     total_cost=0.0015,
+        ...     reason=None
+        ... )
+    """
+
+    schema: BaseModel | None
+    status: Literal["SUCCESS", "FAILED"]
+    attempts: list[ExtractionAttempt] = field(default_factory=list)
+    final_model: str = "none"
+    total_cost: float = 0.0
+    reason: str | None = None
+
+
+# ============================================================
+# Self-Correction Loop
+# ============================================================
+
+
+def extract_with_retry(  # noqa: C901
+    gemini_input: GeminiInput,
+    schema_class: type[BaseModel],
+    gemini_client: Any,  # GeminiClient from core.gemini
+    budget_manager: Any,  # BudgetManager from core.budget
+    gate_linter: Any,  # GateLinter from core.linters.gate
+) -> ExtractionResult:
+    """Extract data with self-correction and model escalation.
+
+    Implements the retry flow:
+    1. Initial Flash attempt
+    2. Classify errors and retry with Flash (syntax/HTTP errors)
+    3. Escalate to Pro on semantic errors (Gate Linter failures)
+    4. Return FAILED if all retries exhausted
+
+    Args:
+        gemini_input: Prepared input with markdown and optional image
+        schema_class: Pydantic schema class for validation
+        gemini_client: GeminiClient instance for API calls
+        budget_manager: BudgetManager for Pro budget tracking
+        gate_linter: GateLinter for immutable validation
+
+    Returns:
+        ExtractionResult with validated schema or failure details
+
+    Examples:
+        >>> from core.gemini import GeminiClient
+        >>> from core.budget import BudgetManager
+        >>> from core.linters.gate import GateLinter
+        >>> from core.schemas import DeliveryNoteV2
+        >>>
+        >>> client = GeminiClient(api_key="key")
+        >>> budget = BudgetManager(firestore_client)
+        >>> linter = GateLinter()
+        >>>
+        >>> input_data = GeminiInput(markdown="# Invoice...", include_image=False)
+        >>> result = extract_with_retry(input_data, DeliveryNoteV2, client, budget, linter)
+        >>> assert result.status == "SUCCESS"
+        >>> assert result.schema is not None
+    """
+    from core.gemini import SyntaxValidationError as GeminiSyntaxError
+    from core.prompts import build_extraction_prompt
+
+    attempts: list[ExtractionAttempt] = []
+    flash_attempt_count = 0
+    last_gate_errors: list[str] = []
+
+    logger.info(
+        "starting_extraction",
+        schema=schema_class.__name__,
+        include_image=gemini_input.include_image,
+    )
+
+    # === Phase 1: Flash Attempts ===
+    while flash_attempt_count < FLASH_SYNTAX_RETRIES + 1:  # Initial + 2 retries
+        try:
+            flash_attempt_count += 1
+
+            # Build prompt with previous attempt context
+            previous_attempts = [{"data": a.data, "error": a.error} for a in attempts if a.error]
+            prompt = build_extraction_prompt(
+                gemini_input=gemini_input,
+                schema_class=schema_class,
+                previous_attempts=previous_attempts if previous_attempts else None,
+                errors=last_gate_errors if last_gate_errors else None,
+            )
+
+            logger.info("calling_flash", attempt=flash_attempt_count)
+
+            # Decode image if present
+            image_bytes = None
+            if gemini_input.include_image and gemini_input.image_base64:
+                image_bytes = base64.b64decode(gemini_input.image_base64)
+
+            # Call Flash model
+            response = gemini_client.call_flash(prompt=prompt, image=image_bytes)
+
+            # Record attempt
+            attempt = ExtractionAttempt(
+                model="flash",
+                prompt_tokens=response.input_tokens,
+                output_tokens=response.output_tokens,
+                cost_usd=response.cost_usd,
+                data=response.data,
+            )
+            attempts.append(attempt)
+
+            # Validate with Gate Linter
+            gate_result = gate_linter.validate(response.data)
+
+            if not gate_result.passed:
+                # Semantic error - Gate Linter failed
+                last_gate_errors = gate_result.errors
+                error_msg = f"Gate Linter failed: {', '.join(gate_result.errors)}"
+                attempt.error = error_msg
+                logger.warning(
+                    "gate_linter_failed",
+                    attempt=flash_attempt_count,
+                    errors=gate_result.errors,
+                )
+
+                # Classify as semantic error and check if we should escalate
+                error_type = "semantic"
+                next_model = select_model(
+                    error_type=error_type,
+                    flash_attempts=flash_attempt_count,
+                    pro_budget_available=budget_manager.check_pro_budget(),
+                )
+
+                if next_model == "pro":
+                    # Escalate to Pro
+                    break
+                elif next_model == "human":
+                    # Exhausted retries
+                    logger.error(
+                        "flash_retries_exhausted",
+                        attempts=flash_attempt_count,
+                        errors=last_gate_errors,
+                    )
+                    return ExtractionResult(
+                        schema=None,
+                        status="FAILED",
+                        attempts=attempts,
+                        final_model="flash",
+                        total_cost=sum(a.cost_usd for a in attempts),
+                        reason=f"Flash retries exhausted: {error_msg}",
+                    )
+                # Otherwise retry with Flash
+                continue
+
+            # Validate with Pydantic schema
+            try:
+                validated_schema = schema_class(**response.data)
+                logger.info(
+                    "extraction_success",
+                    model="flash",
+                    attempts=flash_attempt_count,
+                    cost=sum(a.cost_usd for a in attempts),
+                )
+                return ExtractionResult(
+                    schema=validated_schema,
+                    status="SUCCESS",
+                    attempts=attempts,
+                    final_model="flash",
+                    total_cost=sum(a.cost_usd for a in attempts),
+                )
+            except Exception as e:
+                # Pydantic validation failed
+                attempt.error = f"Schema validation failed: {e}"
+                logger.error("schema_validation_failed", error=str(e))
+                # Treat as semantic error and escalate
+                break
+
+        except GeminiSyntaxError as e:
+            # Syntax error (invalid JSON)
+            attempt = ExtractionAttempt(
+                model="flash",
+                prompt_tokens=2000,  # Estimate
+                output_tokens=100,
+                cost_usd=0.0,
+                error=f"Syntax error: {e}",
+            )
+            attempts.append(attempt)
+
+            logger.warning(
+                "syntax_error",
+                attempt=flash_attempt_count,
+                error=str(e),
+            )
+
+            # Check if we should retry
+            error_type = "syntax"
+            next_model = select_model(
+                error_type=error_type,
+                flash_attempts=flash_attempt_count,
+                pro_budget_available=False,  # Don't escalate to Pro for syntax errors
+            )
+
+            if next_model == "human":
+                return ExtractionResult(
+                    schema=None,
+                    status="FAILED",
+                    attempts=attempts,
+                    final_model="flash",
+                    total_cost=sum(a.cost_usd for a in attempts),
+                    reason=f"Syntax errors exhausted: {e}",
+                )
+            # Otherwise retry with Flash
+            continue
+
+        except Exception as e:
+            # Unexpected error
+            logger.error("unexpected_error", error=str(e), type=type(e).__name__)
+            attempt = ExtractionAttempt(
+                model="flash",
+                prompt_tokens=2000,
+                output_tokens=0,
+                cost_usd=0.0,
+                error=f"Unexpected error: {e}",
+            )
+            attempts.append(attempt)
+            return ExtractionResult(
+                schema=None,
+                status="FAILED",
+                attempts=attempts,
+                final_model="flash",
+                total_cost=sum(a.cost_usd for a in attempts),
+                reason=f"Unexpected error: {e}",
+            )
+
+    # === Phase 2: Pro Escalation ===
+    logger.info("escalating_to_pro", flash_attempts=flash_attempt_count)
+
+    # Check Pro budget
+    if not budget_manager.check_pro_budget():
+        logger.error("pro_budget_exhausted")
+        return ExtractionResult(
+            schema=None,
+            status="FAILED",
+            attempts=attempts,
+            final_model="flash",
+            total_cost=sum(a.cost_usd for a in attempts),
+            reason="Pro budget exhausted",
+        )
+
+    try:
+        # Increment Pro usage
+        budget_manager.increment_pro_usage()
+
+        # Build prompt with escalation note
+        previous_attempts = [{"data": a.data, "error": a.error} for a in attempts if a.error]
+        prompt = build_extraction_prompt(
+            gemini_input=gemini_input,
+            schema_class=schema_class,
+            previous_attempts=previous_attempts,
+            errors=last_gate_errors if last_gate_errors else None,
+        )
+        prompt += (
+            "\n\nNOTE: Previous attempts with Flash failed. "
+            "Apply deep reasoning and careful analysis."
+        )
+
+        # Decode image if present
+        image_bytes = None
+        if gemini_input.include_image and gemini_input.image_base64:
+            image_bytes = base64.b64decode(gemini_input.image_base64)
+
+        # Call Pro model
+        logger.info("calling_pro")
+        response = gemini_client.call_pro(prompt=prompt, image=image_bytes)
+
+        # Record attempt
+        attempt = ExtractionAttempt(
+            model="pro",
+            prompt_tokens=response.input_tokens,
+            output_tokens=response.output_tokens,
+            cost_usd=response.cost_usd,
+            data=response.data,
+        )
+        attempts.append(attempt)
+
+        # Validate with Gate Linter
+        gate_result = gate_linter.validate(response.data)
+
+        if not gate_result.passed:
+            # Pro also failed Gate Linter
+            attempt.error = f"Gate Linter failed: {', '.join(gate_result.errors)}"
+            logger.error(
+                "pro_gate_linter_failed",
+                errors=gate_result.errors,
+            )
+            return ExtractionResult(
+                schema=None,
+                status="FAILED",
+                attempts=attempts,
+                final_model="pro",
+                total_cost=sum(a.cost_usd for a in attempts),
+                reason=f"Pro failed Gate Linter: {', '.join(gate_result.errors)}",
+            )
+
+        # Validate with Pydantic schema
+        try:
+            validated_schema = schema_class(**response.data)
+            logger.info(
+                "extraction_success",
+                model="pro",
+                total_attempts=len(attempts),
+                cost=sum(a.cost_usd for a in attempts),
+            )
+            return ExtractionResult(
+                schema=validated_schema,
+                status="SUCCESS",
+                attempts=attempts,
+                final_model="pro",
+                total_cost=sum(a.cost_usd for a in attempts),
+            )
+        except Exception as e:
+            # Pydantic validation failed
+            attempt.error = f"Schema validation failed: {e}"
+            logger.error("pro_schema_validation_failed", error=str(e))
+            return ExtractionResult(
+                schema=None,
+                status="FAILED",
+                attempts=attempts,
+                final_model="pro",
+                total_cost=sum(a.cost_usd for a in attempts),
+                reason=f"Pro schema validation failed: {e}",
+            )
+
+    except GeminiSyntaxError as e:
+        # Pro returned invalid JSON (rare)
+        logger.error("pro_syntax_error", error=str(e))
+        attempt = ExtractionAttempt(
+            model="pro",
+            prompt_tokens=10000,
+            output_tokens=100,
+            cost_usd=0.0,
+            error=f"Syntax error: {e}",
+        )
+        attempts.append(attempt)
+        return ExtractionResult(
+            schema=None,
+            status="FAILED",
+            attempts=attempts,
+            final_model="pro",
+            total_cost=sum(a.cost_usd for a in attempts),
+            reason=f"Pro syntax error: {e}",
+        )
+
+    except Exception as e:
+        # Unexpected error during Pro call
+        logger.error("pro_unexpected_error", error=str(e), type=type(e).__name__)
+        attempt = ExtractionAttempt(
+            model="pro",
+            prompt_tokens=10000,
+            output_tokens=0,
+            cost_usd=0.0,
+            error=f"Unexpected error: {e}",
+        )
+        attempts.append(attempt)
+        return ExtractionResult(
+            schema=None,
+            status="FAILED",
+            attempts=attempts,
+            final_model="pro",
+            total_cost=sum(a.cost_usd for a in attempts),
+            reason=f"Pro unexpected error: {e}",
+        )
