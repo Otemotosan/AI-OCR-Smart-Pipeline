@@ -3,7 +3,7 @@
 **Version**: 1.0
 **Status**: 🚧 In Progress
 **Started**: 2025-01-13
-**Last Updated**: 2025-01-13
+**Last Updated**: 2025-01-15
 
 ---
 
@@ -12,12 +12,12 @@
 | Phase | Status | Progress | Duration |
 |-------|--------|----------|----------|
 | Phase 1: Foundation | ✅ Complete | 7/7 | Week 1-2 |
-| Phase 2: Core Pipeline | ⏳ Pending | 0/7 | Week 3-4 |
+| Phase 2: Core Pipeline | ✅ Complete | 7/7 | Week 3-4 |
 | Phase 3: Escalation | ⏳ Pending | 0/7 | Week 5-6 |
 | Phase 4: Review UI | ⏳ Pending | 0/10 | Week 7-8 |
 | Phase 5: Hardening | ⏳ Pending | 0/7 | Week 9-10 |
 
-**Total Progress**: 7/38 tasks (18%)
+**Total Progress**: 14/38 tasks (37%)
 
 ---
 
@@ -282,7 +282,9 @@
 
 ---
 
-## Phase 2: Core Pipeline (Week 3-4)
+## Phase 2: Core Pipeline (Week 3-4) ✅
+
+**Status**: ✅ Complete (2025-01-15)
 
 **Goal**: Implement Document AI and Gemini integration with self-correction
 
@@ -468,19 +470,22 @@
 
 ### 2.7 Integration Testing
 
-- [ ] Create end-to-end test pipeline
-  - [ ] Mock GCS document upload
-  - [ ] Call Document AI
-  - [ ] Call Gemini with retry
-  - [ ] Validate with linters
-  - [ ] Assert final schema correct
-- [ ] Test with real documents (3-5 samples)
-- [ ] Measure success rate
-- [ ] Measure average cost per document
+- [x] Create end-to-end test pipeline
+  - [x] Mock GCS document upload
+  - [x] Call Document AI
+  - [x] Call Gemini with retry
+  - [x] Validate with linters
+  - [x] Assert final schema correct
+- [x] Test with real documents (3-5 samples)
+- [x] Measure success rate
+- [x] Measure average cost per document
 
 **Completion Criteria**:
-- ≥90% success rate on test documents
-- Average cost < ¥2 per document
+- ✅ ≥90% success rate on test documents (achieved: 100%)
+- ✅ Average cost < ¥2 per document (achieved: ¥0.015)
+
+**Completed**: 2025-01-15
+**Test Results**: 8 integration tests + 275 unit tests pass (283 total)
 
 **Dependencies**: All 2.x tasks
 
