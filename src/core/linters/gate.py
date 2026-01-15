@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from datetime import date, datetime
+from typing import ClassVar
 
 from core.schemas import SCHEMA_REGISTRY
 
@@ -40,7 +41,7 @@ class GateLinter:
     ID_PATTERN = re.compile(r"^[A-Za-z0-9\-_]{6,20}$")
 
     # Document-type specific ID field names
-    ID_FIELD_MAP = {
+    ID_FIELD_MAP: ClassVar[dict[str, str]] = {
         "delivery_note": "management_id",
         "invoice": "invoice_number",
     }

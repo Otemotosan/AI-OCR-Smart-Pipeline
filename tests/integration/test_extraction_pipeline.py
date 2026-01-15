@@ -10,14 +10,11 @@ Measures:
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
-import pytest
-
-from core.extraction import ExtractionResult, GeminiInput, extract_with_retry
+from core.extraction import GeminiInput, extract_with_retry
 from core.linters.gate import GateLinter
 from core.schemas import DeliveryNoteV2, InvoiceV1
-
 
 # ============================================================
 # Test Data
@@ -387,7 +384,7 @@ class TestExtractionPipeline:
         ), f"Average cost ¥{avg_cost_jpy:.2f} exceeds ¥2.00 target"
 
         # Print metrics for visibility
-        print(f"\n=== Integration Test Metrics ===")
+        print("\n=== Integration Test Metrics ===")
         print(f"Documents tested: {len(results)}")
         print(f"Success rate: {success_rate:.1%} (target: ≥90%)")
         print(f"Average cost: ¥{avg_cost_jpy:.4f} (target: <¥2.00)")
