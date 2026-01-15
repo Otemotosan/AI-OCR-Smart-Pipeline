@@ -15,7 +15,10 @@
       "Bash(python fix_sim117.py:*)",
       "Bash(del fix_sim117.py)",
       "Bash(python -m black:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(set:*)",
+      "Bash(python:*)",
+      "Bash(black:*)"
     ]
   }
 }
