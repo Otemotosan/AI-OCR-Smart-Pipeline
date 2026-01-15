@@ -294,27 +294,29 @@
 
 **📖 Read First**: `docs/specs/04_confidence.md` §1-2
 
-- [ ] Implement `DocumentAIClient` class
-  - [ ] `process_document(gcs_uri: str) -> DocumentAIResult`
-  - [ ] `extract_markdown(result) -> str`
-  - [ ] `calculate_confidence(result) -> float`
-  - [ ] `detect_document_type(result) -> str | None`
-- [ ] Create `DocumentAIResult` dataclass
-  - [ ] `markdown: str`
-  - [ ] `confidence: float`
-  - [ ] `page_count: int`
-  - [ ] `detected_type: str | None`
-- [ ] Add fragile document type detection
-  - [ ] `FRAGILE_TYPES = {"fax", "handwritten", "thermal_receipt", "carbon_copy"}`
-- [ ] Write integration tests
-  - [ ] Test with sample PDFs
-  - [ ] Test confidence calculation
-  - [ ] Test type detection
+- [x] Implement `DocumentAIClient` class
+  - [x] `process_document(gcs_uri: str) -> DocumentAIResult`
+  - [x] `extract_markdown(result) -> str`
+  - [x] `calculate_confidence(result) -> float`
+  - [x] `detect_document_type(result) -> str | None`
+- [x] Create `DocumentAIResult` dataclass
+  - [x] `markdown: str`
+  - [x] `confidence: float`
+  - [x] `page_count: int`
+  - [x] `detected_type: str | None`
+- [x] Add fragile document type detection
+  - [x] `FRAGILE_TYPES = {"fax", "handwritten", "thermal_receipt", "carbon_copy"}`
+- [x] Write integration tests
+  - [x] Test with sample PDFs
+  - [x] Test confidence calculation
+  - [x] Test type detection
 
 **Completion Criteria**:
-- Can process PDF from GCS
-- Returns structured markdown
-- Confidence scores accurate
+- ✅ Can process PDF from GCS
+- ✅ Returns structured markdown
+- ✅ Confidence scores accurate
+
+**Completed**: 2025-01-13
 
 **Dependencies**: None (GCP credentials needed)
 
@@ -324,22 +326,24 @@
 
 **📖 Read First**: `docs/specs/04_confidence.md` §4
 
-- [ ] Define `MULTIMODAL_SYSTEM_PROMPT`
-  - [ ] Vision/Markdown priority rules
-  - [ ] Output JSON schema instructions
-  - [ ] Confidence scoring guidelines
-- [ ] Define `MARKDOWN_ONLY_PROMPT`
-- [ ] Define `RETRY_PROMPT_TEMPLATE`
-  - [ ] Include previous error message
-  - [ ] Include linter feedback
-- [ ] Add few-shot examples (3-5 golden examples)
-- [ ] Write tests
-  - [ ] Test prompt rendering
-  - [ ] Test variable substitution
+- [x] Define `MULTIMODAL_SYSTEM_PROMPT`
+  - [x] Vision/Markdown priority rules
+  - [x] Output JSON schema instructions
+  - [x] Confidence scoring guidelines
+- [x] Define `MARKDOWN_ONLY_PROMPT`
+- [x] Define `RETRY_PROMPT_TEMPLATE`
+  - [x] Include previous error message
+  - [x] Include linter feedback
+- [x] Add few-shot examples (3-5 golden examples)
+- [x] Write tests
+  - [x] Test prompt rendering
+  - [x] Test variable substitution
 
 **Completion Criteria**:
-- Prompts are complete and tested
-- Few-shot examples included
+- ✅ Prompts are complete and tested
+- ✅ Few-shot examples included
+
+**Completed**: 2025-01-14
 
 **Dependencies**: 1.2 (schemas.py)
 
@@ -349,23 +353,25 @@
 
 **📖 Read First**: `docs/specs/04_confidence.md` §3
 
-- [ ] Implement `should_attach_image()` function
-  - [ ] Check confidence < 0.85
-  - [ ] Check gate_failed flag
-  - [ ] Check retry attempt > 0
-  - [ ] Check doc_type in FRAGILE_TYPES
-- [ ] Return tuple `(should_attach: bool, reason: str)`
-- [ ] Add constants
-  - [ ] `CONFIDENCE_THRESHOLD = 0.85`
-- [ ] Write unit tests
-  - [ ] Test each condition independently
-  - [ ] Test combined conditions
-  - [ ] Test edge cases (confidence = 0.85)
+- [x] Implement `should_attach_image()` function
+  - [x] Check confidence < 0.85
+  - [x] Check gate_failed flag
+  - [x] Check retry attempt > 0
+  - [x] Check doc_type in FRAGILE_TYPES
+- [x] Return tuple `(should_attach: bool, reason: str)`
+- [x] Add constants
+  - [x] `CONFIDENCE_THRESHOLD = 0.85`
+- [x] Write unit tests
+  - [x] Test each condition independently
+  - [x] Test combined conditions
+  - [x] Test edge cases (confidence = 0.85)
 
 **Completion Criteria**:
-- Logic matches decision table in spec
-- All conditions tested
-- Reason logging included
+- ✅ Logic matches decision table in spec
+- ✅ All conditions tested
+- ✅ Reason logging included
+
+**Completed**: 2025-01-14
 
 **Dependencies**: 2.1 (docai.py)
 
@@ -375,29 +381,31 @@
 
 **📖 Read First**: `docs/specs/02_retry.md` §2-3
 
-- [ ] Implement `classify_error()` function
-  - [ ] Detect syntax errors (JSON parse, schema mismatch)
-  - [ ] Detect semantic errors (Gate Linter failed)
-  - [ ] Detect HTTP errors (429, 5xx)
-- [ ] Implement `select_model()` function
-  - [ ] Syntax error → Flash retry (max 2)
-  - [ ] HTTP 429 → Flash retry (max 5, exponential backoff)
-  - [ ] HTTP 5xx → Flash retry (max 3, fixed interval)
-  - [ ] Semantic error → Pro escalation (if budget available)
-  - [ ] Pro failure → Human review
-- [ ] Add constants
-  - [ ] `FLASH_SYNTAX_RETRIES = 2`
-  - [ ] `FLASH_HTTP429_RETRIES = 5`
-  - [ ] `FLASH_HTTP5XX_RETRIES = 3`
-- [ ] Write unit tests
-  - [ ] Test error classification
-  - [ ] Test model selection for each error type
-  - [ ] Test budget checks
+- [x] Implement `classify_error()` function
+  - [x] Detect syntax errors (JSON parse, schema mismatch)
+  - [x] Detect semantic errors (Gate Linter failed)
+  - [x] Detect HTTP errors (429, 5xx)
+- [x] Implement `select_model()` function
+  - [x] Syntax error → Flash retry (max 2)
+  - [x] HTTP 429 → Flash retry (max 5, exponential backoff)
+  - [x] HTTP 5xx → Flash retry (max 3, fixed interval)
+  - [x] Semantic error → Pro escalation (if budget available)
+  - [x] Pro failure → Human review
+- [x] Add constants
+  - [x] `FLASH_SYNTAX_RETRIES = 2`
+  - [x] `FLASH_HTTP429_RETRIES = 5`
+  - [x] `FLASH_HTTP5XX_RETRIES = 3`
+- [x] Write unit tests
+  - [x] Test error classification
+  - [x] Test model selection for each error type
+  - [x] Test budget checks
 
 **Completion Criteria**:
-- Matches decision table in spec
-- Budget enforcement working
-- Tests cover all error types
+- ✅ Matches decision table in spec
+- ✅ Budget enforcement working
+- ✅ Tests cover all error types
+
+**Completed**: 2025-01-14
 
 **Dependencies**: 1.6 (budget.py)
 
@@ -407,27 +415,29 @@
 
 **📖 Read First**: `docs/specs/02_retry.md`
 
-- [ ] Implement `GeminiClient` class
-  - [ ] `call_flash(prompt: str, image: bytes | None) -> dict`
-  - [ ] `call_pro(prompt: str, image: bytes | None) -> dict`
-  - [ ] `parse_json_response(response: str) -> dict`
-- [ ] Add retry logic with Tenacity
-  - [ ] Exponential backoff for 429
-  - [ ] Fixed retry for 5xx
-- [ ] Add structured logging
-  - [ ] Log model used
-  - [ ] Log token count
-  - [ ] Log cost estimate
-- [ ] Write integration tests
-  - [ ] Test Flash call
-  - [ ] Test Pro call
-  - [ ] Test retry behavior
-  - [ ] Mock API responses
+- [x] Implement `GeminiClient` class
+  - [x] `call_flash(prompt: str, image: bytes | None) -> dict`
+  - [x] `call_pro(prompt: str, image: bytes | None) -> dict`
+  - [x] `parse_json_response(response: str) -> dict`
+- [x] Add retry logic with Tenacity
+  - [x] Exponential backoff for 429
+  - [x] Fixed retry for 5xx
+- [x] Add structured logging
+  - [x] Log model used
+  - [x] Log token count
+  - [x] Log cost estimate
+- [x] Write integration tests
+  - [x] Test Flash call
+  - [x] Test Pro call
+  - [x] Test retry behavior
+  - [x] Mock API responses
 
 **Completion Criteria**:
-- Can call both Flash and Pro
-- Retry logic working
-- Costs logged accurately
+- ✅ Can call both Flash and Pro
+- ✅ Retry logic working
+- ✅ Costs logged accurately
+
+**Completed**: 2025-01-14
 
 **Dependencies**: 2.2 (prompts.py), 1.6 (budget.py)
 
@@ -437,32 +447,34 @@
 
 **📖 Read First**: `docs/specs/02_retry.md` §5
 
-- [ ] Implement `extract_with_retry()` function
-  - [ ] Initial Flash attempt
-  - [ ] Classify error on failure
-  - [ ] Select model based on error type
-  - [ ] Attach image if conditions met
-  - [ ] Retry with updated prompt
-  - [ ] Escalate to Pro if semantic error
-  - [ ] Return FAILED status if all retries exhausted
-- [ ] Add `ExtractionResult` dataclass
-  - [ ] `schema: BaseDocumentSchema | None`
-  - [ ] `status: Literal["SUCCESS", "FAILED"]`
-  - [ ] `attempts: list[dict]` (audit trail)
-  - [ ] `final_model: str`
-- [ ] Write integration tests
-  - [ ] Test successful first attempt
-  - [ ] Test syntax error → Flash retry → success
-  - [ ] Test semantic error → Pro escalation → success
-  - [ ] Test exhausted retries → FAILED
-- [ ] Add cost tracking
-  - [ ] Log token usage per attempt
-  - [ ] Calculate total cost
+- [x] Implement `extract_with_retry()` function
+  - [x] Initial Flash attempt
+  - [x] Classify error on failure
+  - [x] Select model based on error type
+  - [x] Attach image if conditions met
+  - [x] Retry with updated prompt
+  - [x] Escalate to Pro if semantic error
+  - [x] Return FAILED status if all retries exhausted
+- [x] Add `ExtractionResult` dataclass
+  - [x] `schema: BaseDocumentSchema | None`
+  - [x] `status: Literal["SUCCESS", "FAILED"]`
+  - [x] `attempts: list[dict]` (audit trail)
+  - [x] `final_model: str`
+- [x] Write integration tests
+  - [x] Test successful first attempt
+  - [x] Test syntax error → Flash retry → success
+  - [x] Test semantic error → Pro escalation → success
+  - [x] Test exhausted retries → FAILED
+- [x] Add cost tracking
+  - [x] Log token usage per attempt
+  - [x] Calculate total cost
 
 **Completion Criteria**:
-- Self-correction loop working end-to-end
-- All retry paths tested
-- Audit trail complete
+- ✅ Self-correction loop working end-to-end
+- ✅ All retry paths tested
+- ✅ Audit trail complete
+
+**Completed**: 2025-01-15
 
 **Dependencies**: 2.3, 2.4, 2.5
 
