@@ -379,9 +379,7 @@ class TestExtractionPipeline:
 
         # Verify completion criteria
         assert success_rate >= 0.90, f"Success rate {success_rate:.2%} below 90% target"
-        assert (
-            avg_cost_jpy < 2.0
-        ), f"Average cost ¥{avg_cost_jpy:.2f} exceeds ¥2.00 target"
+        assert avg_cost_jpy < 2.0, f"Average cost ¥{avg_cost_jpy:.2f} exceeds ¥2.00 target"
 
         # Print metrics for visibility
         print("\n=== Integration Test Metrics ===")
