@@ -28,16 +28,22 @@ class GateLinter:
     Pure functions only — no side effects.
 
     Rules:
-        G1: management_id non-empty
-        G2: management_id format valid (6-20 alphanumeric + hyphens/underscores)
+        G1: Document ID non-empty (management_id for delivery_note, invoice_number for invoice)
+        G2: Document ID format valid (6-20 alphanumeric + hyphens/underscores)
         G3: company_name non-empty
         G4: issue_date valid date
         G5: issue_date not future
         G6: document_type in registry
     """
 
-    # Management ID pattern: 6-20 alphanumeric with hyphens/underscores
+    # Document ID pattern: 6-20 alphanumeric with hyphens/underscores
     ID_PATTERN = re.compile(r"^[A-Za-z0-9\-_]{6,20}$")
+
+    # Document-type specific ID field names
+    ID_FIELD_MAP = {
+        "delivery_note": "management_id",
+        "invoice": "invoice_number",
+    }
 
     @classmethod
     def validate(cls, data: dict) -> GateLinterResult:
@@ -64,15 +70,19 @@ class GateLinter:
         """
         errors = []
 
-        # G1: management_id required
-        management_id = data.get("management_id", "")
-        if not management_id or not str(management_id).strip():
-            errors.append("management_id: Required field is empty")
+        # Determine which ID field to check based on document_type
+        document_type = data.get("document_type", "")
+        id_field = cls.ID_FIELD_MAP.get(document_type, "management_id")
 
-        # G2: management_id format
-        elif not cls.ID_PATTERN.match(str(management_id)):
+        # G1: Document ID required
+        doc_id = data.get(id_field, "")
+        if not doc_id or not str(doc_id).strip():
+            errors.append(f"{id_field}: Required field is empty")
+
+        # G2: Document ID format
+        elif not cls.ID_PATTERN.match(str(doc_id)):
             errors.append(
-                f"management_id: Invalid format '{management_id}' "
+                f"{id_field}: Invalid format '{doc_id}' "
                 f"(expected 6-20 alphanumeric characters, hyphens, underscores)"
             )
 

@@ -32,7 +32,7 @@ class TestGateLinterHappyPath:
     def test_valid_invoice_passes(self) -> None:
         """Test that valid invoice data passes all rules."""
         data = {
-            "management_id": "INV-2025-001",
+            "invoice_number": "INV-2025-001",
             "company_name": "テスト株式会社",
             "issue_date": date.today(),
             "document_type": "invoice",
