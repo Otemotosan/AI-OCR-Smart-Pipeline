@@ -105,15 +105,28 @@ class GeminiResponse:
 # ============================================================
 
 # Import exceptions for retry logic
+# Use fallback classes that are always valid Exception subclasses
+# This ensures tenacity works even if google.api_core is mocked in tests
+class _ResourceExhaustedError(Exception):
+    """Fallback exception for rate limiting (HTTP 429)."""
+
+
+class _ServiceUnavailableError(Exception):
+    """Fallback exception for transient errors (HTTP 5xx)."""
+
+
 try:
     from google.api_core.exceptions import ResourceExhausted, ServiceUnavailable
-except ImportError:
-    # Fallback for testing without google-api-core
-    class ResourceExhausted(Exception):  # type: ignore[no-redef]  # noqa: N818
-        """Fallback exception for testing."""
 
-    class ServiceUnavailable(Exception):  # type: ignore[no-redef]  # noqa: N818
-        """Fallback exception for testing."""
+    # Verify they are actual exception classes (not mocks from tests)
+    if not isinstance(ResourceExhausted, type) or not issubclass(ResourceExhausted, Exception):
+        ResourceExhausted = _ResourceExhaustedError  # type: ignore[misc]
+    if not isinstance(ServiceUnavailable, type) or not issubclass(ServiceUnavailable, Exception):
+        ServiceUnavailable = _ServiceUnavailableError  # type: ignore[misc]
+except (ImportError, TypeError):
+    # Fallback for testing without google-api-core
+    ResourceExhausted = _ResourceExhaustedError  # type: ignore[misc]
+    ServiceUnavailable = _ServiceUnavailableError  # type: ignore[misc]
 
 
 # Rate limit retry (HTTP 429)

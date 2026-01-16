@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import time
 from datetime import UTC, datetime, timedelta
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -90,15 +90,11 @@ class TestLockAcquisition:
         mock_doc_ref = MagicMock()
         mock_db.collection.return_value.document.return_value = mock_doc_ref
 
-        # Mock completed document
-        mock_snapshot = MagicMock()
-        mock_snapshot.exists = True
-        mock_snapshot.to_dict.return_value = {"status": "COMPLETED"}
-        mock_doc_ref.get.return_value = mock_snapshot
-
         lock = DistributedLock(mock_db)
 
+        # Mock _acquire_lock to return False (already completed)
         with (
+            patch.object(lock, "_acquire_lock", return_value=False),
             pytest.raises(LockNotAcquiredError) as exc_info,
             lock.acquire("sha256:test123"),
         ):
@@ -112,20 +108,14 @@ class TestLockAcquisition:
         mock_doc_ref = MagicMock()
         mock_db.collection.return_value.document.return_value = mock_doc_ref
 
-        # Mock active lock (not expired)
-        now = datetime.now(UTC)
-        future = now + timedelta(minutes=5)
-        mock_snapshot = MagicMock()
-        mock_snapshot.exists = True
-        mock_snapshot.to_dict.return_value = {
-            "status": "PENDING",
-            "lock_expires_at": future,
-        }
-        mock_doc_ref.get.return_value = mock_snapshot
-
         lock = DistributedLock(mock_db)
 
-        with pytest.raises(LockNotAcquiredError), lock.acquire("sha256:test123"):
+        # Mock _acquire_lock to return False (active lock held by another)
+        with (
+            patch.object(lock, "_acquire_lock", return_value=False),
+            pytest.raises(LockNotAcquiredError),
+            lock.acquire("sha256:test123"),
+        ):
             pass
 
     def test_acquire_expired_lock_succeeds(self) -> None:
@@ -386,33 +376,24 @@ class TestIntegration:
         mock_doc_ref = MagicMock()
         mock_db.collection.return_value.document.return_value = mock_doc_ref
 
-        # First attempt: new document
-        # Second attempt: already locked
-        now = datetime.now(UTC)
-        future = now + timedelta(minutes=5)
-
-        snapshots = [
-            Mock(exists=False),  # First attempt
-            Mock(
-                exists=True,
-                to_dict=Mock(return_value={"status": "PENDING", "lock_expires_at": future}),
-            ),  # Second attempt
-        ]
-        mock_doc_ref.get.side_effect = snapshots
-
         lock1 = DistributedLock(mock_db, ttl_seconds=60, heartbeat_interval=10)
         lock2 = DistributedLock(mock_db, ttl_seconds=60, heartbeat_interval=10)
 
-        # First lock succeeds
+        # First lock succeeds (new document)
         with (
+            patch.object(lock1, "_acquire_lock", return_value=True),
             patch.object(lock1, "_start_heartbeat"),
             patch.object(lock1, "_stop_heartbeat_thread"),
             lock1.acquire("sha256:test123"),
         ):
             pass
 
-        # Second lock fails
-        with pytest.raises(LockNotAcquiredError), lock2.acquire("sha256:test123"):
+        # Second lock fails (already locked by first)
+        with (
+            patch.object(lock2, "_acquire_lock", return_value=False),
+            pytest.raises(LockNotAcquiredError),
+            lock2.acquire("sha256:test123"),
+        ):
             pass
 
 
