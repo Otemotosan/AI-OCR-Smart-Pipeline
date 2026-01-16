@@ -405,7 +405,7 @@ class BigQueryClient:
             SELECT *
             FROM `{self.config.extractions_table_id}`
             WHERE document_date BETWEEN @start_date AND @end_date
-        """  # noqa: S608
+        """  # nosec B608 # noqa: S608
 
         if document_type:
             query += " AND document_type = @document_type"
@@ -471,7 +471,7 @@ class BigQueryClient:
                 AVG(processing_duration_ms) as avg_duration_ms
             FROM `{self.config.extractions_table_id}`
             WHERE document_date BETWEEN @start_date AND @end_date
-        """  # noqa: S608
+        """  # nosec B608 # noqa: S608
 
         job_config = bigquery.QueryJobConfig(
             query_parameters=[
@@ -527,7 +527,7 @@ class BigQueryClient:
             FROM `{self.config.corrections_table_id}`
             WHERE document_id = @document_id
             ORDER BY corrected_at ASC
-        """  # noqa: S608
+        """  # nosec B608 # noqa: S608
 
         job_config = bigquery.QueryJobConfig(
             query_parameters=[

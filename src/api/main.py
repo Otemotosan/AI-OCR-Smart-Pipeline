@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "main:app",
-        host="0.0.0.0",  # noqa: S104 - Required for Cloud Run container binding
+        host="0.0.0.0",  # nosec B104 # noqa: S104 - Required for Cloud Run container binding
         port=8080,
         reload=True,
         log_level="info",
