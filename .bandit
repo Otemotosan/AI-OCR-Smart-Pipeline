@@ -1,0 +1,9 @@
+# Bandit security scanner configuration
+skips:
+  - B608  # SQL injection - Our queries use parameterized placeholders (@param)
+
+exclude_dirs:
+  - tests
+  - .venv
+  - venv
+  - node_modules

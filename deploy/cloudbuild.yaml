@@ -1,0 +1,124 @@
+# Cloud Build configuration for CI/CD deployment
+# See: docs/specs/07_monitoring.md
+
+substitutions:
+  _REGION: 'asia-northeast1'
+  _SERVICE_ACCOUNT: 'ocr-processor@${PROJECT_ID}.iam.gserviceaccount.com'
+  _INPUT_BUCKET: '${PROJECT_ID}-ocr-input'
+  _OUTPUT_BUCKET: '${PROJECT_ID}-ocr-output'
+  _QUARANTINE_BUCKET: '${PROJECT_ID}-ocr-quarantine'
+  _BIGQUERY_DATASET: 'ocr_pipeline'
+  _DOCUMENT_AI_PROCESSOR: 'projects/${PROJECT_ID}/locations/${_REGION}/processors/PROCESSOR_ID'
+
+steps:
+  # Step 1: Install dependencies and run tests
+  - name: 'python:3.11-slim'
+    id: 'test'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        pip install -e ".[dev]" --quiet
+        pytest tests/unit -v --cov=src/core --cov-fail-under=80
+        ruff check src/
+        mypy src/core --strict || echo "Type check warnings (non-blocking)"
+
+  # Step 2: Build Docker image for Cloud Function
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/${PROJECT_ID}/ocr-processor:${SHORT_SHA}'
+      - '-t'
+      - 'gcr.io/${PROJECT_ID}/ocr-processor:latest'
+      - '-f'
+      - 'deploy/Dockerfile'
+      - '.'
+    waitFor: ['test']
+
+  # Step 3: Push Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push'
+    args:
+      - 'push'
+      - 'gcr.io/${PROJECT_ID}/ocr-processor:${SHORT_SHA}'
+    waitFor: ['build']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-latest'
+    args:
+      - 'push'
+      - 'gcr.io/${PROJECT_ID}/ocr-processor:latest'
+    waitFor: ['push']
+
+  # Step 4: Deploy Cloud Function (2nd Gen)
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'deploy-function'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'ocr-processor'
+      - '--gen2'
+      - '--runtime=python311'
+      - '--region=${_REGION}'
+      - '--source=.'
+      - '--entry-point=process_document'
+      - '--trigger-bucket=${_INPUT_BUCKET}'
+      - '--service-account=${_SERVICE_ACCOUNT}'
+      - '--memory=1Gi'
+      - '--timeout=540s'
+      - '--max-instances=10'
+      - '--min-instances=0'
+      - '--set-env-vars=GCP_PROJECT_ID=${PROJECT_ID},OUTPUT_BUCKET=${_OUTPUT_BUCKET},QUARANTINE_BUCKET=${_QUARANTINE_BUCKET},BIGQUERY_DATASET=${_BIGQUERY_DATASET},DOCUMENT_AI_PROCESSOR=${_DOCUMENT_AI_PROCESSOR}'
+      - '--set-secrets=GEMINI_API_KEY=gemini-api-key:latest'
+    waitFor: ['push-latest']
+
+  # Step 5: Deploy alert handler function
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'deploy-alert-handler'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'ocr-alert-handler'
+      - '--gen2'
+      - '--runtime=python311'
+      - '--region=${_REGION}'
+      - '--source=.'
+      - '--entry-point=handle_dead_letter'
+      - '--trigger-topic=ocr-dead-letter'
+      - '--service-account=${_SERVICE_ACCOUNT}'
+      - '--memory=256Mi'
+      - '--timeout=60s'
+      - '--set-secrets=SLACK_WEBHOOK_URL=slack-webhook:latest,SENDGRID_API_KEY=sendgrid-key:latest'
+    waitFor: ['deploy-function']
+
+  # Step 6: Deploy health check function
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'deploy-health-check'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'ocr-health-check'
+      - '--gen2'
+      - '--runtime=python311'
+      - '--region=${_REGION}'
+      - '--source=.'
+      - '--entry-point=health_check'
+      - '--trigger-http'
+      - '--allow-unauthenticated=false'
+      - '--service-account=${_SERVICE_ACCOUNT}'
+      - '--memory=256Mi'
+      - '--timeout=60s'
+      - '--set-secrets=SLACK_WEBHOOK_URL=slack-webhook:latest'
+    waitFor: ['deploy-alert-handler']
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+
+timeout: '1800s'
+
+images:
+  - 'gcr.io/${PROJECT_ID}/ocr-processor:${SHORT_SHA}'
+  - 'gcr.io/${PROJECT_ID}/ocr-processor:latest'

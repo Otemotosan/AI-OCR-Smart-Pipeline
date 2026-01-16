@@ -1,8 +1,8 @@
 # AI-OCR Smart Pipeline
 
-**Version**: 2.1.0
-**Status**: 🚧 In Development (Phase 1: Foundation)
-**Last Updated**: 2025-01-13
+**Version**: 2.2.0
+**Status**: 🚧 In Development (Phase 5: Hardening)
+**Last Updated**: 2025-01-16
 
 ---
 
@@ -127,26 +127,26 @@ All code must pass:
 
 ## Implementation Progress
 
-**Current Phase**: Phase 1 (Foundation) - 1/7 tasks complete (14%)
+**Current Phase**: Phase 5 (Hardening) - 6/7 tasks complete (86%)
 
 | Phase | Status | Progress | Duration |
 |-------|--------|----------|----------|
-| Phase 1: Foundation | 🔄 In Progress | 1/7 | Week 1-2 |
-| Phase 2: Core Pipeline | ⏳ Pending | 0/7 | Week 3-4 |
-| Phase 3: Escalation | ⏳ Pending | 0/7 | Week 5-6 |
-| Phase 4: Review UI | ⏳ Pending | 0/10 | Week 7-8 |
-| Phase 5: Hardening | ⏳ Pending | 0/7 | Week 9-10 |
+| Phase 1: Foundation | ✅ Complete | 7/7 | Week 1-2 |
+| Phase 2: Core Pipeline | ✅ Complete | 7/7 | Week 3-4 |
+| Phase 3: Integration | ✅ Complete | 7/7 | Week 5-6 |
+| Phase 4: Review UI | ✅ Complete | 10/10 | Week 7-8 |
+| Phase 5: Hardening | 🔄 In Progress | 6/7 | Week 9-10 |
 
-**Total Progress**: 1/38 tasks (3%)
+**Total Progress**: 37/38 tasks (97%)
 
-**Completed**:
-- ✅ Task 1.1: Project Setup
-- ✅ Task 1.2: Schema Registry (in progress)
-
-**Next**:
-- 🔄 Task 1.3: Gate Linter
-- ⏳ Task 1.4: Quality Linter
-- ⏳ Task 1.5: Distributed Lock
+**Phase 5 Progress**:
+- ✅ Task 5.1: Structured Logging
+- ✅ Task 5.2: Monitoring Dashboard (Metrics Module)
+- ✅ Task 5.3: Alerting System
+- ✅ Task 5.4: Security Audit
+- ✅ Task 5.5: Performance Testing
+- ✅ Task 5.6: Documentation
+- 🔄 Task 5.7: Production Deployment
 
 See [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md) for detailed task breakdown.
 
@@ -157,6 +157,8 @@ See [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md) for detailed ta
 ### Core Documentation
 - **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System design and key decisions
 - **[IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md)** - 38 detailed tasks with checkboxes
+- **[OPERATIONS.md](docs/OPERATIONS.md)** - Deployment, monitoring, troubleshooting guide
+- **[USER_GUIDE.md](docs/USER_GUIDE.md)** - Review UI user manual
 - **[CLAUDE.md](CLAUDE.md)** - Instructions for Claude Code
 
 ### Specifications (12 documents)
@@ -279,6 +281,74 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
 
 **Types**: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`
 **Scopes**: `core`, `api`, `ui`, `ci`, `config`
+
+---
+
+## Deployment
+
+### Prerequisites
+
+1. **GCP Project** with billing enabled
+2. **APIs Enabled**:
+   - Document AI API
+   - Vertex AI API (Gemini)
+   - Cloud Functions API
+   - Cloud Run API
+   - Cloud Storage API
+   - Firestore API
+   - BigQuery API
+   - Cloud Monitoring API
+   - Cloud Logging API
+
+### Quick Deployment
+
+```bash
+# 1. Set environment variables
+export GCP_PROJECT_ID=your-project-id
+export GCP_REGION=asia-northeast1
+
+# 2. Authenticate
+gcloud auth login
+gcloud config set project $GCP_PROJECT_ID
+
+# 3. Deploy infrastructure
+cd deploy
+./deploy.sh
+
+# 4. Verify deployment
+gcloud functions describe ocr-processor --region=$GCP_REGION
+```
+
+### Manual Deployment Steps
+
+1. **Create GCS Buckets**
+   ```bash
+   gsutil mb -l $GCP_REGION gs://${GCP_PROJECT_ID}-input
+   gsutil mb -l $GCP_REGION gs://${GCP_PROJECT_ID}-output
+   gsutil mb -l $GCP_REGION gs://${GCP_PROJECT_ID}-quarantine
+   ```
+
+2. **Deploy Cloud Function**
+   ```bash
+   gcloud functions deploy ocr-processor \
+     --gen2 \
+     --runtime python311 \
+     --region $GCP_REGION \
+     --memory 1024MB \
+     --timeout 540s \
+     --trigger-event-filters="type=google.cloud.storage.object.v1.finalized" \
+     --trigger-event-filters="bucket=${GCP_PROJECT_ID}-input"
+   ```
+
+3. **Deploy Review UI**
+   ```bash
+   gcloud run deploy review-ui \
+     --source src/api \
+     --region $GCP_REGION \
+     --allow-unauthenticated
+   ```
+
+See [`docs/OPERATIONS.md`](docs/OPERATIONS.md) for detailed deployment and operations guide.
 
 ---
 
