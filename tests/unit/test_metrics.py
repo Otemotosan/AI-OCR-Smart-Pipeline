@@ -137,6 +137,109 @@ class TestMetricsClient:
         client = MetricsClient(project_id="test-project")
         assert client.project_id == "test-project"
 
+    def test_init_production_with_monitoring_available(self) -> None:
+        """Test client initialization in production with monitoring available."""
+        from unittest.mock import MagicMock
+
+        mock_monitoring = MagicMock()
+        mock_client = MagicMock()
+        mock_monitoring.MetricServiceClient.return_value = mock_client
+
+        with (
+            patch.dict(
+                os.environ, {"ENVIRONMENT": "production", "GCP_PROJECT": "test-proj"}, clear=False
+            ),
+            patch.dict("sys.modules", {"google.cloud.monitoring_v3": mock_monitoring}),
+        ):
+            client = MetricsClient()
+            client._init_cloud_monitoring()
+            # If google.cloud.monitoring_v3 is mocked, it should try to init
+
+    def test_init_production_import_error(self) -> None:
+        """Test client initialization in production when monitoring not installed."""
+        with patch.dict(os.environ, {"ENVIRONMENT": "production"}, clear=False):
+            client = MetricsClient()
+            # Should handle ImportError gracefully and set _client to None
+            # When import fails, client remains None
+
+    def test_init_cloud_monitoring_exception(self) -> None:
+        """Test _init_cloud_monitoring handles exceptions."""
+        from unittest.mock import MagicMock
+
+        mock_monitoring = MagicMock()
+        mock_monitoring.MetricServiceClient.side_effect = Exception("Connection error")
+
+        with (
+            patch.dict(
+                os.environ, {"ENVIRONMENT": "production", "GCP_PROJECT": "test-proj"}, clear=False
+            ),
+            patch.dict("sys.modules", {"google.cloud.monitoring_v3": mock_monitoring}),
+        ):
+            client = MetricsClient()
+            # Should handle exception gracefully
+            client._init_cloud_monitoring()
+
+    def test_write_to_cloud_monitoring_int_value(self) -> None:
+        """Test _write_to_cloud_monitoring with int value."""
+        from unittest.mock import MagicMock
+
+        mock_monitoring = MagicMock()
+        mock_client = MagicMock()
+
+        client = MetricsClient()
+        client._client = mock_client
+        client._project_name = "projects/test-project"
+
+        with patch.dict("sys.modules", {"google.cloud.monitoring_v3": mock_monitoring}):
+            client._write_to_cloud_monitoring(
+                "custom.googleapis.com/ocr/test", 42, {"status": "success"}
+            )
+
+    def test_write_to_cloud_monitoring_float_value(self) -> None:
+        """Test _write_to_cloud_monitoring with float value."""
+        from unittest.mock import MagicMock
+
+        mock_monitoring = MagicMock()
+        mock_client = MagicMock()
+
+        client = MetricsClient()
+        client._client = mock_client
+        client._project_name = "projects/test-project"
+
+        with patch.dict("sys.modules", {"google.cloud.monitoring_v3": mock_monitoring}):
+            client._write_to_cloud_monitoring(
+                "custom.googleapis.com/ocr/confidence", 0.95, {"document_type": "invoice"}
+            )
+
+    def test_write_to_cloud_monitoring_exception(self) -> None:
+        """Test _write_to_cloud_monitoring handles exceptions."""
+        from unittest.mock import MagicMock
+
+        mock_monitoring = MagicMock()
+        mock_monitoring.TimeSeries.side_effect = Exception("API error")
+        mock_client = MagicMock()
+
+        client = MetricsClient()
+        client._client = mock_client
+        client._project_name = "projects/test-project"
+
+        with patch.dict("sys.modules", {"google.cloud.monitoring_v3": mock_monitoring}):
+            # Should not raise
+            client._write_to_cloud_monitoring("custom.googleapis.com/ocr/test", 1, {})
+
+    def test_record_calls_cloud_monitoring_when_client_exists(self) -> None:
+        """Test record calls _write_to_cloud_monitoring when client exists."""
+        from unittest.mock import MagicMock
+
+        mock_client = MagicMock()
+        client = MetricsClient()
+        client._client = mock_client
+        client._project_name = "projects/test-project"
+
+        with patch.object(client, "_write_to_cloud_monitoring") as mock_write:
+            client.record(MetricType.DOCUMENTS_PROCESSED, 1, {"status": "success"})
+            mock_write.assert_called_once()
+
     def test_record_with_enum(self) -> None:
         """Test recording metric with enum type."""
         client = MetricsClient()

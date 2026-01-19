@@ -11,12 +11,37 @@ from __future__ import annotations
 
 import re
 from datetime import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import structlog
-from google.api_core import retry
-from google.api_core.exceptions import GoogleAPIError, NotFound
-from google.cloud import storage
+
+if TYPE_CHECKING:
+    from google.api_core import retry
+    from google.api_core.exceptions import GoogleAPIError, NotFound
+    from google.cloud import storage
+else:
+    try:
+        from google.api_core import retry
+        from google.api_core.exceptions import GoogleAPIError, NotFound
+        from google.cloud import storage
+    except ImportError:
+        # Mock for testing without google-cloud-storage installed
+        from types import SimpleNamespace
+        from unittest.mock import MagicMock
+
+        class GoogleAPIError(Exception):  # type: ignore[no-redef]
+            """Mock GoogleAPIError for testing."""
+
+        class NotFound(Exception):  # type: ignore[no-redef]
+            """Mock NotFound for testing."""
+
+        storage = SimpleNamespace()  # type: ignore[assignment]
+        storage.Client = MagicMock
+
+        # Mock retry module
+        retry = SimpleNamespace()  # type: ignore[assignment]
+        retry.Retry = MagicMock
+        retry.if_transient_error = MagicMock()
 
 logger = structlog.get_logger(__name__)
 

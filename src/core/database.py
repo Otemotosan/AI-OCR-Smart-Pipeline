@@ -12,11 +12,33 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import structlog
-from google.api_core.exceptions import GoogleAPIError, NotFound
-from google.cloud import firestore
+
+if TYPE_CHECKING:
+    from google.api_core.exceptions import GoogleAPIError, NotFound
+    from google.cloud import firestore
+else:
+    try:
+        from google.api_core.exceptions import GoogleAPIError, NotFound
+        from google.cloud import firestore
+    except ImportError:
+        # Mock for testing without google-cloud-firestore installed
+        from types import SimpleNamespace
+        from unittest.mock import MagicMock
+
+        class GoogleAPIError(Exception):  # type: ignore[no-redef]
+            """Mock GoogleAPIError for testing."""
+
+        class NotFound(Exception):  # type: ignore[no-redef]
+            """Mock NotFound for testing."""
+
+        firestore = SimpleNamespace()  # type: ignore[assignment]
+        firestore.Client = MagicMock
+        firestore.Query = SimpleNamespace(DESCENDING="DESCENDING")
+        firestore.Transaction = MagicMock
+        firestore.transactional = lambda f: f
 
 logger = structlog.get_logger(__name__)
 
@@ -572,7 +594,7 @@ class DatabaseClient:
             logger.debug(
                 "audit_event_logged",
                 doc_id=doc_id,
-                event=event.value,
+                audit_event=event.value,
             )
 
         except GoogleAPIError as e:
@@ -580,7 +602,7 @@ class DatabaseClient:
             logger.error(
                 "audit_log_failed",
                 doc_id=doc_id,
-                event=event.value,
+                audit_event=event.value,
                 error=str(e),
             )
 

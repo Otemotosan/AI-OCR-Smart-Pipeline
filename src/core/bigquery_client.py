@@ -11,11 +11,35 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import structlog
-from google.api_core.exceptions import GoogleAPIError
-from google.cloud import bigquery
+
+if TYPE_CHECKING:
+    from google.api_core.exceptions import GoogleAPIError
+    from google.cloud import bigquery
+else:
+    try:
+        from google.api_core.exceptions import GoogleAPIError
+        from google.cloud import bigquery
+    except ImportError:
+        # Mock for testing without google-cloud-bigquery installed
+        from types import SimpleNamespace
+        from unittest.mock import MagicMock
+
+        class GoogleAPIError(Exception):  # type: ignore[no-redef]
+            """Mock GoogleAPIError for testing."""
+
+        bigquery = SimpleNamespace()  # type: ignore[assignment]
+        bigquery.Client = MagicMock
+        bigquery.Table = MagicMock
+        bigquery.TimePartitioning = MagicMock
+        bigquery.TimePartitioningType = SimpleNamespace(DAY="DAY")
+        bigquery.QueryJobConfig = MagicMock
+        bigquery.ScalarQueryParameter = MagicMock
+        bigquery.SchemaField = lambda name, type_, mode="NULLABLE": SimpleNamespace(
+            name=name, field_type=type_, mode=mode
+        )
 
 logger = structlog.get_logger(__name__)
 

@@ -426,3 +426,96 @@ class TestConstants:
         lock = DistributedLock(mock_db, heartbeat_interval=60)
 
         assert lock.heartbeat_interval == 60
+
+
+# ============================================================
+# Stop Heartbeat Tests
+# ============================================================
+
+
+class TestStopHeartbeat:
+    """Test _stop_heartbeat_thread method."""
+
+    def test_stop_heartbeat_when_no_thread(self) -> None:
+        """Test _stop_heartbeat_thread when thread doesn't exist."""
+        mock_db = MagicMock()
+        lock = DistributedLock(mock_db)
+
+        # Should not raise
+        lock._stop_heartbeat_thread()
+        assert lock._heartbeat_thread is None
+
+    def test_stop_heartbeat_when_thread_not_alive(self) -> None:
+        """Test _stop_heartbeat_thread when thread is not alive."""
+        mock_db = MagicMock()
+        lock = DistributedLock(mock_db)
+
+        # Create a mock thread that is not alive
+        mock_thread = MagicMock()
+        mock_thread.is_alive.return_value = False
+        lock._heartbeat_thread = mock_thread
+
+        # Should not call join
+        lock._stop_heartbeat_thread()
+        mock_thread.join.assert_not_called()
+
+    def test_stop_heartbeat_when_thread_alive(self) -> None:
+        """Test _stop_heartbeat_thread when thread is alive."""
+        mock_db = MagicMock()
+        lock = DistributedLock(mock_db)
+
+        # Create a mock thread that is alive
+        mock_thread = MagicMock()
+        mock_thread.is_alive.return_value = True
+        lock._heartbeat_thread = mock_thread
+
+        lock._stop_heartbeat_thread()
+
+        # Should set stop event, join thread, and clear reference
+        mock_thread.join.assert_called_once_with(timeout=2.0)
+        assert lock._heartbeat_thread is None
+
+
+# ============================================================
+# Start Heartbeat Tests
+# ============================================================
+
+
+class TestStartHeartbeat:
+    """Test _start_heartbeat method."""
+
+    def test_start_heartbeat_creates_thread(self) -> None:
+        """Test _start_heartbeat creates and starts a thread."""
+        mock_db = MagicMock()
+        mock_doc_ref = MagicMock()
+
+        lock = DistributedLock(mock_db, heartbeat_interval=0.1)
+
+        lock._start_heartbeat(mock_doc_ref)
+
+        # Thread should be created and running
+        assert lock._heartbeat_thread is not None
+        assert lock._heartbeat_thread.is_alive()
+
+        # Clean up
+        lock._stop_heartbeat.set()
+        lock._heartbeat_thread.join(timeout=1.0)
+
+    def test_start_heartbeat_clears_stop_event(self) -> None:
+        """Test _start_heartbeat clears the stop event."""
+        mock_db = MagicMock()
+        mock_doc_ref = MagicMock()
+
+        lock = DistributedLock(mock_db, heartbeat_interval=100)  # Long interval
+
+        # Set the stop event first
+        lock._stop_heartbeat.set()
+
+        lock._start_heartbeat(mock_doc_ref)
+
+        # Stop event should be cleared
+        assert not lock._stop_heartbeat.is_set()
+
+        # Clean up
+        lock._stop_heartbeat.set()
+        lock._heartbeat_thread.join(timeout=1.0)

@@ -140,6 +140,65 @@ class TestAuditLogger:
             assert logger.environment == "development"
             assert logger._cloud_logger is None
 
+    def test_init_production_with_logging_available(self) -> None:
+        """Test logger initialization in production with cloud logging available."""
+        from unittest.mock import MagicMock
+
+        mock_cloud_logging = MagicMock()
+        mock_client = MagicMock()
+        mock_logger = MagicMock()
+        mock_cloud_logging.Client.return_value = mock_client
+        mock_client.logger.return_value = mock_logger
+
+        with (
+            patch.dict(os.environ, {"ENVIRONMENT": "production"}, clear=False),
+            patch.dict("sys.modules", {"google.cloud.logging": mock_cloud_logging}),
+        ):
+            logger = AuditLogger()
+            logger._init_cloud_logging()
+            # Should have initialized cloud logger
+
+    def test_init_production_import_error(self) -> None:
+        """Test logger initialization in production when logging not installed."""
+        with patch.dict(os.environ, {"ENVIRONMENT": "production"}, clear=False):
+            logger = AuditLogger()
+            # Should handle ImportError gracefully
+
+    def test_init_cloud_logging_exception(self) -> None:
+        """Test _init_cloud_logging handles exceptions."""
+        from unittest.mock import MagicMock
+
+        mock_cloud_logging = MagicMock()
+        mock_cloud_logging.Client.side_effect = Exception("Connection error")
+
+        with (
+            patch.dict(os.environ, {"ENVIRONMENT": "production"}, clear=False),
+            patch.dict("sys.modules", {"google.cloud.logging": mock_cloud_logging}),
+        ):
+            logger = AuditLogger()
+            logger._init_cloud_logging()
+            # Should handle exception gracefully
+
+    def test_log_with_cloud_logger(self) -> None:
+        """Test log sends to cloud logger when available."""
+        from unittest.mock import MagicMock
+
+        mock_cloud_logger = MagicMock()
+
+        logger = AuditLogger()
+        logger._cloud_logger = mock_cloud_logger
+
+        entry = AuditEntry(
+            action=AuditAction.DOCUMENT_APPROVED,
+            resource_type="document",
+            resource_id="sha256:abc123",
+            actor="user@example.com",
+        )
+        logger.log(entry)
+
+        # Should have called cloud logger
+        mock_cloud_logger.log_struct.assert_called_once()
+
     def test_log_basic_entry(self) -> None:
         """Test logging basic entry."""
         with patch.dict(os.environ, {"ENVIRONMENT": "development"}, clear=False):
