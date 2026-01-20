@@ -45,27 +45,27 @@ output "bigquery_corrections_table" {
 }
 
 # ============================================================
-# Service Outputs
+# Service Outputs (Optional - only when deployed)
 # ============================================================
 
 output "processor_function_url" {
   description = "URL of the document processor Cloud Function"
-  value       = module.functions.processor_function_url
+  value       = length(module.functions) > 0 ? module.functions[0].processor_function_url : "not deployed"
 }
 
 output "health_check_function_url" {
   description = "URL of the health check Cloud Function"
-  value       = module.functions.health_check_function_url
+  value       = length(module.functions) > 0 ? module.functions[0].health_check_function_url : "not deployed"
 }
 
 output "api_service_url" {
   description = "URL of the API Cloud Run service"
-  value       = module.cloudrun.api_service_url
+  value       = length(module.cloudrun) > 0 ? module.cloudrun[0].api_service_url : "not deployed"
 }
 
 output "ui_service_url" {
   description = "URL of the UI Cloud Run service"
-  value       = module.cloudrun.ui_service_url
+  value       = length(module.cloudrun) > 0 ? module.cloudrun[0].ui_service_url : "not deployed"
 }
 
 # ============================================================
@@ -102,8 +102,8 @@ output "deployment_summary" {
     region           = var.region
     environment      = var.environment
     input_bucket     = module.storage.input_bucket_name
-    api_url          = module.cloudrun.api_service_url
-    ui_url           = module.cloudrun.ui_service_url
+    api_url          = length(module.cloudrun) > 0 ? module.cloudrun[0].api_service_url : "not deployed"
+    ui_url           = length(module.cloudrun) > 0 ? module.cloudrun[0].ui_service_url : "not deployed"
     bigquery_dataset = module.bigquery.dataset_id
   }
 }
