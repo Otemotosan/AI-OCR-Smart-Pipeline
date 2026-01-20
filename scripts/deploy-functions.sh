@@ -54,13 +54,14 @@ echo "Packaging source code..."
 PACKAGE_DIR="${TEMP_DIR}/package"
 mkdir -p "${PACKAGE_DIR}"
 
-# Copy source files
+# Copy source files with correct directory structure
 echo "  Copying src/core/..."
-cp -r src/core "${PACKAGE_DIR}/"
+mkdir -p "${PACKAGE_DIR}/src/core"
+cp -r src/core/* "${PACKAGE_DIR}/src/core/"
 
 echo "  Copying src/functions/processor/..."
 mkdir -p "${PACKAGE_DIR}/src/functions/processor"
-cp src/functions/__init__.py "${PACKAGE_DIR}/src/functions/" 2>/dev/null || echo "" > "${PACKAGE_DIR}/src/functions/__init__.py"
+cp src/functions/__init__.py "${PACKAGE_DIR}/src/functions/" 2>/dev/null || touch "${PACKAGE_DIR}/src/functions/__init__.py"
 cp src/functions/processor/*.py "${PACKAGE_DIR}/src/functions/processor/"
 
 # Copy main.py to root (Cloud Functions entry point)
@@ -70,8 +71,8 @@ cp src/functions/processor/main.py "${PACKAGE_DIR}/main.py"
 cp src/functions/processor/requirements.txt "${PACKAGE_DIR}/requirements.txt"
 
 # Create __init__.py files for proper imports
-echo "" > "${PACKAGE_DIR}/src/__init__.py"
-echo "" > "${PACKAGE_DIR}/src/core/__init__.py"
+touch "${PACKAGE_DIR}/src/__init__.py"
+touch "${PACKAGE_DIR}/src/core/__init__.py"
 
 # Create the ZIP file
 echo "  Creating ZIP archive..."
