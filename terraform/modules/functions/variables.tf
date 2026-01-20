@@ -54,3 +54,8 @@ variable "slack_webhook_secret" {
   description = "Secret Manager secret ID for Slack webhook"
   type        = string
 }
+
+variable "function_source_bucket" {
+  description = "GCS bucket name for function source code"
+  type        = string
+}

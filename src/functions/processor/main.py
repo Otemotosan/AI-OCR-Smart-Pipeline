@@ -534,6 +534,159 @@ def _quarantine_document(
             )
 
 
+# ============================================================
+# Health Check Function
+# ============================================================
+
+
+@functions_framework.http
+def health_check(request: Any) -> tuple[dict[str, Any], int]:
+    """
+    Health check endpoint for monitoring.
+
+    Returns system health status including:
+    - Service availability
+    - Firestore connectivity
+    - Storage connectivity
+
+    Args:
+        request: Flask request object
+
+    Returns:
+        Tuple of (response dict, HTTP status code)
+    """
+    health_status: dict[str, Any] = {
+        "status": "healthy",
+        "timestamp": datetime.now(UTC).isoformat(),
+        "environment": os.environ.get("ENVIRONMENT", "unknown"),
+        "checks": {},
+    }
+    all_healthy = True
+
+    # Check Firestore
+    try:
+        firestore_client = firestore.Client()
+        # Simple read operation
+        firestore_client.collection("_health_check").limit(1).get()
+        health_status["checks"]["firestore"] = "ok"
+    except Exception as e:
+        health_status["checks"]["firestore"] = f"error: {e}"
+        all_healthy = False
+
+    # Check Storage
+    try:
+        storage_client = storage.Client()
+        list(storage_client.list_buckets(max_results=1))
+        health_status["checks"]["storage"] = "ok"
+    except Exception as e:
+        health_status["checks"]["storage"] = f"error: {e}"
+        all_healthy = False
+
+    if not all_healthy:
+        health_status["status"] = "degraded"
+        logger.warning("health_check_degraded", checks=health_status["checks"])
+        return health_status, 503
+
+    logger.info("health_check_ok")
+    return health_status, 200
+
+
+# ============================================================
+# Dead Letter Handler Function
+# ============================================================
+
+
+@functions_framework.cloud_event
+def handle_dead_letter(event: CloudEvent) -> str:
+    """
+    Handle messages from dead letter queue.
+
+    Sends Slack notification for failed documents that
+    require human attention.
+
+    Args:
+        event: CloudEvent from Pub/Sub dead letter topic
+
+    Returns:
+        Status message string
+    """
+    import base64
+    import json
+
+    import requests
+
+    logger.info("dead_letter_received", event_type=event["type"])
+
+    # Decode Pub/Sub message
+    try:
+        message_data = event.data.get("message", {}).get("data", "")
+        decoded = base64.b64decode(message_data).decode("utf-8")
+        payload = json.loads(decoded)
+    except Exception as e:
+        logger.error("dead_letter_decode_failed", error=str(e))
+        payload = {"raw_event": str(event.data)}
+
+    # Prepare Slack notification
+    slack_webhook_url = os.environ.get("SLACK_WEBHOOK_URL", "")
+
+    if not slack_webhook_url:
+        logger.warning("slack_webhook_not_configured")
+        return "SKIPPED: Slack webhook not configured"
+
+    environment = os.environ.get("ENVIRONMENT", "unknown")
+    doc_hash = payload.get("doc_hash", "unknown")
+    error_message = payload.get("error", "Unknown error")
+
+    slack_message = {
+        "blocks": [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": f"🚨 OCR処理失敗 ({environment})",
+                    "emoji": True,
+                },
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {"type": "mrkdwn", "text": f"*Document ID:*\n`{doc_hash}`"},
+                    {"type": "mrkdwn", "text": f"*Environment:*\n{environment}"},
+                ],
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"*Error:*\n```{error_message[:500]}```",
+                },
+            },
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": f"📋 Review UI で確認してください",
+                    },
+                ],
+            },
+        ],
+    }
+
+    try:
+        response = requests.post(  # noqa: S113
+            slack_webhook_url,
+            json=slack_message,
+            timeout=10,
+        )
+        response.raise_for_status()
+        logger.info("slack_notification_sent", doc_hash=doc_hash)
+        return "NOTIFIED: Slack message sent"
+    except Exception as e:
+        logger.error("slack_notification_failed", error=str(e))
+        return f"FAILED: Slack notification error: {e}"
+
+
 # For local testing
 if __name__ == "__main__":
     # Test with a mock event

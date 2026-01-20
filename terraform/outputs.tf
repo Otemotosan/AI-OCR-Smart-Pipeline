@@ -45,6 +45,15 @@ output "bigquery_corrections_table" {
 }
 
 # ============================================================
+# Functions Source Bucket (always available)
+# ============================================================
+
+output "function_source_bucket" {
+  description = "GCS bucket for Cloud Functions source code"
+  value       = google_storage_bucket.function_source.name
+}
+
+# ============================================================
 # Service Outputs (Optional - only when deployed)
 # ============================================================
 

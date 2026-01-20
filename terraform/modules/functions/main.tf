@@ -1,36 +1,8 @@
 # Functions Module - Cloud Functions (2nd Gen)
 # Creates Cloud Functions for document processing.
-
-# ============================================================
-# Source Archive Bucket
-# ============================================================
-
-resource "google_storage_bucket" "function_source" {
-  name          = "${var.project_id}-function-source-${var.environment}"
-  project       = var.project_id
-  location      = var.region
-  storage_class = "STANDARD"
-
-  uniform_bucket_level_access = true
-
-  versioning {
-    enabled = true
-  }
-
-  lifecycle_rule {
-    condition {
-      num_newer_versions = 5
-    }
-    action {
-      type = "Delete"
-    }
-  }
-
-  labels = {
-    environment = var.environment
-    service     = "ocr-pipeline"
-  }
-}
+#
+# Note: The source bucket is created in main.tf and passed as a variable.
+# This allows the bucket to be created before the source code is uploaded.
 
 # ============================================================
 # Document Processor Function
@@ -48,7 +20,7 @@ resource "google_cloudfunctions2_function" "processor" {
 
     source {
       storage_source {
-        bucket = google_storage_bucket.function_source.name
+        bucket = var.function_source_bucket
         object = "processor-source.zip"
       }
     }
@@ -113,7 +85,7 @@ resource "google_cloudfunctions2_function" "health_check" {
 
     source {
       storage_source {
-        bucket = google_storage_bucket.function_source.name
+        bucket = var.function_source_bucket
         object = "processor-source.zip"
       }
     }
@@ -162,7 +134,7 @@ resource "google_cloudfunctions2_function" "alert_handler" {
 
     source {
       storage_source {
-        bucket = google_storage_bucket.function_source.name
+        bucket = var.function_source_bucket
         object = "processor-source.zip"
       }
     }

@@ -1,0 +1,32 @@
+# Cloud Functions Requirements
+# AI-OCR Smart Pipeline - Document Processor
+
+# Functions Framework (required)
+functions-framework>=3.5.0,<4.0.0
+cloudevents>=1.10.0,<2.0.0
+
+# Google Cloud Services
+google-cloud-documentai>=2.20.0,<3.0.0
+google-cloud-aiplatform>=1.38.0,<2.0.0
+google-cloud-storage>=2.14.0,<3.0.0
+google-cloud-firestore>=2.14.0,<3.0.0
+google-cloud-bigquery>=3.14.0,<4.0.0
+google-cloud-logging>=3.9.0,<4.0.0
+
+# Gemini API
+google-generativeai>=0.3.0,<1.0.0
+
+# Data validation
+pydantic>=2.5.0,<3.0.0
+
+# Retry logic
+tenacity>=8.2.0,<9.0.0
+
+# Structured logging
+structlog>=24.1.0,<25.0.0
+
+# Configuration
+pyyaml>=6.0.0,<7.0.0
+
+# HTTP requests (for Slack notifications)
+requests>=2.31.0,<3.0.0

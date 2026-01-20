@@ -27,5 +27,5 @@ output "alert_handler_function_name" {
 
 output "source_bucket" {
   description = "Bucket for function source code"
-  value       = google_storage_bucket.function_source.name
+  value       = var.function_source_bucket
 }

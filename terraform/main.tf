@@ -93,6 +93,39 @@ module "bigquery" {
   depends_on = [google_project_service.apis, module.iam]
 }
 
+# ============================================================
+# Cloud Functions Source Bucket (always created)
+# ============================================================
+
+resource "google_storage_bucket" "function_source" {
+  name          = "${var.project_id}-function-source-${var.environment}"
+  project       = var.project_id
+  location      = var.region
+  storage_class = "STANDARD"
+
+  uniform_bucket_level_access = true
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    condition {
+      num_newer_versions = 5
+    }
+    action {
+      type = "Delete"
+    }
+  }
+
+  labels = {
+    environment = var.environment
+    service     = "ocr-pipeline"
+  }
+
+  depends_on = [google_project_service.apis]
+}
+
 # Cloud Functions Module - Serverless processing
 # Set deploy_functions = true after uploading source code to GCS
 module "functions" {
@@ -110,12 +143,14 @@ module "functions" {
   document_ai_processor   = var.document_ai_processor_id
   gemini_api_key_secret   = module.iam.gemini_api_key_secret_id
   slack_webhook_secret    = module.iam.slack_webhook_secret_id
+  function_source_bucket  = google_storage_bucket.function_source.name
 
   depends_on = [
     google_project_service.apis,
     module.iam,
     module.storage,
     module.bigquery,
+    google_storage_bucket.function_source,
   ]
 }
 
