@@ -7,10 +7,9 @@ See: docs/specs/07_monitoring.md, docs/specs/11_conflict.md
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
-
 from src.core.database import (
     AuditEventType,
     AuditLogEntry,
@@ -505,7 +504,10 @@ class TestGetAuditLog:
     def test_get_audit_log_api_error(self) -> None:
         """Test audit log retrieval handles API errors."""
         mock_client = MagicMock()
-        mock_client.collection.return_value.where.return_value.order_by.return_value.stream.side_effect = GoogleAPIError("API error")
+        mock_stream = mock_client.collection.return_value.where.return_value
+        mock_stream.order_by.return_value.stream.side_effect = GoogleAPIError(
+            "API error"
+        )
 
         db = DatabaseClient(client=mock_client)
         entries = db.get_audit_log("sha256:abc123")
@@ -528,7 +530,8 @@ class TestListDocuments:
             "updated_at": datetime.now(UTC),
         }
         mock_query = MagicMock()
-        mock_query.order_by.return_value.limit.return_value.offset.return_value.stream.return_value = [mock_doc]
+        mock_chain = mock_query.order_by.return_value.limit.return_value
+        mock_chain.offset.return_value.stream.return_value = [mock_doc]
         mock_client.collection.return_value = mock_query
 
         db = DatabaseClient(client=mock_client)
@@ -541,7 +544,8 @@ class TestListDocuments:
         """Test document listing with status filter."""
         mock_client = MagicMock()
         mock_query = MagicMock()
-        mock_query.where.return_value.order_by.return_value.limit.return_value.offset.return_value.stream.return_value = []
+        mock_chain = mock_query.where.return_value.order_by.return_value
+        mock_chain.limit.return_value.offset.return_value.stream.return_value = []
         mock_client.collection.return_value = mock_query
 
         db = DatabaseClient(client=mock_client)
@@ -552,7 +556,10 @@ class TestListDocuments:
     def test_list_documents_api_error(self) -> None:
         """Test document listing handles API errors."""
         mock_client = MagicMock()
-        mock_client.collection.return_value.order_by.return_value.limit.return_value.offset.return_value.stream.side_effect = GoogleAPIError("API error")
+        mock_chain = mock_client.collection.return_value.order_by.return_value
+        mock_chain.limit.return_value.offset.return_value.stream.side_effect = (
+            GoogleAPIError("API error")
+        )
 
         db = DatabaseClient(client=mock_client)
         records = db.list_documents()

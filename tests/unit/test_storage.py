@@ -26,9 +26,6 @@ sys.modules["google.api_core.exceptions"].NotFound = NotFound
 sys.modules["google.api_core.exceptions"].GoogleAPIError = GoogleAPIError
 
 from src.core.storage import (  # noqa: E402
-    FileNotFoundError as GCSFileNotFoundError,
-)
-from src.core.storage import (  # noqa: E402
     DEFAULT_RETRY,
     InvalidGCSPathError,
     StorageClient,
@@ -42,6 +39,9 @@ from src.core.storage import (  # noqa: E402
     list_blobs,
     parse_gcs_path,
     upload_string,
+)
+from src.core.storage import (  # noqa: E402
+    FileNotFoundError as GCSFileNotFoundError,
 )
 
 

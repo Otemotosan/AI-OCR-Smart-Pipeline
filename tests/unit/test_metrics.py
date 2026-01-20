@@ -158,9 +158,10 @@ class TestMetricsClient:
     def test_init_production_import_error(self) -> None:
         """Test client initialization in production when monitoring not installed."""
         with patch.dict(os.environ, {"ENVIRONMENT": "production"}, clear=False):
-            client = MetricsClient()
+            metrics_client = MetricsClient()
             # Should handle ImportError gracefully and set _client to None
             # When import fails, client remains None
+            assert metrics_client.environment == "production"
 
     def test_init_cloud_monitoring_exception(self) -> None:
         """Test _init_cloud_monitoring handles exceptions."""

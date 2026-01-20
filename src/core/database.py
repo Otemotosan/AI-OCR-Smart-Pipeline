@@ -31,8 +31,10 @@ else:
         class GoogleAPIError(Exception):  # type: ignore[no-redef]
             """Mock GoogleAPIError for testing."""
 
-        class NotFound(Exception):  # type: ignore[no-redef]
+        class NotFoundError(Exception):  # type: ignore[no-redef]
             """Mock NotFound for testing."""
+
+        NotFound = NotFoundError  # Alias to match google.api_core.exceptions
 
         firestore = SimpleNamespace()  # type: ignore[assignment]
         firestore.Client = MagicMock

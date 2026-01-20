@@ -6,8 +6,7 @@ from datetime import UTC, date, datetime
 from unittest.mock import MagicMock
 
 import pytest
-
-from core.bigquery_client import (
+from src.core.bigquery_client import (
     CORRECTIONS_SCHEMA,
     EXTRACTION_RESULTS_SCHEMA,
     BigQueryClient,
@@ -15,7 +14,6 @@ from core.bigquery_client import (
     BigQueryError,
     GoogleAPIError,
 )
-
 
 # ============================================================
 # BigQueryConfig Tests

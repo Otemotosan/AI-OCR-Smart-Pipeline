@@ -161,8 +161,9 @@ class TestAuditLogger:
     def test_init_production_import_error(self) -> None:
         """Test logger initialization in production when logging not installed."""
         with patch.dict(os.environ, {"ENVIRONMENT": "production"}, clear=False):
-            logger = AuditLogger()
+            audit_logger = AuditLogger()
             # Should handle ImportError gracefully
+            assert audit_logger.environment == "production"
 
     def test_init_cloud_logging_exception(self) -> None:
         """Test _init_cloud_logging handles exceptions."""
