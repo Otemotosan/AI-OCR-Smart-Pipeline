@@ -18,7 +18,11 @@
       "Bash(pip install:*)",
       "Bash(set:*)",
       "Bash(python:*)",
-      "Bash(black:*)"
+      "Bash(black:*)",
+      "Bash(mypy:*)",
+      "Bash(pytest:*)",
+      "Bash(bandit:*)",
+      "Bash(cd:*)"
     ]
   }
 }
