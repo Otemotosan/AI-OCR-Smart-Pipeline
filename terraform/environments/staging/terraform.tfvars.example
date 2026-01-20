@@ -1,0 +1,21 @@
+# Staging Environment Configuration
+# Copy this file to terraform.tfvars and fill in your values
+
+# Required
+project_id               = "your-project-id-staging"
+document_ai_processor_id = "projects/your-project-id/locations/asia-northeast1/processors/PROCESSOR_ID"
+
+# Optional - Container images
+# api_image = "gcr.io/your-project-id/ocr-api:latest"
+# ui_image  = "gcr.io/your-project-id/ocr-ui:latest"
+
+# Optional - Custom domains (requires DNS setup)
+# api_domain = "api-staging.yourdomain.com"
+# ui_domain  = "ocr-staging.yourdomain.com"
+
+# Optional - IAP (required if using custom domains)
+# iap_oauth_client_id     = "your-oauth-client-id"
+# iap_oauth_client_secret = "your-oauth-client-secret"
+
+# Optional - Alerting
+# alert_email = "alerts@yourdomain.com"

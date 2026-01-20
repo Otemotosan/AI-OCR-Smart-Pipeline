@@ -1,0 +1,29 @@
+# Production Environment Configuration
+# Copy this file to terraform.tfvars and fill in your values
+# IMPORTANT: Never commit terraform.tfvars to version control
+
+# Required
+project_id               = "your-project-id-production"
+document_ai_processor_id = "projects/your-project-id/locations/asia-northeast1/processors/PROCESSOR_ID"
+
+# Required - Container images
+api_image = "gcr.io/your-project-id/ocr-api:v1.0.0"
+ui_image  = "gcr.io/your-project-id/ocr-ui:v1.0.0"
+
+# Required - Custom domains
+api_domain = "api.yourdomain.com"
+ui_domain  = "ocr.yourdomain.com"
+
+# Required - IAP
+iap_oauth_client_id     = "your-oauth-client-id.apps.googleusercontent.com"
+iap_oauth_client_secret = "your-oauth-client-secret"
+iap_allowed_members = [
+  "user:admin@yourdomain.com",
+  "group:ocr-users@yourdomain.com",
+]
+
+# Required - Alerting
+alert_email = "alerts@yourdomain.com"
+
+# Optional - Slack integration
+# slack_notification_channel = "projects/your-project-id/notificationChannels/CHANNEL_ID"
