@@ -120,6 +120,8 @@ resource "google_bigquery_table" "daily_stats_view" {
   project             = var.project_id
   deletion_protection = false
 
+  depends_on = [google_bigquery_table.extraction_results]
+
   view {
     query = <<-SQL
       SELECT
@@ -145,6 +147,8 @@ resource "google_bigquery_table" "correction_rate_view" {
   table_id            = "correction_rate"
   project             = var.project_id
   deletion_protection = false
+
+  depends_on = [google_bigquery_table.corrections]
 
   view {
     query = <<-SQL

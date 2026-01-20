@@ -21,3 +21,9 @@ variable "alert_email" {
   type        = string
   default     = ""
 }
+
+variable "api_domain" {
+  description = "API domain for uptime checks"
+  type        = string
+  default     = ""
+}

@@ -143,6 +143,7 @@ module "monitoring" {
   environment          = var.environment
   notification_channel = var.slack_notification_channel
   alert_email          = var.alert_email
+  api_domain           = var.api_domain
 
   depends_on = [google_project_service.apis]
 }
