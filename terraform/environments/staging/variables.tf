@@ -59,3 +59,15 @@ variable "alert_email" {
   type        = string
   default     = ""
 }
+
+variable "deploy_functions" {
+  description = "Whether to deploy Cloud Functions"
+  type        = bool
+  default     = false
+}
+
+variable "deploy_cloudrun" {
+  description = "Whether to deploy Cloud Run services"
+  type        = bool
+  default     = false
+}

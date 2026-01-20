@@ -51,6 +51,10 @@ module "ocr_pipeline" {
   # Scaling (lower limits for staging)
   function_max_instances = 5
   cloudrun_max_instances = 3
+
+  # Deployment flags
+  deploy_functions = var.deploy_functions
+  deploy_cloudrun  = var.deploy_cloudrun
 }
 
 output "deployment_summary" {
