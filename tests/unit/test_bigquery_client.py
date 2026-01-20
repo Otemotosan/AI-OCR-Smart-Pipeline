@@ -2,11 +2,23 @@
 
 from __future__ import annotations
 
+import sys
 from datetime import UTC, date, datetime
 from unittest.mock import MagicMock
 
 import pytest
-from src.core.bigquery_client import (
+
+# Remove any existing google.cloud modules to force ImportError
+# This ensures bigquery_client.py uses its internal mock setup
+_modules_to_remove = [key for key in list(sys.modules.keys()) if key.startswith("google.")]
+for mod in _modules_to_remove:
+    del sys.modules[mod]
+
+# Also remove bigquery_client if already imported to force reimport
+if "src.core.bigquery_client" in sys.modules:
+    del sys.modules["src.core.bigquery_client"]
+
+from src.core.bigquery_client import (  # noqa: E402
     CORRECTIONS_SCHEMA,
     EXTRACTION_RESULTS_SCHEMA,
     BigQueryClient,
