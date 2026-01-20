@@ -123,6 +123,22 @@ variable "pro_monthly_limit" {
 }
 
 # ============================================================
+# Feature Flags
+# ============================================================
+
+variable "deploy_functions" {
+  description = "Whether to deploy Cloud Functions (requires source code upload)"
+  type        = bool
+  default     = false
+}
+
+variable "deploy_cloudrun" {
+  description = "Whether to deploy Cloud Run services (requires container images)"
+  type        = bool
+  default     = false
+}
+
+# ============================================================
 # Scaling Configuration
 # ============================================================
 

@@ -94,7 +94,9 @@ module "bigquery" {
 }
 
 # Cloud Functions Module - Serverless processing
+# Set deploy_functions = true after uploading source code to GCS
 module "functions" {
+  count  = var.deploy_functions ? 1 : 0
   source = "./modules/functions"
 
   project_id              = var.project_id
@@ -118,7 +120,9 @@ module "functions" {
 }
 
 # Cloud Run Module - API and UI services
+# Set deploy_cloudrun = true after building container images
 module "cloudrun" {
+  count  = var.deploy_cloudrun ? 1 : 0
   source = "./modules/cloudrun"
 
   project_id              = var.project_id
