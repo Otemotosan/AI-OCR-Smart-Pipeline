@@ -104,6 +104,7 @@ class GeminiResponse:
 # Retry Decorators
 # ============================================================
 
+
 # Import exceptions for retry logic
 # Use fallback classes that are always valid Exception subclasses
 # This ensures tenacity works even if google.api_core is mocked in tests

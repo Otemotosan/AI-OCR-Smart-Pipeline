@@ -303,8 +303,8 @@ class TestGetDocument:
     def test_get_document_api_error(self) -> None:
         """Test document retrieval handles API errors."""
         mock_client = MagicMock()
-        mock_client.collection.return_value.document.return_value.get.side_effect = (
-            GoogleAPIError("API error")
+        mock_client.collection.return_value.document.return_value.get.side_effect = GoogleAPIError(
+            "API error"
         )
 
         db = DatabaseClient(client=mock_client)
@@ -505,9 +505,7 @@ class TestGetAuditLog:
         """Test audit log retrieval handles API errors."""
         mock_client = MagicMock()
         mock_stream = mock_client.collection.return_value.where.return_value
-        mock_stream.order_by.return_value.stream.side_effect = GoogleAPIError(
-            "API error"
-        )
+        mock_stream.order_by.return_value.stream.side_effect = GoogleAPIError("API error")
 
         db = DatabaseClient(client=mock_client)
         entries = db.get_audit_log("sha256:abc123")
@@ -557,8 +555,8 @@ class TestListDocuments:
         """Test document listing handles API errors."""
         mock_client = MagicMock()
         mock_chain = mock_client.collection.return_value.order_by.return_value
-        mock_chain.limit.return_value.offset.return_value.stream.side_effect = (
-            GoogleAPIError("API error")
+        mock_chain.limit.return_value.offset.return_value.stream.side_effect = GoogleAPIError(
+            "API error"
         )
 
         db = DatabaseClient(client=mock_client)
@@ -632,8 +630,8 @@ class TestDraftOperations:
     def test_get_draft_api_error(self) -> None:
         """Test draft retrieval handles API errors."""
         mock_client = MagicMock()
-        mock_client.collection.return_value.document.return_value.get.side_effect = (
-            GoogleAPIError("API error")
+        mock_client.collection.return_value.document.return_value.get.side_effect = GoogleAPIError(
+            "API error"
         )
 
         db = DatabaseClient(client=mock_client)
