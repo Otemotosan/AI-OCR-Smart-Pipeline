@@ -246,27 +246,33 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
         logger.info("extracting_with_gemini", doc_hash=doc_hash)
 
         # Check if image attachment is needed
-        # Note: For PDFs, we only use markdown from Document AI
-        # Image attachment is only supported for image files (PNG/JPEG)
-        is_pdf = gcs_uri.lower().endswith(".pdf")
-        include_image = False
-        image_reason = "pdf_not_supported"
+        include_image, image_reason = should_attach_image(
+            confidence=docai_result.confidence,
+            gate_failed=False,  # First attempt
+            attempt=0,
+            doc_type=docai_result.detected_type,
+        )
+
+        # Prepare image if needed
         image_base64 = None
+        if include_image:
+            bucket_name, blob_name = parse_gcs_path(gcs_uri)
+            bucket = storage_client.bucket(bucket_name)
+            blob = bucket.blob(blob_name)
+            file_content = blob.download_as_bytes()
 
-        if not is_pdf:
-            include_image, image_reason = should_attach_image(
-                confidence=docai_result.confidence,
-                gate_failed=False,  # First attempt
-                attempt=0,
-                doc_type=docai_result.detected_type,
-            )
-
-            # Prepare image if needed
-            if include_image:
-                bucket_name, blob_name = parse_gcs_path(gcs_uri)
-                bucket = storage_client.bucket(bucket_name)
-                blob = bucket.blob(blob_name)
-                file_content = blob.download_as_bytes()
+            # Convert PDF to image if needed
+            if gcs_uri.lower().endswith(".pdf"):
+                image_bytes = _convert_pdf_to_image(file_content)
+                if image_bytes:
+                    image_base64 = base64.b64encode(image_bytes).decode("utf-8")
+                    logger.info("pdf_converted_to_image", doc_hash=doc_hash, size=len(image_bytes))
+                else:
+                    logger.warning("pdf_conversion_failed", doc_hash=doc_hash)
+                    include_image = False
+                    image_reason = "pdf_conversion_failed"
+            else:
+                # For image files, use directly
                 image_base64 = base64.b64encode(file_content).decode("utf-8")
 
         # Create GeminiInput
@@ -473,6 +479,51 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
         )
 
         return f"ERROR: {doc_hash} - {type(e).__name__}"
+
+
+def _convert_pdf_to_image(pdf_bytes: bytes, dpi: int = 150) -> bytes | None:
+    """
+    Convert first page of PDF to PNG image.
+
+    Uses PyMuPDF (fitz) for conversion without system dependencies.
+
+    Args:
+        pdf_bytes: PDF file content as bytes
+        dpi: Resolution for rendering (default: 150 for balance of quality/size)
+
+    Returns:
+        PNG image bytes, or None if conversion fails
+    """
+    try:
+        import fitz  # PyMuPDF
+
+        # Open PDF from bytes
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+
+        if len(doc) == 0:
+            logger.warning("pdf_empty", page_count=0)
+            return None
+
+        # Get first page
+        page = doc[0]
+
+        # Calculate zoom factor for target DPI (default PDF is 72 DPI)
+        zoom = dpi / 72
+        matrix = fitz.Matrix(zoom, zoom)
+
+        # Render page to pixmap (image)
+        pixmap = page.get_pixmap(matrix=matrix)
+
+        # Convert to PNG bytes
+        png_bytes = pixmap.tobytes("png")
+
+        doc.close()
+
+        return png_bytes
+
+    except Exception as e:
+        logger.error("pdf_to_image_error", error=str(e), error_type=type(e).__name__)
+        return None
 
 
 def _check_timeout(start_time: float, phase: str) -> None:
