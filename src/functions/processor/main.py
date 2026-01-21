@@ -18,6 +18,7 @@ import base64
 import contextlib
 import os
 import time
+from dataclasses import asdict
 from datetime import UTC, datetime
 from typing import Any
 
@@ -351,10 +352,12 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             )
 
         # Step 6: Save extraction results
+        # Convert ExtractionAttempt dataclass objects to dictionaries for Firestore
+        attempts_dicts = [asdict(attempt) for attempt in attempts]
         db_client.save_extraction(
             doc_id=doc_hash,
             extracted_data=extracted_data,
-            attempts=attempts,
+            attempts=attempts_dicts,
             schema_version=schema_version,
             quality_warnings=quality_warnings,
         )
