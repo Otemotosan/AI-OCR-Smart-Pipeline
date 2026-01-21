@@ -206,7 +206,23 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
         _check_timeout(start_time, "docai")
         logger.info("processing_with_docai", doc_hash=doc_hash)
 
-        docai_client = DocumentAIClient(processor_name=DOCUMENT_AI_PROCESSOR)
+        # Parse processor path: projects/{project}/locations/{location}/processors/{id}
+        processor_parts = DOCUMENT_AI_PROCESSOR.split("/")
+        if len(processor_parts) >= 6:
+            docai_project = processor_parts[1]
+            docai_location = processor_parts[3]
+            docai_processor_id = processor_parts[5]
+        else:
+            # Fallback to PROJECT_ID and assume processor_id only
+            docai_project = PROJECT_ID
+            docai_location = "us"
+            docai_processor_id = DOCUMENT_AI_PROCESSOR
+
+        docai_client = DocumentAIClient(
+            project_id=docai_project,
+            location=docai_location,
+            processor_id=docai_processor_id,
+        )
         docai_result = docai_client.process_document(gcs_uri)
 
         logger.info(
