@@ -114,7 +114,11 @@ def process_document(event: CloudEvent) -> str:
     bq_client = BigQueryClient(bq_config)
 
     # Compute file hash for idempotency
-    doc_hash = DistributedLock.compute_file_hash(storage_client, gcs_uri)
+    bucket_name, blob_name = parse_gcs_path(gcs_uri)
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+    file_content = blob.download_as_bytes()
+    doc_hash = DistributedLock.compute_file_hash(file_content)
 
     logger.info(
         "document_hash_computed",
