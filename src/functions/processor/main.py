@@ -246,21 +246,28 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
         logger.info("extracting_with_gemini", doc_hash=doc_hash)
 
         # Check if image attachment is needed
-        include_image, image_reason = should_attach_image(
-            confidence=docai_result.confidence,
-            gate_failed=False,  # First attempt
-            attempt=0,
-            doc_type=docai_result.detected_type,
-        )
-
-        # Prepare image if needed
+        # Note: For PDFs, we only use markdown from Document AI
+        # Image attachment is only supported for image files (PNG/JPEG)
+        is_pdf = gcs_uri.lower().endswith(".pdf")
+        include_image = False
+        image_reason = "pdf_not_supported"
         image_base64 = None
-        if include_image:
-            bucket_name, blob_name = parse_gcs_path(gcs_uri)
-            bucket = storage_client.bucket(bucket_name)
-            blob = bucket.blob(blob_name)
-            file_content = blob.download_as_bytes()
-            image_base64 = base64.b64encode(file_content).decode("utf-8")
+
+        if not is_pdf:
+            include_image, image_reason = should_attach_image(
+                confidence=docai_result.confidence,
+                gate_failed=False,  # First attempt
+                attempt=0,
+                doc_type=docai_result.detected_type,
+            )
+
+            # Prepare image if needed
+            if include_image:
+                bucket_name, blob_name = parse_gcs_path(gcs_uri)
+                bucket = storage_client.bucket(bucket_name)
+                blob = bucket.blob(blob_name)
+                file_content = blob.download_as_bytes()
+                image_base64 = base64.b64encode(file_content).decode("utf-8")
 
         # Create GeminiInput
         gemini_input = GeminiInput(
