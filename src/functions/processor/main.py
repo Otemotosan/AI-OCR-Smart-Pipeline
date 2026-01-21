@@ -288,9 +288,9 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
 
         if extraction_result.status == "FAILED":
             errors.append("Extraction failed after all retry attempts")
-            for attempt in attempts:
-                if attempt.get("error"):
-                    errors.append(f"Attempt {attempt.get('attempt', '?')}: {attempt.get('error')}")
+            for i, attempt in enumerate(attempts, 1):
+                if attempt.error:
+                    errors.append(f"Attempt {i} ({attempt.model}): {attempt.error}")
 
             raise ProcessingError("Extraction failed")
 
