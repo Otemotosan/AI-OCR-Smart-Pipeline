@@ -87,9 +87,15 @@ class DocumentAIClient:
             Document AI service client
         """
         if self._client is None:
+            from google.api_core.client_options import ClientOptions
             from google.cloud import documentai_v1 as documentai
 
-            self._client = documentai.DocumentProcessorServiceClient()
+            # Use regional endpoint for the processor location
+            api_endpoint = f"{self.location}-documentai.googleapis.com"
+            client_options = ClientOptions(api_endpoint=api_endpoint)
+            self._client = documentai.DocumentProcessorServiceClient(
+                client_options=client_options
+            )
         return self._client
 
     def process_document(
