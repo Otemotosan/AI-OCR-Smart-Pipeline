@@ -127,12 +127,13 @@ def process_document(event: CloudEvent) -> str:
     )
 
     # Try to acquire distributed lock
+    lock_manager = DistributedLock(firestore_client)
     try:
-        with DistributedLock(firestore_client, doc_hash) as lock:
+        with lock_manager.acquire(doc_hash) as doc_ref:
             logger.info(
                 "lock_acquired",
                 doc_hash=doc_hash,
-                ttl_seconds=lock.ttl_seconds,
+                ttl_seconds=lock_manager.ttl_seconds,
             )
 
             # Process the document
