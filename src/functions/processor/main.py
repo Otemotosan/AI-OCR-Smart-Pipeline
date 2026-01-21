@@ -14,6 +14,7 @@ See: All docs/specs/*.md
 
 from __future__ import annotations
 
+import base64
 import contextlib
 import os
 import time
@@ -26,11 +27,14 @@ from cloudevents.http import CloudEvent
 from google.cloud import firestore, storage
 
 from src.core.bigquery_client import BigQueryClient, BigQueryConfig
+from src.core.budget import BudgetManager
 from src.core.database import AuditEventType, DatabaseClient, DocumentStatus
 from src.core.docai import DocumentAIClient
-from src.core.extraction import extract_with_retry
+from src.core.extraction import GeminiInput, extract_with_retry, should_attach_image
+from src.core.gemini import GeminiClient
 from src.core.linters.gate import GateLinter
 from src.core.linters.quality import QualityLinter
+from src.core.schemas import DeliveryNoteV2
 
 # Import core modules
 from src.core.lock import DistributedLock, LockNotAcquiredError
@@ -50,6 +54,7 @@ OUTPUT_BUCKET = os.environ.get("OUTPUT_BUCKET", "")
 QUARANTINE_BUCKET = os.environ.get("QUARANTINE_BUCKET", "")
 BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", "ocr_pipeline")
 DOCUMENT_AI_PROCESSOR = os.environ.get("DOCUMENT_AI_PROCESSOR", "")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 # Timeout configuration (Cloud Functions 2nd Gen max is 60 minutes)
 FUNCTION_TIMEOUT_SECONDS = int(os.environ.get("FUNCTION_TIMEOUT", "540"))
@@ -141,6 +146,7 @@ def process_document(event: CloudEvent) -> str:
                 doc_hash=doc_hash,
                 gcs_uri=gcs_uri,
                 storage_client=storage_client,
+                firestore_client=firestore_client,
                 storage_ops=storage_ops,
                 db_client=db_client,
                 bq_client=bq_client,
@@ -171,6 +177,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
     doc_hash: str,
     gcs_uri: str,
     storage_client: storage.Client,
+    firestore_client: firestore.Client,
     storage_ops: StorageClient,
     db_client: DatabaseClient,
     bq_client: BigQueryClient,
@@ -183,6 +190,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
         doc_hash: Document hash for tracking
         gcs_uri: Source GCS URI
         storage_client: GCS client
+        firestore_client: Firestore client
         storage_ops: Storage operations client
         db_client: Database client
         bq_client: BigQuery client
@@ -237,13 +245,42 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
         _check_timeout(start_time, "extraction")
         logger.info("extracting_with_gemini", doc_hash=doc_hash)
 
-        extraction_result = extract_with_retry(
-            markdown=docai_result.markdown,
+        # Check if image attachment is needed
+        include_image, image_reason = should_attach_image(
             confidence=docai_result.confidence,
-            detected_type=docai_result.detected_type,
-            image_bytes=None,  # Will be fetched if needed
-            gcs_uri=gcs_uri,
-            storage_client=storage_client,
+            gate_failed=False,  # First attempt
+            attempt=0,
+            doc_type=docai_result.detected_type,
+        )
+
+        # Prepare image if needed
+        image_base64 = None
+        if include_image:
+            bucket_name, blob_name = parse_gcs_path(gcs_uri)
+            bucket = storage_client.bucket(bucket_name)
+            blob = bucket.blob(blob_name)
+            file_content = blob.download_as_bytes()
+            image_base64 = base64.b64encode(file_content).decode("utf-8")
+
+        # Create GeminiInput
+        gemini_input = GeminiInput(
+            markdown=docai_result.markdown,
+            image_base64=image_base64,
+            include_image=include_image,
+            reason=image_reason,
+        )
+
+        # Initialize clients for extraction
+        gemini_client = GeminiClient(api_key=GEMINI_API_KEY)
+        budget_manager = BudgetManager(firestore_client=firestore_client)
+        gate_linter = GateLinter()
+
+        extraction_result = extract_with_retry(
+            gemini_input=gemini_input,
+            schema_class=DeliveryNoteV2,
+            gemini_client=gemini_client,
+            budget_manager=budget_manager,
+            gate_linter=gate_linter,
         )
 
         # Record all attempts
