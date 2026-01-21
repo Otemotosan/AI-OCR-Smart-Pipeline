@@ -33,7 +33,7 @@ from src.core.linters.gate import GateLinter
 from src.core.linters.quality import QualityLinter
 
 # Import core modules
-from src.core.lock import DistributedLock, LockAcquisitionError
+from src.core.lock import DistributedLock, LockNotAcquiredError
 from src.core.saga import generate_failed_report, persist_document
 from src.core.storage import (
     StorageClient,
@@ -144,7 +144,7 @@ def process_document(event: CloudEvent) -> str:
 
             return result
 
-    except LockAcquisitionError as e:
+    except LockNotAcquiredError as e:
         logger.info(
             "lock_skipped_duplicate",
             doc_hash=doc_hash,
