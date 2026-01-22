@@ -22,7 +22,26 @@
       "Bash(mypy:*)",
       "Bash(pytest:*)",
       "Bash(bandit:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(gsutil cp:*)",
+      "Bash(gsutil mb:*)",
+      "Bash(gcloud functions deploy:*)",
+      "Bash(gcloud iam service-accounts list:*)",
+      "Bash(gsutil ls:*)",
+      "Bash(gcloud projects add-iam-policy-binding:*)",
+      "Bash(gcloud secrets add-iam-policy-binding:*)",
+      "Bash(gcloud secrets:*)",
+      "Bash(gcloud logging read:*)",
+      "Bash(gcloud ai-platform processors list:*)",
+      "Bash(gcloud ai document-processors:*)",
+      "Bash(gcloud alpha documentai processors list:*)",
+      "Bash(bq mk:*)",
+      "Bash(bq ls ai-ocr-smart-pipeline:ocr_pipeline)",
+      "Bash(bq show ai-ocr-smart-pipeline:ocr_pipeline.extraction_results)",
+      "Bash(bq rm:*)",
+      "Bash(gcloud firestore documents list:*)",
+      "Bash(bq query:*)",
+      "Bash(gsutil cat:*)"
     ]
   }
 }
