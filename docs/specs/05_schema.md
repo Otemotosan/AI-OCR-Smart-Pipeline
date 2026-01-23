@@ -110,6 +110,22 @@ SCHEMA_REGISTRY: Dict[str, SchemaConfig] = {
         deprecated=[],
         migrations={}
     ),
+    "generic": SchemaConfig(
+        versions={
+            "v1": GenericDocumentV1,
+        },
+        current="v1",
+        deprecated=[],
+        migrations={}
+    ),
+    "order_form": SchemaConfig(
+        versions={
+            "v1": OrderFormV1,
+        },
+        current="v1",
+        deprecated=[],
+        migrations={}
+    ),
 }
 ```
 

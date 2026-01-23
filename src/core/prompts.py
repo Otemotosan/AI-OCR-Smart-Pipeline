@@ -149,8 +149,16 @@ def build_extraction_prompt(
         >>> gemini_input = GeminiInput(markdown="# Invoice...")
         >>> prompt = build_extraction_prompt(gemini_input, DeliveryNoteV2)
     """
-    # Select system prompt based on input mode
-    system = MULTIMODAL_SYSTEM_PROMPT if gemini_input.include_image else MARKDOWN_ONLY_SYSTEM_PROMPT
+    # Select system prompt based on schema type and input mode
+    schema_name = schema_class.__name__
+
+    # Schema-specific prompts take priority
+    if "OrderForm" in schema_name:
+        system = ORDER_FORM_SYSTEM_PROMPT
+    elif gemini_input.include_image:
+        system = MULTIMODAL_SYSTEM_PROMPT
+    else:
+        system = MARKDOWN_ONLY_SYSTEM_PROMPT
 
     # Build schema description
     schema_desc = generate_schema_description(schema_class)
