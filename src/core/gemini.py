@@ -34,7 +34,7 @@ logger = structlog.get_logger(__name__)
 # ============================================================
 
 # Model names
-FLASH_MODEL = "gemini-2.0-flash"
+FLASH_MODEL = "gemini-2.5-flash"
 PRO_MODEL = "gemini-2.5-pro"
 
 # Cost per 1K tokens (USD)
