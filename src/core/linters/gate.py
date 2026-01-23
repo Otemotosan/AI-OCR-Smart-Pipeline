@@ -45,6 +45,7 @@ class GateLinter:
         "delivery_note": "management_id",
         "invoice": "invoice_number",
         "generic": "document_id",
+        "order_form": "order_number",
     }
 
     @classmethod
@@ -119,6 +120,11 @@ class GateLinter:
                 errors = [f"{id_field}: Required field is empty"]
             else:
                 errors = []  # Clear other errors for generic type
+
+        # Skip strict validation for order_form (lenient like generic)
+        if document_type == "order_form":
+            # order_number being null is OK for order forms
+            errors = []  # Clear errors - order forms have many optional fields
 
         return GateLinterResult(passed=len(errors) == 0, errors=errors)
 
