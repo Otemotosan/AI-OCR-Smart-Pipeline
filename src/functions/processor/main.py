@@ -229,6 +229,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
     """
     attempts: list[dict[str, Any]] = []
     errors: list[str] = []
+    docai_markdown: str | None = None
 
     try:
         # Check timeout
@@ -260,6 +261,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             processor_id=docai_processor_id,
         )
         docai_result = docai_client.process_document(gcs_uri)
+        docai_markdown = docai_result.markdown
 
         logger.info(
             "docai_completed",
@@ -493,6 +495,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             errors=errors,
             storage_client=storage_client,
             db_client=db_client,
+            docai_markdown=docai_markdown,
         )
 
         return f"FAILED: {doc_hash} - {e}"
@@ -513,6 +516,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             errors=errors,
             storage_client=storage_client,
             db_client=db_client,
+            docai_markdown=docai_markdown,
         )
 
         return f"TIMEOUT: {doc_hash}"
@@ -534,6 +538,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             errors=errors,
             storage_client=storage_client,
             db_client=db_client,
+            docai_markdown=docai_markdown,
         )
 
         return f"ERROR: {doc_hash} - {type(e).__name__}"
@@ -612,6 +617,7 @@ def _quarantine_document(
     errors: list[str],
     storage_client: storage.Client,
     db_client: DatabaseClient,
+    docai_markdown: str | None = None,
 ) -> None:
     """
     Move failed document to quarantine with report.
@@ -623,6 +629,7 @@ def _quarantine_document(
         errors: List of error messages
         storage_client: GCS client
         db_client: Database client
+        docai_markdown: Optional Document AI markdown content
     """
     logger.info(
         "quarantining_document",
@@ -640,6 +647,7 @@ def _quarantine_document(
         original_copy_path = f"{quarantine_folder}/original_{filename}"
         report_path = f"{quarantine_folder}/FAILED_REPORT.md"
         data_path = f"{quarantine_folder}/extracted_data.json"
+        docai_path = f"{quarantine_folder}/{doc_hash}_docai.md"
 
         # Copy original file to quarantine
         try:
@@ -658,7 +666,7 @@ def _quarantine_document(
 
         last_attempt_data = attempts[-1] if attempts else {}
         data_content = json.dumps(last_attempt_data, indent=2, ensure_ascii=False, default=str)
-        upload_string(storage_client, data_path, data_content, "application/json")
+        upload_string(storage_client, data_path, data_content, "application/json; charset=utf-8")
 
         # Write failed report
         report_content = generate_failed_report(
@@ -667,7 +675,11 @@ def _quarantine_document(
             attempts=attempts,
             errors=errors,
         )
-        upload_string(storage_client, report_path, report_content, "text/markdown")
+        upload_string(storage_client, report_path, report_content, "text/markdown; charset=utf-8")
+
+        # Write DocAI markdown if available
+        if docai_markdown:
+            upload_string(storage_client, docai_path, docai_markdown, "text/markdown; charset=utf-8")
 
         # Update database status
         db_client.update_status(

@@ -35,7 +35,7 @@ logger = structlog.get_logger(__name__)
 
 # Model names
 FLASH_MODEL = "gemini-2.0-flash"
-PRO_MODEL = "gemini-1.5-pro-latest"
+PRO_MODEL = "gemini-1.5-pro"
 
 # Cost per 1K tokens (USD)
 FLASH_INPUT_COST = 0.000125  # $0.125 / 1M tokens
