@@ -116,6 +116,7 @@ class DocumentRecord:
     - created_at: datetime
     - updated_at: datetime
     - processed_at: datetime | None
+    - docai_markdown: str | None (Document AI OCR output for re-extraction)
     """
 
     document_id: str
@@ -131,6 +132,7 @@ class DocumentRecord:
     schema_version: str | None = None
     error_message: str | None = None
     quarantine_path: str | None = None
+    docai_markdown: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for Firestore."""
@@ -148,6 +150,7 @@ class DocumentRecord:
             "schema_version": self.schema_version,
             "error_message": self.error_message,
             "quarantine_path": self.quarantine_path,
+            "docai_markdown": self.docai_markdown,
         }
 
     @classmethod
@@ -187,6 +190,7 @@ class DocumentRecord:
             schema_version=data.get("schema_version"),
             error_message=data.get("error_message"),
             quarantine_path=data.get("quarantine_path"),
+            docai_markdown=data.get("docai_markdown"),
         )
 
 
@@ -385,6 +389,7 @@ class DatabaseClient:
         attempts: list[dict[str, Any]],
         schema_version: str,
         quality_warnings: list[str] | None = None,
+        docai_markdown: str | None = None,
     ) -> None:
         """
         Save extraction results to document.
@@ -395,6 +400,7 @@ class DatabaseClient:
             attempts: List of extraction attempts
             schema_version: Schema version string
             quality_warnings: Optional list of quality warnings
+            docai_markdown: Optional Document AI markdown output for re-extraction
 
         Raises:
             DocumentNotFoundError: If document not found
@@ -413,6 +419,9 @@ class DatabaseClient:
             if quality_warnings is not None:
                 update_data["quality_warnings"] = quality_warnings
 
+            if docai_markdown is not None:
+                update_data["docai_markdown"] = docai_markdown
+
             doc_ref.update(update_data)
 
             logger.info(
@@ -420,6 +429,7 @@ class DatabaseClient:
                 doc_id=doc_id,
                 schema_version=schema_version,
                 attempts_count=len(attempts),
+                has_markdown=docai_markdown is not None,
             )
 
             # Log audit event
@@ -430,6 +440,7 @@ class DatabaseClient:
                     "schema_version": schema_version,
                     "attempts_count": len(attempts),
                     "has_warnings": bool(quality_warnings),
+                    "has_markdown": docai_markdown is not None,
                 },
             )
 

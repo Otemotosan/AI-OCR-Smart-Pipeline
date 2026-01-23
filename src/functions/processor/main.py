@@ -391,6 +391,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             attempts=attempts_dicts,
             schema_version=schema_version,
             quality_warnings=quality_warnings,
+            docai_markdown=docai_result.markdown,
         )
 
         # Step 7: Generate destination path and persist with Saga
@@ -418,6 +419,29 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             if saga_result.error:
                 errors.append(saga_result.error)
             raise ProcessingError(f"Saga failed: {saga_result.failed_step}")
+
+        # Step 7.5: Save Document AI markdown to GCS (for debugging and re-extraction)
+        markdown_path = dest_path.rsplit(".", 1)[0] + "_docai.md"
+        try:
+            upload_string(
+                storage_client,
+                markdown_path,
+                docai_result.markdown,
+                "text/markdown",
+            )
+            logger.info(
+                "markdown_saved_to_gcs",
+                doc_hash=doc_hash,
+                markdown_path=markdown_path,
+                markdown_size=len(docai_result.markdown),
+            )
+        except Exception as e:
+            # Non-critical: log warning but don't fail processing
+            logger.warning(
+                "markdown_save_failed",
+                doc_hash=doc_hash,
+                error=str(e),
+            )
 
         # Step 8: Insert into BigQuery
         _check_timeout(start_time, "bigquery")
