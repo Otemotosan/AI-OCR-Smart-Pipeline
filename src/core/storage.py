@@ -288,45 +288,52 @@ def generate_destination_path(
     """
     Generate destination path from schema data.
 
-    Format: gs://bucket/YYYYMM/管理ID_会社名_YYYYMMDD.pdf
+    Standard format: gs://bucket/YYYYMM/管理ID_会社名_YYYYMMDD.pdf
+    Generic fallback: gs://bucket/YYYYMM/unknown/{document_id}_{YYYYMMDD}.pdf
 
     Args:
-        schema_data: Validated extraction data with management_id, company_name, issue_date
+        schema_data: Validated extraction data
         timestamp: Processing timestamp for folder organization
         output_bucket: Target GCS bucket name
 
     Returns:
         Full GCS URI for destination
-
-    Raises:
-        ValueError: If required fields are missing
     """
-    management_id = schema_data.get("management_id")
+    document_type = schema_data.get("document_type", "generic")
+    folder = timestamp.strftime("%Y%m")
+    date_str = timestamp.strftime("%Y%m%d")
+
+    # Handle generic document type (fallback)
+    if document_type == "generic":
+        document_id = schema_data.get("document_id", "unknown")
+        safe_id = _sanitize_filename(document_id, max_length=30)
+        filename = f"{safe_id}_{date_str}.pdf"
+        return f"gs://{output_bucket}/{folder}/unknown/{filename}"
+
+    # Standard document types (delivery_note, invoice)
+    management_id = schema_data.get("management_id") or schema_data.get("invoice_number")
     company_name = schema_data.get("company_name")
     issue_date = schema_data.get("issue_date")
 
-    if not management_id:
-        raise ValueError("management_id is required for destination path")
-    if not company_name:
-        raise ValueError("company_name is required for destination path")
-    if not issue_date:
-        raise ValueError("issue_date is required for destination path")
+    # Fallback to generic if required fields are missing
+    if not management_id or not company_name:
+        document_id = schema_data.get("document_id", "unknown")
+        safe_id = _sanitize_filename(document_id or "unknown", max_length=30)
+        filename = f"{safe_id}_{date_str}.pdf"
+        return f"gs://{output_bucket}/{folder}/unknown/{filename}"
 
     # Sanitize filename components
     safe_management_id = _sanitize_filename(management_id)
     safe_company_name = _sanitize_filename(company_name)
 
     # Parse date for filename
-    if isinstance(issue_date, str):
-        # Handle various date formats
-        date_str = issue_date.replace("-", "").replace("/", "")[:8]
-    elif isinstance(issue_date, datetime):
-        date_str = issue_date.strftime("%Y%m%d")
-    else:
-        date_str = str(issue_date).replace("-", "")[:8]
-
-    # Create folder path (YYYYMM)
-    folder = timestamp.strftime("%Y%m")
+    if issue_date:
+        if isinstance(issue_date, str):
+            date_str = issue_date.replace("-", "").replace("/", "")[:8]
+        elif isinstance(issue_date, datetime):
+            date_str = issue_date.strftime("%Y%m%d")
+        else:
+            date_str = str(issue_date).replace("-", "")[:8]
 
     # Construct filename
     filename = f"{safe_management_id}_{safe_company_name}_{date_str}.pdf"

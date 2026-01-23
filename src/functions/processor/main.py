@@ -36,7 +36,7 @@ from src.core.extraction import GeminiInput, extract_with_retry, should_attach_i
 from src.core.gemini import GeminiClient
 from src.core.linters.gate import GateLinter
 from src.core.linters.quality import QualityLinter
-from src.core.schemas import DeliveryNoteV2
+from src.core.schemas import DeliveryNoteV2, GenericDocumentV1
 
 # Import core modules
 from src.core.lock import DistributedLock, LockNotAcquiredError
@@ -319,6 +319,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
         budget_manager = BudgetManager(firestore_client=firestore_client)
         gate_linter = GateLinter()
 
+        # Try specialized extraction first (DeliveryNoteV2)
         extraction_result = extract_with_retry(
             gemini_input=gemini_input,
             schema_class=DeliveryNoteV2,
@@ -330,19 +331,32 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
         # Record all attempts
         attempts = extraction_result.attempts
 
+        # Fallback to GenericDocumentV1 if specialized extraction failed
         if extraction_result.status == "FAILED":
-            errors.append("Extraction failed after all retry attempts")
-            for i, attempt in enumerate(attempts, 1):
-                if attempt.error:
-                    errors.append(f"Attempt {i} ({attempt.model}): {attempt.error}")
-
-            raise ProcessingError("Extraction failed")
-
-        extracted_data = extraction_result.schema.model_dump() if extraction_result.schema else {}
-        # Convert date objects to strings for Firestore compatibility
-        extracted_data = _convert_dates_to_strings(extracted_data)
-        document_type = extracted_data.get("document_type", "unknown")
-        schema_version = f"{document_type}/v{extracted_data.get('schema_version', '1')}"
+            logger.warning(
+                "specialized_extraction_failed_trying_generic",
+                doc_hash=doc_hash,
+                reason=extraction_result.reason,
+            )
+            
+            # Create generic document with doc_hash as ID
+            extracted_data = {
+                "schema_version": "v1",
+                "document_type": "generic",
+                "document_id": doc_hash,
+                "title": None,
+                "extracted_text": docai_result.markdown[:500] if docai_result.markdown else "",
+                "detected_fields": {},
+                "confidence_score": docai_result.confidence,
+            }
+            document_type = "generic"
+            schema_version = "generic/v1"
+        else:
+            extracted_data = extraction_result.schema.model_dump() if extraction_result.schema else {}
+            # Convert date objects to strings for Firestore compatibility
+            extracted_data = _convert_dates_to_strings(extracted_data)
+            document_type = extracted_data.get("document_type", "unknown")
+            schema_version = f"{document_type}/v{extracted_data.get('schema_version', '1')}"
 
         logger.info(
             "extraction_completed",

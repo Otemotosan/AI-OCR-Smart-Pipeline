@@ -44,6 +44,7 @@ class GateLinter:
     ID_FIELD_MAP: ClassVar[dict[str, str]] = {
         "delivery_note": "management_id",
         "invoice": "invoice_number",
+        "generic": "document_id",
     }
 
     @classmethod
@@ -110,6 +111,14 @@ class GateLinter:
             errors.append(
                 f"document_type: Unknown type '{document_type}'. " f"Valid types: {available}"
             )
+
+        # Skip strict validation for generic type
+        if document_type == "generic":
+            # Only document_id is required for generic
+            if not doc_id or not str(doc_id).strip():
+                errors = [f"{id_field}: Required field is empty"]
+            else:
+                errors = []  # Clear other errors for generic type
 
         return GateLinterResult(passed=len(errors) == 0, errors=errors)
 

@@ -103,6 +103,27 @@ class InvoiceV1(BaseModel):
 
 
 # ============================================================
+# Generic Document Schema (Fallback)
+# ============================================================
+
+
+class GenericDocumentV1(BaseModel):
+    """Version 1: Universal document for any type.
+    
+    Used when specific schema extraction fails or document type is unknown.
+    Ensures all documents are processed without quarantine.
+    """
+
+    schema_version: str = Field(default="v1", frozen=True)
+    document_type: str = Field(default="generic", frozen=True)
+    document_id: str = Field(..., description="ドキュメントID（抽出または生成）")
+    title: str | None = Field(None, description="文書タイトル")
+    extracted_text: str = Field(default="", description="抽出されたテキスト概要")
+    detected_fields: dict = Field(default_factory=dict, description="検出されたフィールド")
+    confidence_score: float = Field(default=0.0, description="抽出信頼度")
+
+
+# ============================================================
 # Migration Functions
 # ============================================================
 
@@ -176,6 +197,14 @@ SCHEMA_REGISTRY: dict[str, SchemaConfig] = {
     "invoice": SchemaConfig(
         versions={
             "v1": InvoiceV1,
+        },
+        current="v1",
+        deprecated=[],
+        migrations={},
+    ),
+    "generic": SchemaConfig(
+        versions={
+            "v1": GenericDocumentV1,
         },
         current="v1",
         deprecated=[],
