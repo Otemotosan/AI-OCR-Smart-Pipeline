@@ -464,7 +464,7 @@ def extract_with_retry(  # noqa: C901
                 image_bytes = base64.b64decode(gemini_input.image_base64)
 
             # Call Flash model
-            response = gemini_client.call_flash(prompt=prompt, image=image_bytes)
+            response = gemini_client.call_flash_v2(prompt, image_bytes)
 
             # Record attempt
             attempt = ExtractionAttempt(
@@ -638,7 +638,7 @@ def extract_with_retry(  # noqa: C901
 
         # Call Pro model
         logger.info("calling_pro")
-        response = gemini_client.call_pro(prompt=prompt, image=image_bytes)
+        response = gemini_client.call_pro_v2(prompt, image_bytes)
 
         # Record attempt
         attempt = ExtractionAttempt(

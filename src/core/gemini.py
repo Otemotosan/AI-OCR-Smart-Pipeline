@@ -201,12 +201,12 @@ class GeminiClient:
 
     @retry_rate_limit
     @retry_transient
-    def call_flash(
+    def call_flash_v2(
         self,
         prompt: str,
         image: bytes | None = None,
     ) -> GeminiResponse:
-        """Call Gemini Flash model with retry logic.
+        """Call Gemini Flash model with retry logic (v2).
 
         Args:
             prompt: Text prompt for extraction
@@ -270,12 +270,12 @@ class GeminiClient:
 
     @retry_rate_limit
     @retry_transient
-    def call_pro(
+    def call_pro_v2(
         self,
         prompt: str,
         image: bytes | None = None,
     ) -> GeminiResponse:
-        """Call Gemini Pro model with retry logic.
+        """Call Gemini Pro model with retry logic (v2).
 
         Args:
             prompt: Text prompt for extraction
