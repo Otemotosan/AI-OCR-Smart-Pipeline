@@ -10,6 +10,7 @@ This is the main entry point for the OCR pipeline that:
 6. Inserts into BigQuery for analytics
 
 See: All docs/specs/*.md
+v2026.1 (Force Rebuild)
 """
 
 from __future__ import annotations
