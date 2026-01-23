@@ -427,7 +427,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
                 storage_client,
                 markdown_path,
                 docai_result.markdown,
-                "text/markdown",
+                "text/markdown; charset=utf-8",
             )
             logger.info(
                 "markdown_saved_to_gcs",
