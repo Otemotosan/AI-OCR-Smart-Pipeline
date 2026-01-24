@@ -109,7 +109,7 @@ class InvoiceV1(BaseModel):
 
 class GenericDocumentV1(BaseModel):
     """Version 1: Universal document for any type.
-    
+
     Used when specific schema extraction fails or document type is unknown.
     Ensures all documents are processed without quarantine.
     """
@@ -140,7 +140,7 @@ class OrderLineItem(BaseModel):
 
 class OrderFormV1(BaseModel):
     """Version 1: Order form (注文書) schema.
-    
+
     Optimized for table-heavy documents with line items.
     """
 

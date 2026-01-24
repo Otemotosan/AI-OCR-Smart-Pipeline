@@ -399,9 +399,7 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             schema_version = "generic/v1"
         else:
             extracted_data = (
-                extraction_result.schema.model_dump()
-                if extraction_result.schema
-                else {}
+                extraction_result.schema.model_dump() if extraction_result.schema else {}
             )
             # Convert date objects to strings for Firestore compatibility
             extracted_data = _convert_dates_to_strings(extracted_data)
@@ -745,7 +743,9 @@ def _quarantine_document(
         # Write DocAI markdown if available
         if docai_markdown:
             upload_string(
-                storage_client, docai_path, docai_markdown,
+                storage_client,
+                docai_path,
+                docai_markdown,
                 "text/markdown; charset=utf-8",
             )
 

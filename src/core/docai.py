@@ -93,9 +93,7 @@ class DocumentAIClient:
             # Use regional endpoint for the processor location
             api_endpoint = f"{self.location}-documentai.googleapis.com"
             client_options = ClientOptions(api_endpoint=api_endpoint)
-            self._client = documentai.DocumentProcessorServiceClient(
-                client_options=client_options
-            )
+            self._client = documentai.DocumentProcessorServiceClient(client_options=client_options)
         return self._client
 
     def process_document(
