@@ -404,7 +404,13 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             # Convert date objects to strings for Firestore compatibility
             extracted_data = _convert_dates_to_strings(extracted_data)
             document_type = extracted_data.get("document_type", "unknown")
-            schema_version = f"{document_type}/v{extracted_data.get('schema_version', '1')}"
+            # schema_version field already contains 'v' prefix (e.g., "v2")
+            version = extracted_data.get("schema_version", "v1")
+            # Remove 'v' prefix if present to avoid "vv2"
+            if version.startswith("v"):
+                schema_version = f"{document_type}/{version}"
+            else:
+                schema_version = f"{document_type}/v{version}"
 
         logger.info(
             "extraction_completed",
