@@ -284,6 +284,7 @@ def generate_destination_path(
     schema_data: dict[str, Any],
     timestamp: datetime,
     output_bucket: str,
+    original_filename: str | None = None,
 ) -> str:
     """
     Generate destination path from schema data.
@@ -292,12 +293,13 @@ def generate_destination_path(
     - order_form: gs://bucket/YYYYMM/order_forms/{order_number}_{supplier}_{date}.pdf
     - delivery_note: gs://bucket/YYYYMM/delivery_notes/{management_id}_{company}_{date}.pdf
     - invoice: gs://bucket/YYYYMM/invoices/{invoice_number}_{vendor}_{date}.pdf
-    - generic: gs://bucket/YYYYMM/unknown/{document_id}_{date}.pdf
+    - generic: gs://bucket/YYYYMM/unknown/{original_filename}.pdf
 
     Args:
         schema_data: Validated extraction data
         timestamp: Processing timestamp for folder organization
         output_bucket: Target GCS bucket name
+        original_filename: Original source filename (used for unknown documents)
 
     Returns:
         Full GCS URI for destination
@@ -306,11 +308,21 @@ def generate_destination_path(
     folder = timestamp.strftime("%Y%m")
     date_str = timestamp.strftime("%Y%m%d")
 
-    # Handle generic document type (fallback)
+    # Handle generic document type (fallback) - preserve original filename
     if document_type == "generic":
-        document_id = schema_data.get("document_id", "unknown")
-        safe_id = _sanitize_filename(document_id, max_length=30)
-        filename = f"{safe_id}_{date_str}.pdf"
+        if original_filename:
+            # Use original filename (without extension, we add .pdf)
+            if "." in original_filename:
+                base_name = original_filename.rsplit(".", 1)[0]
+            else:
+                base_name = original_filename
+            safe_name = _sanitize_filename(base_name, max_length=100)
+            filename = f"{safe_name}.pdf"
+        else:
+            # Fallback to document_id if no original filename
+            document_id = schema_data.get("document_id", "unknown")
+            safe_id = _sanitize_filename(document_id, max_length=30)
+            filename = f"{safe_id}_{date_str}.pdf"
         return f"gs://{output_bucket}/{folder}/unknown/{filename}"
 
     # Order Form: order_forms/{order_number}_{supplier}_{date}.pdf
@@ -561,9 +573,10 @@ class StorageClient:
         schema_data: dict[str, Any],
         timestamp: datetime,
         output_bucket: str,
+        original_filename: str | None = None,
     ) -> str:
         """Generate destination path from schema data."""
-        return generate_destination_path(schema_data, timestamp, output_bucket)
+        return generate_destination_path(schema_data, timestamp, output_bucket, original_filename)
 
     def upload_string(
         self,

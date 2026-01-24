@@ -463,10 +463,14 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
         _check_timeout(start_time, "persistence")
         logger.info("persisting_document", doc_hash=doc_hash)
 
+        # Extract original filename from GCS URI for unknown documents
+        original_filename = gcs_uri.split("/")[-1] if "/" in gcs_uri else gcs_uri
+
         dest_path = generate_destination_path(
             schema_data=extracted_data,
             timestamp=datetime.now(UTC),
             output_bucket=OUTPUT_BUCKET,
+            original_filename=original_filename,
         )
 
         saga_result = persist_document(
