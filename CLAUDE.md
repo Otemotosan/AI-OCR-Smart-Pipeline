@@ -654,3 +654,71 @@ gcloud secrets create docai-processor --data-file=- <<< "us:dc6b52e2ac4251c1"
 2. [ ] Cloud Function に `--set-secrets` でデプロイ
 3. [ ] `.bashrc` から `GEMINI_API_KEY` 削除
 4. [ ] Secret Managerへのアクセス権限（IAM）確認
+
+---
+
+## 📄 Multi-Schema Extraction Architecture
+
+### Overview
+
+Intelligent schema selection using folder-based routing (primary) and classification-based routing (fallback).
+
+```
+Input Bucket
+├── order_forms/      → OrderFormV1 (direct, no classification)
+├── delivery_notes/   → DeliveryNoteV2 (direct, no classification)
+├── invoices/         → InvoiceV1 (direct, no classification)
+└── *.pdf             → Classification → Best Schema → Generic fallback
+```
+
+### Folder-Based Routing (Primary - Cost Efficient)
+
+| Folder | Schema | Classification |
+|--------|--------|----------------|
+| `order_forms/` | OrderFormV1 | Skipped |
+| `delivery_notes/` | DeliveryNoteV2 | Skipped |
+| `invoices/` | InvoiceV1 | Skipped |
+| Root (`/`) | Dynamic | Required |
+
+### Classification-Based Routing (Fallback - Bulk Unsorted)
+
+```
+Step 1: Classify document (header 500 chars, Flash model)
+Step 2: Get confidence scores for each schema type
+Step 3: If confidence ≥ 0.85 → Use that schema
+Step 4: If confidence < 0.85 → Try top 2 schemas
+Step 5: All failed → GenericDocumentV1
+```
+
+### Compound Documents (確認書兼注文書 etc.)
+
+**Rule**: Use schema with richer data fields.
+
+| Document Title | Selected Schema | Reason |
+|----------------|-----------------|--------|
+| 確認書兼注文書 | OrderFormV1 | Order has line items |
+| 納品書兼請求書 | InvoiceV1 | Invoice has billing info |
+
+### Configuration
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CLASSIFICATION_CONFIDENCE_THRESHOLD` | 0.85 | Min confidence for direct extraction |
+| `MAX_SCHEMA_ATTEMPTS` | 2 | Max schemas to try before Generic |
+
+### Output Path Templates
+
+| Document Type | Path Template |
+|---------------|---------------|
+| order_form | `{YYYYMM}/order_forms/{order_number}_{supplier}_{date}.pdf` |
+| delivery_note | `{YYYYMM}/delivery_notes/{management_id}_{company}_{date}.pdf` |
+| invoice | `{YYYYMM}/invoices/{invoice_number}_{vendor}_{date}.pdf` |
+| generic | `{YYYYMM}/unknown/{doc_hash}_{date}.pdf` |
+
+Each PDF is accompanied by `*_docai.md` in the same folder.
+
+### Future: InspectionV1 (WebUI Phase)
+
+- Postponed until WebUI implementation
+- Will require sample sheet analysis for field definitions
+- May need per-form Linter configurations

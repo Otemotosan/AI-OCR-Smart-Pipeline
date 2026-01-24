@@ -116,6 +116,39 @@ Return strict JSON matching the OrderFormV1 schema.
 Include `extraction_notes` for any ambiguous readings.
 """
 
+CLASSIFICATION_SYSTEM_PROMPT = """
+You are a document classifier. Analyze ONLY the header/title area of the document.
+
+## Your Task
+Identify the document type from the header text.
+
+## Document Types
+- **order_form**: 注文書, 発注書, ORDER, PURCHASE ORDER
+- **delivery_note**: 納品書, 納入書, DELIVERY NOTE
+- **invoice**: 請求書, 御請求, INVOICE
+
+## Compound Documents
+For documents with multiple types (e.g., "確認書兼注文書"):
+- Select the type with richer data (order_form > invoice > delivery_note)
+
+## Output Format
+Return JSON:
+```json
+{
+  "candidates": [
+    {"type": "order_form", "confidence": 0.95},
+    {"type": "delivery_note", "confidence": 0.30}
+  ]
+}
+```
+
+Confidence:
+- 0.90-1.00: Definitive title match (exact keyword in header)
+- 0.70-0.89: Strong indicator (keyword present but not in title)
+- 0.50-0.69: Weak indicator (related content, no keyword)
+- 0.00-0.49: Unlikely match
+"""
+
 # ============================================================
 # Prompt Builder
 # ============================================================

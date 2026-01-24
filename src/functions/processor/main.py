@@ -36,7 +36,8 @@ from src.core.extraction import GeminiInput, extract_with_retry, should_attach_i
 from src.core.gemini import GeminiClient
 from src.core.linters.gate import GateLinter
 from src.core.linters.quality import QualityLinter
-from src.core.schemas import DeliveryNoteV2, GenericDocumentV1
+from src.core.schemas import GenericDocumentV1
+from src.core.schema_detector import select_schema_priority
 
 # Import core modules
 from src.core.lock import DistributedLock, LockNotAcquiredError
@@ -57,6 +58,12 @@ QUARANTINE_BUCKET = os.environ.get("QUARANTINE_BUCKET", "")
 BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", "ocr_pipeline")
 DOCUMENT_AI_PROCESSOR = os.environ.get("DOCUMENT_AI_PROCESSOR", "")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+
+# Multi-schema extraction configuration
+CLASSIFICATION_CONFIDENCE_THRESHOLD = float(
+    os.environ.get("CLASSIFICATION_CONFIDENCE_THRESHOLD", "0.85")
+)
+MAX_SCHEMA_ATTEMPTS = int(os.environ.get("MAX_SCHEMA_ATTEMPTS", "2"))
 
 # Timeout configuration (Cloud Functions 2nd Gen max is 60 minutes)
 FUNCTION_TIMEOUT_SECONDS = int(os.environ.get("FUNCTION_TIMEOUT", "540"))
@@ -319,26 +326,66 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
         budget_manager = BudgetManager(firestore_client=firestore_client)
         gate_linter = GateLinter()
 
-        # Try specialized extraction first (DeliveryNoteV2)
-        extraction_result = extract_with_retry(
-            gemini_input=gemini_input,
-            schema_class=DeliveryNoteV2,
-            gemini_client=gemini_client,
-            budget_manager=budget_manager,
-            gate_linter=gate_linter,
+        # Multi-schema extraction with intelligent schema selection
+        schema_priority = select_schema_priority(
+            markdown=docai_result.markdown,
+            gcs_path=gcs_uri,
+            confidence_threshold=CLASSIFICATION_CONFIDENCE_THRESHOLD,
         )
 
-        # Record all attempts
-        attempts = extraction_result.attempts
+        logger.info(
+            "schema_priority_determined",
+            doc_hash=doc_hash,
+            schemas=[s.__name__ for s in schema_priority[:MAX_SCHEMA_ATTEMPTS]],
+        )
 
-        # Fallback to GenericDocumentV1 if specialized extraction failed
-        if extraction_result.status == "FAILED":
-            logger.warning(
-                "specialized_extraction_failed_trying_generic",
+        extraction_result = None
+        extraction_success = False
+
+        # Try schemas in priority order (up to MAX_SCHEMA_ATTEMPTS)
+        for schema_idx, schema_class in enumerate(schema_priority[:MAX_SCHEMA_ATTEMPTS]):
+            logger.info(
+                "trying_schema",
                 doc_hash=doc_hash,
-                reason=extraction_result.reason,
+                schema=schema_class.__name__,
+                attempt=schema_idx + 1,
             )
-            
+
+            extraction_result = extract_with_retry(
+                gemini_input=gemini_input,
+                schema_class=schema_class,
+                gemini_client=gemini_client,
+                budget_manager=budget_manager,
+                gate_linter=gate_linter,
+            )
+
+            if extraction_result.status == "SUCCESS":
+                extraction_success = True
+                logger.info(
+                    "schema_extraction_success",
+                    doc_hash=doc_hash,
+                    schema=schema_class.__name__,
+                )
+                break
+            else:
+                logger.warning(
+                    "schema_extraction_failed",
+                    doc_hash=doc_hash,
+                    schema=schema_class.__name__,
+                    reason=extraction_result.reason,
+                )
+
+        # Record all attempts from last extraction
+        attempts = extraction_result.attempts if extraction_result else []
+
+        # Fallback to GenericDocumentV1 if all schemas failed
+        if not extraction_success:
+            logger.warning(
+                "all_schemas_failed_using_generic",
+                doc_hash=doc_hash,
+                tried_schemas=[s.__name__ for s in schema_priority[:MAX_SCHEMA_ATTEMPTS]],
+            )
+
             # Create generic document with doc_hash as ID
             extracted_data = {
                 "schema_version": "v1",
