@@ -72,6 +72,7 @@ ignore = [
     "S101",    # Use of assert (allowed in tests)
     "RUF001",  # String contains ambiguous chars (Japanese)
     "W293",    # Blank line contains whitespace
+    "SIM108",  # Use ternary operator (sometimes less readable)
 ]
 
 [tool.ruff.lint.mccabe]

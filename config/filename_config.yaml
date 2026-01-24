@@ -1,0 +1,88 @@
+# Filename Configuration for AI-OCR Smart Pipeline
+# ================================================
+# This file controls how output filenames are generated based on extracted data.
+# 
+# Location: gs://{CONFIG_BUCKET}/config/filename_config.yaml
+# Reload: Cloud Function automatically loads latest config on each execution.
+#
+# How to use:
+# 1. Edit this file to change field order or naming patterns
+# 2. Upload to GCS: gsutil cp filename_config.yaml gs://{bucket}/config/
+# 3. Next document processing will use the new configuration
+#
+version: "1.0"
+
+filename_templates:
+  # 納品書 (Delivery Note)
+  delivery_note:
+    folder: "delivery_notes"
+    pattern: "{management_id}_{company_name}_{issue_date}"
+    fields:
+      management_id:
+        source: "management_id"
+        max_length: 30
+      company_name:
+        source: "company_name"
+        max_length: 30
+      issue_date:
+        source: "issue_date"
+        format: "%Y%m%d"
+
+  # 注文書 (Order Form)
+  order_form:
+    folder: "order_forms"
+    pattern: "{order_number}_{supplier}_{order_date}"
+    fields:
+      order_number:
+        source: "order_number"
+        max_length: 30
+      supplier:
+        # Multiple sources - uses first available
+        source:
+          - "supplier_company"
+          - "company_name"
+        max_length: 30
+      order_date:
+        source:
+          - "order_date"
+          - "issue_date"
+        format: "%Y%m%d"
+
+  # 請求書 (Invoice)
+  invoice:
+    folder: "invoices"
+    pattern: "{invoice_number}_{vendor}_{issue_date}"
+    fields:
+      invoice_number:
+        source: "invoice_number"
+        max_length: 30
+      vendor:
+        source:
+          - "vendor_name"
+          - "company_name"
+        max_length: 30
+      issue_date:
+        source: "issue_date"
+        format: "%Y%m%d"
+
+  # 汎用/不明 (Generic/Unknown)
+  # Uses original filename instead of extracted fields
+  generic:
+    folder: "unknown"
+    use_original_filename: true
+
+# ============================================================
+# Pattern Syntax:
+#   {field_name} - Replaced with extracted value
+#   Field names must match keys defined in "fields" section
+#
+# Field Configuration:
+#   source: string or list of strings (field names in schema)
+#   max_length: Maximum characters (default: 50)
+#   format: Date format string (e.g., "%Y%m%d")
+#
+# Examples:
+#   pattern: "{company}_{date}_{id}"
+#   pattern: "{date}_{id}"
+#   pattern: "{id}_{company}"
+# ============================================================

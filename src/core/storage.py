@@ -287,13 +287,10 @@ def generate_destination_path(
     original_filename: str | None = None,
 ) -> str:
     """
-    Generate destination path from schema data.
+    Generate destination path from schema data using configurable templates.
 
-    Path templates by document type:
-    - order_form: gs://bucket/YYYYMM/order_forms/{order_number}_{supplier}_{date}.pdf
-    - delivery_note: gs://bucket/YYYYMM/delivery_notes/{management_id}_{company}_{date}.pdf
-    - invoice: gs://bucket/YYYYMM/invoices/{invoice_number}_{vendor}_{date}.pdf
-    - generic: gs://bucket/YYYYMM/unknown/{original_filename}.pdf
+    Templates are loaded from GCS config file (filename_config.yaml) or
+    use built-in defaults. This allows changing filename patterns without redeployment.
 
     Args:
         schema_data: Validated extraction data
@@ -304,74 +301,20 @@ def generate_destination_path(
     Returns:
         Full GCS URI for destination
     """
+    from src.core.filename_config import generate_filename_from_template
+
     document_type = schema_data.get("document_type", "generic")
-    folder = timestamp.strftime("%Y%m")
-    date_str = timestamp.strftime("%Y%m%d")
+    month_folder = timestamp.strftime("%Y%m")
 
-    # Handle generic document type (fallback) - preserve original filename
-    if document_type == "generic":
-        if original_filename:
-            # Use original filename (without extension, we add .pdf)
-            if "." in original_filename:
-                base_name = original_filename.rsplit(".", 1)[0]
-            else:
-                base_name = original_filename
-            safe_name = _sanitize_filename(base_name, max_length=100)
-            filename = f"{safe_name}.pdf"
-        else:
-            # Fallback to document_id if no original filename
-            document_id = schema_data.get("document_id", "unknown")
-            safe_id = _sanitize_filename(document_id, max_length=30)
-            filename = f"{safe_id}_{date_str}.pdf"
-        return f"gs://{output_bucket}/{folder}/unknown/{filename}"
+    # Generate folder and filename from template
+    subfolder, filename = generate_filename_from_template(
+        schema_data=schema_data,
+        document_type=document_type,
+        timestamp=timestamp,
+        original_filename=original_filename,
+    )
 
-    # Order Form: order_forms/{order_number}_{supplier}_{date}.pdf
-    if document_type == "order_form":
-        order_number = schema_data.get("order_number", "")
-        supplier = schema_data.get("supplier_company", "") or schema_data.get("company_name", "")
-        issue_date = schema_data.get("order_date") or schema_data.get("issue_date")
-
-        if order_number and supplier:
-            safe_order = _sanitize_filename(order_number)
-            safe_supplier = _sanitize_filename(supplier)
-            if issue_date:
-                date_str = _parse_date_string(issue_date)
-            filename = f"{safe_order}_{safe_supplier}_{date_str}.pdf"
-            return f"gs://{output_bucket}/{folder}/order_forms/{filename}"
-
-    # Invoice: invoices/{invoice_number}_{vendor}_{date}.pdf
-    if document_type == "invoice":
-        invoice_number = schema_data.get("invoice_number", "")
-        vendor = schema_data.get("vendor_name", "") or schema_data.get("company_name", "")
-        issue_date = schema_data.get("issue_date")
-
-        if invoice_number and vendor:
-            safe_invoice = _sanitize_filename(invoice_number)
-            safe_vendor = _sanitize_filename(vendor)
-            if issue_date:
-                date_str = _parse_date_string(issue_date)
-            filename = f"{safe_invoice}_{safe_vendor}_{date_str}.pdf"
-            return f"gs://{output_bucket}/{folder}/invoices/{filename}"
-
-    # Delivery Note: delivery_notes/{management_id}_{company}_{date}.pdf
-    if document_type == "delivery_note":
-        management_id = schema_data.get("management_id", "")
-        company_name = schema_data.get("company_name", "")
-        issue_date = schema_data.get("issue_date")
-
-        if management_id and company_name:
-            safe_id = _sanitize_filename(management_id)
-            safe_company = _sanitize_filename(company_name)
-            if issue_date:
-                date_str = _parse_date_string(issue_date)
-            filename = f"{safe_id}_{safe_company}_{date_str}.pdf"
-            return f"gs://{output_bucket}/{folder}/delivery_notes/{filename}"
-
-    # Fallback for unknown types or missing fields
-    document_id = schema_data.get("document_id") or schema_data.get("management_id") or "unknown"
-    safe_id = _sanitize_filename(document_id, max_length=30)
-    filename = f"{safe_id}_{date_str}.pdf"
-    return f"gs://{output_bucket}/{folder}/unknown/{filename}"
+    return f"gs://{output_bucket}/{month_folder}/{subfolder}/{filename}"
 
 
 def _parse_date_string(issue_date: str | datetime | Any) -> str:
