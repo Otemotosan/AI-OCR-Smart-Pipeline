@@ -102,8 +102,9 @@ class TestGenerateDestinationPath:
     """Tests for generate_destination_path function."""
 
     def test_valid_path_generation(self) -> None:
-        """Test generating a valid destination path."""
+        """Test generating a valid destination path for delivery_note."""
         schema_data = {
+            "document_type": "delivery_note",
             "management_id": "INV-2025-001",
             "company_name": "山田商事",
             "issue_date": "2025-01-15",
@@ -112,11 +113,13 @@ class TestGenerateDestinationPath:
 
         result = generate_destination_path(schema_data, timestamp, "output-bucket")
 
-        assert result == "gs://output-bucket/202501/INV-2025-001_山田商事_20250115.pdf"
+        expected = "gs://output-bucket/202501/delivery_notes/INV-2025-001_山田商事_20250115.pdf"
+        assert result == expected
 
     def test_path_with_datetime_issue_date(self) -> None:
         """Test path generation with datetime issue_date."""
         schema_data = {
+            "document_type": "delivery_note",
             "management_id": "TEST-001",
             "company_name": "Test Co",
             "issue_date": datetime(2025, 3, 20),
@@ -126,10 +129,12 @@ class TestGenerateDestinationPath:
         result = generate_destination_path(schema_data, timestamp, "bucket")
 
         assert "20250320" in result
+        assert "/delivery_notes/" in result
 
     def test_path_with_slash_date_format(self) -> None:
         """Test path generation with slash date format."""
         schema_data = {
+            "document_type": "delivery_note",
             "management_id": "TEST-002",
             "company_name": "Test Corp",
             "issue_date": "2025/04/25",
@@ -143,6 +148,7 @@ class TestGenerateDestinationPath:
     def test_path_with_numeric_issue_date(self) -> None:
         """Test path generation with numeric issue_date."""
         schema_data = {
+            "document_type": "delivery_note",
             "management_id": "TEST-003",
             "company_name": "Test Inc",
             "issue_date": 20250515,  # numeric format
@@ -153,71 +159,69 @@ class TestGenerateDestinationPath:
 
         assert "20250515" in result
 
-    def test_missing_management_id_raises(self) -> None:
-        """Test that missing management_id raises ValueError."""
-        with pytest.raises(ValueError) as exc_info:
-            generate_destination_path(
-                {"company_name": "Test", "issue_date": "2025-01-01"},
-                datetime.now(UTC),
-                "bucket",
-            )
+    def test_missing_management_id_fallback_to_unknown(self) -> None:
+        """Test that missing management_id falls back to unknown folder."""
+        result = generate_destination_path(
+            {"company_name": "Test", "issue_date": "2025-01-01"},
+            datetime.now(UTC),
+            "bucket",
+        )
 
-        assert "management_id" in str(exc_info.value)
+        assert "/unknown/" in result
 
-    def test_missing_company_name_raises(self) -> None:
-        """Test that missing company_name raises ValueError."""
-        with pytest.raises(ValueError) as exc_info:
-            generate_destination_path(
-                {"management_id": "ID-001", "issue_date": "2025-01-01"},
-                datetime.now(UTC),
-                "bucket",
-            )
+    def test_missing_company_name_fallback_to_unknown(self) -> None:
+        """Test that missing company_name falls back to unknown folder."""
+        result = generate_destination_path(
+            {"management_id": "ID-001", "issue_date": "2025-01-01"},
+            datetime.now(UTC),
+            "bucket",
+        )
 
-        assert "company_name" in str(exc_info.value)
+        assert "/unknown/" in result
 
-    def test_missing_issue_date_raises(self) -> None:
-        """Test that missing issue_date raises ValueError."""
-        with pytest.raises(ValueError) as exc_info:
-            generate_destination_path(
-                {"management_id": "ID-001", "company_name": "Test"},
-                datetime.now(UTC),
-                "bucket",
-            )
+    def test_missing_issue_date_uses_timestamp(self) -> None:
+        """Test that missing issue_date uses timestamp date."""
+        timestamp = datetime(2025, 1, 15, tzinfo=UTC)
+        result = generate_destination_path(
+            {"management_id": "ID-001", "company_name": "Test"},
+            timestamp,
+            "bucket",
+        )
 
-        assert "issue_date" in str(exc_info.value)
+        # Should use timestamp date since issue_date is missing
+        assert "20250115" in result
 
-    def test_empty_management_id_raises(self) -> None:
-        """Test that empty management_id raises ValueError."""
-        with pytest.raises(ValueError) as exc_info:
-            generate_destination_path(
-                {"management_id": "", "company_name": "Test", "issue_date": "2025-01-01"},
-                datetime.now(UTC),
-                "bucket",
-            )
+    def test_empty_management_id_fallback_to_unknown(self) -> None:
+        """Test that empty management_id falls back to unknown folder."""
+        result = generate_destination_path(
+            {"management_id": "", "company_name": "Test", "issue_date": "2025-01-01"},
+            datetime.now(UTC),
+            "bucket",
+        )
 
-        assert "management_id" in str(exc_info.value)
+        assert "/unknown/" in result
 
-    def test_empty_company_name_raises(self) -> None:
-        """Test that empty company_name raises ValueError."""
-        with pytest.raises(ValueError) as exc_info:
-            generate_destination_path(
-                {"management_id": "ID-001", "company_name": "", "issue_date": "2025-01-01"},
-                datetime.now(UTC),
-                "bucket",
-            )
+    def test_empty_company_name_fallback_to_unknown(self) -> None:
+        """Test that empty company_name falls back to unknown folder."""
+        result = generate_destination_path(
+            {"management_id": "ID-001", "company_name": "", "issue_date": "2025-01-01"},
+            datetime.now(UTC),
+            "bucket",
+        )
 
-        assert "company_name" in str(exc_info.value)
+        assert "/unknown/" in result
 
-    def test_empty_issue_date_raises(self) -> None:
-        """Test that empty issue_date raises ValueError."""
-        with pytest.raises(ValueError) as exc_info:
-            generate_destination_path(
-                {"management_id": "ID-001", "company_name": "Test", "issue_date": ""},
-                datetime.now(UTC),
-                "bucket",
-            )
+    def test_empty_issue_date_uses_timestamp(self) -> None:
+        """Test that empty issue_date uses timestamp date."""
+        timestamp = datetime(2025, 2, 20, tzinfo=UTC)
+        result = generate_destination_path(
+            {"management_id": "ID-001", "company_name": "Test", "issue_date": ""},
+            timestamp,
+            "bucket",
+        )
 
-        assert "issue_date" in str(exc_info.value)
+        # Should use timestamp date since issue_date is empty
+        assert "20250220" in result
 
 
 class TestSanitizeFilename:

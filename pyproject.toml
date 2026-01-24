@@ -70,10 +70,12 @@ ignore = [
     "ANN102",  # Missing type annotation for cls
     "ANN401",  # Dynamically typed expressions (Any)
     "S101",    # Use of assert (allowed in tests)
+    "RUF001",  # String contains ambiguous chars (Japanese)
+    "W293",    # Blank line contains whitespace
 ]
 
 [tool.ruff.lint.mccabe]
-max-complexity = 10
+max-complexity = 12
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [

@@ -149,21 +149,21 @@ class OrderFormV1(BaseModel):
     order_number: str | None = Field(None, description="注文番号")
     order_date: date | None = Field(None, description="注文日")
     delivery_date: date | None = Field(None, description="納期")
-    
+
     # Parties
     buyer_company: str | None = Field(None, description="発注者（会社名）")
     buyer_contact: str | None = Field(None, description="発注者（担当者）")
     supplier_company: str | None = Field(None, description="受注者（会社名）")
     supplier_contact: str | None = Field(None, description="受注者（担当者）")
-    
+
     # Line items
     items: list[OrderLineItem] = Field(default_factory=list, description="明細行")
-    
+
     # Totals
     subtotal: int | None = Field(None, description="小計")
     tax_amount: int | None = Field(None, description="消費税")
     total_amount: int | None = Field(None, description="合計金額")
-    
+
     # Notes
     notes: str | None = Field(None, description="備考")
     extraction_notes: list[str] = Field(default_factory=list, description="抽出時の注記")

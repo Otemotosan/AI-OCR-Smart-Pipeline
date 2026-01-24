@@ -36,12 +36,11 @@ from src.core.extraction import GeminiInput, extract_with_retry, should_attach_i
 from src.core.gemini import GeminiClient
 from src.core.linters.gate import GateLinter
 from src.core.linters.quality import QualityLinter
-from src.core.schemas import GenericDocumentV1
-from src.core.schema_detector import select_schema_priority
 
 # Import core modules
 from src.core.lock import DistributedLock, LockNotAcquiredError
 from src.core.saga import generate_failed_report, persist_document
+from src.core.schema_detector import select_schema_priority
 from src.core.storage import (
     StorageClient,
     generate_destination_path,
@@ -170,7 +169,7 @@ def process_document(event: CloudEvent) -> str:
     # Try to acquire distributed lock
     lock_manager = DistributedLock(firestore_client)
     try:
-        with lock_manager.acquire(doc_hash) as doc_ref:
+        with lock_manager.acquire(doc_hash):
             logger.info(
                 "lock_acquired",
                 doc_hash=doc_hash,
@@ -399,7 +398,11 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             document_type = "generic"
             schema_version = "generic/v1"
         else:
-            extracted_data = extraction_result.schema.model_dump() if extraction_result.schema else {}
+            extracted_data = (
+                extraction_result.schema.model_dump()
+                if extraction_result.schema
+                else {}
+            )
             # Convert date objects to strings for Firestore compatibility
             extracted_data = _convert_dates_to_strings(extracted_data)
             document_type = extracted_data.get("document_type", "unknown")
@@ -741,7 +744,10 @@ def _quarantine_document(
 
         # Write DocAI markdown if available
         if docai_markdown:
-            upload_string(storage_client, docai_path, docai_markdown, "text/markdown; charset=utf-8")
+            upload_string(
+                storage_client, docai_path, docai_markdown,
+                "text/markdown; charset=utf-8",
+            )
 
         # Update database status
         db_client.update_status(
@@ -914,7 +920,7 @@ def handle_dead_letter(event: CloudEvent) -> str:
                 "elements": [
                     {
                         "type": "mrkdwn",
-                        "text": f"📋 Review UI で確認してください",
+                        "text": "📋 Review UI で確認してください",
                     },
                 ],
             },
@@ -922,7 +928,7 @@ def handle_dead_letter(event: CloudEvent) -> str:
     }
 
     try:
-        response = requests.post(  # noqa: S113
+        response = requests.post(
             slack_webhook_url,
             json=slack_message,
             timeout=10,
