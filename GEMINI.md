@@ -625,3 +625,46 @@ def get_budget_month() -> str:
 | Documentation | English | Spec files |
 
 **Future**: Add `react-i18next` for multi-language support if needed.
+
+---
+
+## 🔐 Environment Variable & Secret Management (重要)
+
+### 現在の方式: Option B (.bashrc)
+
+開発・テスト段階では `.bashrc` に環境変数を設定:
+
+```bash
+# ~/.bashrc
+export DOCUMENT_AI_PROCESSOR="us:dc6b52e2ac4251c1"
+export GEMINI_API_KEY="your-api-key-here"
+```
+
+### Phase 3 (WebUI) 後に移行: Option A (Secret Manager)
+
+> ⚠️ **重要**: GUI/WebUI実装が完了したら、必ず Secret Manager に移行すること！
+
+```bash
+# シークレット作成
+gcloud secrets create gemini-api-key --data-file=- <<< "your-key"
+gcloud secrets create docai-processor --data-file=- <<< "us:dc6b52e2ac4251c1"
+
+# Cloud Functionデプロイ時
+--set-secrets="GEMINI_API_KEY=gemini-api-key:latest,DOCUMENT_AI_PROCESSOR=docai-processor:latest"
+```
+
+### 移行タイミング
+
+| 段階 | 方式 | 理由 |
+|------|------|------|
+| 開発・テスト | Option B (.bashrc) | 手軽、デバッグしやすい |
+| Phase 3完了後 | Option A (Secret Manager) | セキュリティ、監査対応 |
+| 他部署展開時 | Option A 必須 | IAM権限管理、キーローテーション |
+
+### 移行チェックリスト
+
+1. [ ] `gcloud secrets create` で各シークレット作成
+2. [ ] Cloud Function に `--set-secrets` でデプロイ
+3. [ ] `.bashrc` から `GEMINI_API_KEY` 削除
+4. [ ] Secret Managerへのアクセス権限（IAM）確認
+
