@@ -1,0 +1,28 @@
+warning: The following rules have been removed and ignoring them has no effect:
+    - ANN101
+    - ANN102
+
+W291 [*] Trailing whitespace
+  --> src\functions\recovery\main.py:45:66
+   |
+44 |     # 1. Get all active locks/processing records to minimize queries
+45 |     #    (Optimization: In high volume, maybe query individually, 
+   |                                                                  ^
+46 |     #     but for <1000 docs, full scan is ok?
+47 |     #     Actually, let's query individually for safety first)
+   |
+help: Remove trailing whitespace
+
+E501 Line too long (101 > 100)
+  --> src\functions\recovery\main.py:84:101
+   |
+82 |         #   If expired: TAKES OVER (Recovery!).
+83 |         
+84 |         # SO: We don't actually need to check Firestore here if we trust the processor's idempotency!
+   |                                                                                                     ^
+85 |         # The only risk is "Infinite Loop" if a file ALWAYS fails.
+86 |         # To prevent infinite loop, we should check existing status.
+   |
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.

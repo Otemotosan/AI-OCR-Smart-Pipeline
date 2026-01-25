@@ -1,0 +1,48 @@
+warning: The following rules have been removed and ignoring them has no effect:
+    - ANN101
+    - ANN102
+
+ANN001 Missing type annotation for function argument `request`
+  --> src\functions\recovery\main.py:31:25
+   |
+30 | @functions_framework.http
+31 | def recover_stuck_files(request) -> str:
+   |                         ^^^^^^^
+32 |     """
+33 |     Cloud Scheduler entry point.
+   |
+
+E501 Line too long (102 > 100)
+  --> src\functions\recovery\main.py:45:101
+   |
+44 |     # 1. Get all active locks/processing records to minimize queries
+45 |     #    (Optimization: In high volume, maybe query individually, but for <1000 docs, full scan is ok?
+   |                                                                                                     ^^
+46 |     #     Actually, let's query individually for safety first)
+   |
+
+E501 Line too long (101 > 100)
+  --> src\functions\recovery\main.py:83:101
+   |
+81 |         #   If expired: TAKES OVER (Recovery!).
+82 |         
+83 |         # SO: We don't actually need to check Firestore here if we trust the processor's idempotency!
+   |                                                                                                     ^
+84 |         # The only risk is "Infinite Loop" if a file ALWAYS fails.
+85 |         # To prevent infinite loop, we should check existing status.
+   |
+
+ANN201 Missing return type annotation for public function `trigger_processor`
+   --> src\functions\recovery\main.py:133:5
+    |
+131 |     return f"Sweep complete. Checked {checked_count}, Retriggered {retriggered_count}"
+132 |
+133 | def trigger_processor(object_name: str):
+    |     ^^^^^^^^^^^^^^^^^
+134 |     """Send CloudEvent to ocr-processor."""
+135 |     if not OCR_PROCESSOR_URL:
+    |
+help: Add return type annotation: `None`
+
+Found 4 errors.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
