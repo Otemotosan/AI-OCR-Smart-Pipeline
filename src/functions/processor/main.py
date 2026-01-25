@@ -404,9 +404,17 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             # Convert date objects to strings for Firestore compatibility
             extracted_data = _convert_dates_to_strings(extracted_data)
             document_type = extracted_data.get("document_type", "unknown")
-            # schema_version field already contains 'v' prefix (e.g., "v2")
-            version = extracted_data.get("schema_version", "v1")
-            # Remove 'v' prefix if present to avoid "vv2"
+
+            # Get schema_version from the schema class field default,
+            # not from extracted_data (Gemini may return wrong values like class names)
+            schema_class = type(extraction_result.schema) if extraction_result.schema else None
+            if schema_class and hasattr(schema_class, "model_fields"):
+                version_field = schema_class.model_fields.get("schema_version")
+                version = version_field.default if version_field and version_field.default else "v1"
+            else:
+                version = "v1"
+
+            # Build schema_version string
             if version.startswith("v"):
                 schema_version = f"{document_type}/{version}"
             else:
