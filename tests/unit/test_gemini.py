@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from core.gemini import (
+from src.core.gemini import (
     FLASH_INPUT_COST,
     FLASH_MODEL,
     FLASH_OUTPUT_COST,
@@ -117,7 +117,7 @@ class TestFlashModelCalls:
         # Set _genai directly to avoid lazy loading
         client._genai = mock_genai
 
-        response = client.call_flash(
+        response = client.call_flash_v2(
             prompt="Extract data from: # Invoice...",
             image=None,
         )
@@ -149,7 +149,7 @@ class TestFlashModelCalls:
         # Set _genai directly to avoid lazy loading
         client._genai = mock_genai
 
-        response = client.call_flash(
+        response = client.call_flash_v2(
             prompt="Extract data from: # Invoice...",
             image=b"fake_image_bytes",
         )
@@ -183,7 +183,7 @@ class TestProModelCalls:
         # Set _genai directly to avoid lazy loading
         client._genai = mock_genai
 
-        response = client.call_pro(
+        response = client.call_pro_v2(
             prompt="Extract data from: # Invoice...",
             image=None,
         )
@@ -213,7 +213,7 @@ class TestProModelCalls:
         # Set _genai directly to avoid lazy loading
         client._genai = mock_genai
 
-        response = client.call_pro(
+        response = client.call_pro_v2(
             prompt="Extract data from: # Invoice...",
             image=b"fake_image_bytes",
         )
@@ -353,7 +353,7 @@ class TestErrorHandling:
         client._genai = mock_genai
 
         with pytest.raises(SyntaxValidationError) as exc_info:
-            client.call_flash(prompt="Extract...")
+            client.call_flash_v2(prompt="Extract...")
 
         assert "Invalid JSON from Flash" in str(exc_info.value)
 
@@ -374,7 +374,7 @@ class TestErrorHandling:
         client._genai = mock_genai
 
         with pytest.raises(SyntaxValidationError) as exc_info:
-            client.call_pro(prompt="Extract...")
+            client.call_pro_v2(prompt="Extract...")
 
         assert "Invalid JSON from Pro" in str(exc_info.value)
 
@@ -389,8 +389,8 @@ class TestConstants:
 
     def test_model_names(self) -> None:
         """Test model name constants."""
-        assert FLASH_MODEL == "gemini-1.5-flash"
-        assert PRO_MODEL == "gemini-1.5-pro"
+        assert FLASH_MODEL == "gemini-2.5-flash"
+        assert PRO_MODEL == "gemini-2.5-pro"
 
     def test_token_estimates(self) -> None:
         """Test token estimate constants."""

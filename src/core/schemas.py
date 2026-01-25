@@ -77,7 +77,7 @@ class DeliveryNoteV2(BaseModel):
     management_id: str = Field(..., description="管理番号")
     company_name: str = Field(..., description="会社名")
     issue_date: date = Field(..., description="発行日")
-    delivery_date: date = Field(..., description="納品日")
+    delivery_date: date | None = Field(None, description="納品日")
     payment_due_date: date | None = Field(None, description="支払期限")
     total_amount: int = Field(..., description="合計金額", ge=0)
 
@@ -99,7 +99,7 @@ class InvoiceV1(BaseModel):
     company_name: str = Field(..., description="会社名")
     issue_date: date = Field(..., description="発行日")
     total_amount: int = Field(..., description="請求金額", ge=0)
-    tax_amount: int = Field(..., description="消費税額", ge=0)
+    tax_amount: int | None = Field(None, description="消費税額", ge=0)
 
 
 # ============================================================

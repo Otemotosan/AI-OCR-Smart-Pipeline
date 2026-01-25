@@ -15,6 +15,12 @@ from typing import TYPE_CHECKING, Any, Literal
 
 import structlog
 
+from src.core.gemini import (
+    ProBudgetExhaustedError,
+    SemanticValidationError,
+    SyntaxValidationError,
+)
+
 if TYPE_CHECKING:
     from google.cloud.documentai_v1 import Document
     from pydantic import BaseModel
@@ -197,18 +203,6 @@ def should_attach_image(
 # ============================================================
 # Error Classification
 # ============================================================
-
-
-class SyntaxValidationError(Exception):
-    """Raised when Gemini output is not valid JSON or fails schema validation."""
-
-
-class SemanticValidationError(Exception):
-    """Raised when extracted data fails Gate Linter validation."""
-
-
-class ProBudgetExhaustedError(Exception):
-    """Raised when Pro call budget is exceeded."""
 
 
 def classify_error(error: Exception, gate_result: dict | None = None) -> str:
@@ -429,7 +423,7 @@ def extract_with_retry(  # noqa: C901
         >>> assert result.status == "SUCCESS"
         >>> assert result.schema is not None
     """
-    from src.core.gemini import SyntaxValidationError as GeminiSyntaxError
+    # from src.core.gemini import SyntaxValidationError as GeminiSyntaxError
     from src.core.prompts import build_extraction_prompt
 
     attempts: list[ExtractionAttempt] = []
@@ -542,7 +536,7 @@ def extract_with_retry(  # noqa: C901
                 # Treat as semantic error and escalate
                 break
 
-        except GeminiSyntaxError as e:
+        except SyntaxValidationError as e:
             # Syntax error (invalid JSON)
             attempt = ExtractionAttempt(
                 model="flash",
@@ -580,6 +574,37 @@ def extract_with_retry(  # noqa: C901
             continue
 
         except Exception as e:
+            # Check for import mismatch
+            if type(e).__name__ == "SyntaxValidationError":
+                logger.warning("syntax_error_mismatch", error=str(e))
+                # Treat as syntax error
+                attempt = ExtractionAttempt(
+                    model="flash",
+                    prompt_tokens=2000,
+                    output_tokens=100,
+                    cost_usd=0.0,
+                    error=f"Syntax error: {e}",
+                )
+                attempts.append(attempt)
+                
+                # Retry logic
+                error_type = "syntax"
+                next_model = select_model(
+                    error_type=error_type,
+                    flash_attempts=flash_attempt_count,
+                    pro_budget_available=False,
+                )
+                if next_model == "human":
+                     return ExtractionResult(
+                        schema=None,
+                        status="FAILED",
+                        attempts=attempts,
+                        final_model="flash",
+                        total_cost=sum(a.cost_usd for a in attempts),
+                        reason=f"Syntax errors exhausted: {e}",
+                    )
+                continue
+
             # Unexpected error
             logger.error("unexpected_error", error=str(e), type=type(e).__name__)
             attempt = ExtractionAttempt(
@@ -698,7 +723,7 @@ def extract_with_retry(  # noqa: C901
                 reason=f"Pro schema validation failed: {e}",
             )
 
-    except GeminiSyntaxError as e:
+    except SyntaxValidationError as e:
         # Pro returned invalid JSON (rare)
         logger.error("pro_syntax_error", error=str(e))
         attempt = ExtractionAttempt(
@@ -719,6 +744,26 @@ def extract_with_retry(  # noqa: C901
         )
 
     except Exception as e:
+        # Check for import mismatch
+        if type(e).__name__ == "SyntaxValidationError":
+             logger.warning("pro_syntax_error_mismatch", error=str(e))
+             attempt = ExtractionAttempt(
+                model="pro",
+                prompt_tokens=10000,
+                output_tokens=100,
+                cost_usd=0.0,
+                error=f"Syntax error: {e}",
+            )
+             attempts.append(attempt)
+             return ExtractionResult(
+                schema=None,
+                status="FAILED",
+                attempts=attempts,
+                final_model="pro",
+                total_cost=sum(a.cost_usd for a in attempts),
+                reason=f"Pro syntax error: {e}",
+            )
+
         # Unexpected error during Pro call
         logger.error("pro_unexpected_error", error=str(e), type=type(e).__name__)
         attempt = ExtractionAttempt(

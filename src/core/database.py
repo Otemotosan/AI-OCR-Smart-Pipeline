@@ -441,7 +441,7 @@ class DatabaseClient:
 
             update_data = {
                 "extracted_data": safe_extracted_data,
-                "attempts": attempts,
+                "attempts": [_convert_dates_to_strings(a) for a in attempts],
                 "schema_version": schema_version,
                 "updated_at": datetime.now(UTC),
             }
@@ -626,7 +626,7 @@ class DatabaseClient:
             document_id=doc_id,
             event=event,
             timestamp=datetime.now(UTC),
-            details=details,
+            details=_convert_dates_to_strings(details),
             user_id=user_id,
         )
 

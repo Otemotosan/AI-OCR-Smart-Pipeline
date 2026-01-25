@@ -879,9 +879,11 @@ class TestStorageClient:
         storage_client = StorageClient(client=mock_client)
         result = storage_client.generate_destination_path(
             {
+                "document_id": "ID-001",
                 "management_id": "ID-001",
                 "company_name": "Test Co",
                 "issue_date": "2025-01-15",
+                "document_type": "delivery_note",
             },
             datetime(2025, 1, 15, tzinfo=UTC),
             "output-bucket",
@@ -889,7 +891,7 @@ class TestStorageClient:
 
         assert "gs://output-bucket/202501/" in result
         assert "ID-001" in result
-        assert "Test Co" in result
+        assert "Test_Co" in result
 
     def test_storage_client_upload_string(self) -> None:
         """Test StorageClient.upload_string method."""

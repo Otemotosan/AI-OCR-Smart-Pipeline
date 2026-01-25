@@ -5,7 +5,7 @@ from __future__ import annotations
 import base64
 import json
 
-from core.extraction import (
+from src.core.extraction import (
     CONFIDENCE_THRESHOLD,
     FLASH_HTTP5XX_RETRIES,
     FLASH_HTTP429_RETRIES,
@@ -488,7 +488,7 @@ class TestExtractWithRetry:
         mock_response.cost_usd = 0.0001
 
         gemini_client = MagicMock()
-        gemini_client.call_flash.return_value = mock_response
+        gemini_client.call_flash_v2.return_value = mock_response
 
         # Mock BudgetManager
         budget_manager = MagicMock()
@@ -543,8 +543,8 @@ class TestExtractWithRetry:
         pro_response.cost_usd = 0.001
 
         gemini_client = MagicMock()
-        gemini_client.call_flash.return_value = flash_response
-        gemini_client.call_pro.return_value = pro_response
+        gemini_client.call_flash_v2.return_value = flash_response
+        gemini_client.call_pro_v2.return_value = pro_response
 
         budget_manager = MagicMock()
         budget_manager.check_pro_budget.return_value = True
@@ -591,7 +591,7 @@ class TestExtractWithRetry:
         flash_response.cost_usd = 0.0001
 
         gemini_client = MagicMock()
-        gemini_client.call_flash.return_value = flash_response
+        gemini_client.call_flash_v2.return_value = flash_response
 
         # Budget exhausted (returns False always)
         budget_manager = MagicMock()
@@ -613,14 +613,14 @@ class TestExtractWithRetry:
         assert result.status == "FAILED"
         assert result.reason == "Pro budget exhausted"
         assert result.final_model == "flash"
-        gemini_client.call_pro.assert_not_called()
+        gemini_client.call_pro_v2.assert_not_called()
 
     def test_syntax_error_retry_then_success(self) -> None:
         """Test syntax error on first attempt, success on retry."""
         from unittest.mock import MagicMock
 
-        from core.extraction import GeminiInput, extract_with_retry
-        from core.gemini import SyntaxValidationError
+        from src.core.extraction import GeminiInput, extract_with_retry
+        from src.core.gemini import SyntaxValidationError
 
         gemini_input = GeminiInput(markdown="# Invoice...", include_image=False)
         schema_class = MagicMock()
@@ -634,7 +634,7 @@ class TestExtractWithRetry:
         success_response.cost_usd = 0.0001
 
         gemini_client = MagicMock()
-        gemini_client.call_flash.side_effect = [
+        gemini_client.call_flash_v2.side_effect = [
             SyntaxValidationError("Invalid JSON"),  # First attempt
             success_response,  # Second attempt
         ]
@@ -658,14 +658,14 @@ class TestExtractWithRetry:
         assert len(result.attempts) == 2
         assert result.attempts[0].error is not None
         assert "Syntax error" in result.attempts[0].error
-        assert gemini_client.call_flash.call_count == 2
+        assert gemini_client.call_flash_v2.call_count == 2
 
     def test_all_retries_exhausted(self) -> None:
         """Test all Flash retries exhausted, no Pro escalation."""
         from unittest.mock import MagicMock
 
-        from core.extraction import FLASH_SYNTAX_RETRIES, GeminiInput, extract_with_retry
-        from core.gemini import SyntaxValidationError
+        from src.core.extraction import FLASH_SYNTAX_RETRIES, GeminiInput, extract_with_retry
+        from src.core.gemini import SyntaxValidationError
 
         gemini_input = GeminiInput(markdown="# Invoice...", include_image=False)
         schema_class = MagicMock()
@@ -673,7 +673,7 @@ class TestExtractWithRetry:
 
         gemini_client = MagicMock()
         # FLASH_SYNTAX_RETRIES = 2, so we get 2 attempts (initial fails immediately, then 1 retry)
-        gemini_client.call_flash.side_effect = [
+        gemini_client.call_flash_v2.side_effect = [
             SyntaxValidationError("Invalid JSON 1"),
             SyntaxValidationError("Invalid JSON 2"),
         ]
@@ -690,7 +690,7 @@ class TestExtractWithRetry:
         assert result.status == "FAILED"
         assert "Syntax errors exhausted" in result.reason
         assert len(result.attempts) == FLASH_SYNTAX_RETRIES  # Should be 2
-        gemini_client.call_pro.assert_not_called()
+        gemini_client.call_pro_v2.assert_not_called()
 
     def test_flash_unexpected_error(self) -> None:
         """Test Flash call with unexpected error."""
@@ -702,7 +702,7 @@ class TestExtractWithRetry:
 
         # Mock GeminiClient to raise unexpected error
         gemini_client = MagicMock()
-        gemini_client.call_flash.side_effect = RuntimeError("Database connection failed")
+        gemini_client.call_flash_v2.side_effect = RuntimeError("Database connection failed")
 
         # Mock BudgetManager
         budget_manager = MagicMock()
@@ -721,7 +721,7 @@ class TestExtractWithRetry:
         assert "Unexpected error" in result.reason
         assert len(result.attempts) == 1
         assert "Database connection failed" in result.attempts[0].error
-        gemini_client.call_pro.assert_not_called()
+        gemini_client.call_pro_v2.assert_not_called()
 
     def test_pro_gate_linter_failure(self) -> None:
         """Test Pro escalation where Pro also fails Gate Linter."""
@@ -738,14 +738,14 @@ class TestExtractWithRetry:
         flash_response.input_tokens = 2000
         flash_response.output_tokens = 100
         flash_response.cost_usd = 0.0001
-        gemini_client.call_flash.return_value = flash_response
+        gemini_client.call_flash_v2.return_value = flash_response
 
         pro_response = MagicMock()
         pro_response.data = {"field": "still_invalid"}
         pro_response.input_tokens = 10000
         pro_response.output_tokens = 200
         pro_response.cost_usd = 0.001
-        gemini_client.call_pro.return_value = pro_response
+        gemini_client.call_pro_v2.return_value = pro_response
 
         # Mock BudgetManager - has budget
         budget_manager = MagicMock()
@@ -793,14 +793,14 @@ class TestExtractWithRetry:
         flash_response.input_tokens = 2000
         flash_response.output_tokens = 100
         flash_response.cost_usd = 0.0001
-        gemini_client.call_flash.return_value = flash_response
+        gemini_client.call_flash_v2.return_value = flash_response
 
         pro_response = MagicMock()
         pro_response.data = {"management_id": "INV-001", "date": "bad_date"}
         pro_response.input_tokens = 10000
         pro_response.output_tokens = 200
         pro_response.cost_usd = 0.001
-        gemini_client.call_pro.return_value = pro_response
+        gemini_client.call_pro_v2.return_value = pro_response
 
         # Mock BudgetManager
         budget_manager = MagicMock()
@@ -846,8 +846,8 @@ class TestExtractWithRetry:
         flash_response.input_tokens = 2000
         flash_response.output_tokens = 100
         flash_response.cost_usd = 0.0001
-        gemini_client.call_flash.return_value = flash_response
-        gemini_client.call_pro.side_effect = SyntaxValidationError("Invalid JSON from Pro")
+        gemini_client.call_flash_v2.return_value = flash_response
+        gemini_client.call_pro_v2.side_effect = SyntaxValidationError("Invalid JSON from Pro")
 
         # Mock BudgetManager
         budget_manager = MagicMock()
@@ -886,8 +886,8 @@ class TestExtractWithRetry:
         flash_response.input_tokens = 2000
         flash_response.output_tokens = 100
         flash_response.cost_usd = 0.0001
-        gemini_client.call_flash.return_value = flash_response
-        gemini_client.call_pro.side_effect = RuntimeError("Pro API timeout")
+        gemini_client.call_flash_v2.return_value = flash_response
+        gemini_client.call_pro_v2.side_effect = RuntimeError("Pro API timeout")
 
         # Mock BudgetManager
         budget_manager = MagicMock()
@@ -936,14 +936,14 @@ class TestExtractWithRetry:
         flash_response.input_tokens = 10000  # With image
         flash_response.output_tokens = 100
         flash_response.cost_usd = 0.001
-        gemini_client.call_flash.return_value = flash_response
+        gemini_client.call_flash_v2.return_value = flash_response
 
         pro_response = MagicMock()
         pro_response.data = {"management_id": "INV-001"}
         pro_response.input_tokens = 10000  # With image
         pro_response.output_tokens = 200
         pro_response.cost_usd = 0.01
-        gemini_client.call_pro.return_value = pro_response
+        gemini_client.call_pro_v2.return_value = pro_response
 
         # Mock BudgetManager
         budget_manager = MagicMock()
@@ -972,6 +972,7 @@ class TestExtractWithRetry:
         assert result.final_model == "pro"
 
         # Verify Pro was called with image bytes
-        gemini_client.call_pro.assert_called_once()
-        call_kwargs = gemini_client.call_pro.call_args[1]
-        assert call_kwargs["image"] == b"fake_image_data"
+        # Verify Pro was called with image bytes (2nd positional arg)
+        gemini_client.call_pro_v2.assert_called_once()
+        call_args = gemini_client.call_pro_v2.call_args
+        assert call_args[0][1] == b"fake_image_data"
