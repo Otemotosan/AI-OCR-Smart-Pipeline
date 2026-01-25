@@ -124,6 +124,12 @@ class DistributedLock:
 
             yield doc_ref
 
+        except Exception as e:
+            # If any error occurs during processing, release lock with FAILED status
+            # This ensures we don't wait for TTL to expire before retrying
+            self.release(doc_ref, "FAILED", error_message=str(e))
+            raise
+
         finally:
             # Stop heartbeat
             self._stop_heartbeat_thread()

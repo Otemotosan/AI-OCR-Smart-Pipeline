@@ -1,0 +1,114 @@
+[
+  {
+    "insertId": "6975da4200092349438b8a08",
+    "jsonPayload": {
+      "doc_hash": "sha256:38067ce3cbd82cf7dce6ca57f90bd5aa281fa03d3746daddb45aa8ade0d30464",
+      "environment": "development",
+      "event": "lock_skipped_duplicate",
+      "execution_id": "ocr-processor-00009-qom",
+      "function_name": "ocr-processor",
+      "level": "info",
+      "project_id": "local",
+      "reason": "Document sha256:38067ce3cbd82cf7dce6ca57f90bd5aa281fa03d3746daddb45aa8ade0d30464 is already being processed or completed",
+      "timestamp": "2026-01-25T08:54:26.598972Z"
+    },
+    "labels": {
+      "execution_id": "zDhBwnUMMiKu",
+      "goog-drz-cloudfunctions-id": "ocr-processor",
+      "goog-drz-cloudfunctions-location": "asia-northeast1",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974cd48625ab6f90274179b3366e24b0dc8194f7ea11ef06ac0605682d211262f10d22b86a246d6149d40cac0a2957b99d06da80438b77689b01087dee403a8acf6611188b8da1a434cc39db1a080d",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T08:54:26.663713859Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-processor",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-processor-00009-qom",
+        "service_name": "ocr-processor"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "3851975386057384416",
+    "timestamp": "2026-01-25T08:54:26.598857Z"
+  },
+  {
+    "insertId": "6975da42000745a66b4b8abe",
+    "jsonPayload": {
+      "doc_hash": "sha256:38067ce3cbd82cf7dce6ca57f90bd5aa281fa03d3746daddb45aa8ade0d30464",
+      "environment": "development",
+      "event": "document_hash_computed",
+      "execution_id": "ocr-processor-00009-qom",
+      "function_name": "ocr-processor",
+      "gcs_uri": "gs://ai-ocr-smart-pipeline-ocr-input-staging/order_form.pdf",
+      "level": "info",
+      "project_id": "local",
+      "timestamp": "2026-01-25T08:54:26.476810Z"
+    },
+    "labels": {
+      "execution_id": "zDhBwnUMMiKu",
+      "goog-drz-cloudfunctions-id": "ocr-processor",
+      "goog-drz-cloudfunctions-location": "asia-northeast1",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974cd48625ab6f90274179b3366e24b0dc8194f7ea11ef06ac0605682d211262f10d22b86a246d6149d40cac0a2957b99d06da80438b77689b01087dee403a8acf6611188b8da1a434cc39db1a080d",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T08:54:26.663713859Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-processor",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-processor-00009-qom",
+        "service_name": "ocr-processor"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "3851975386057384416",
+    "timestamp": "2026-01-25T08:54:26.476582Z"
+  },
+  {
+    "insertId": "6975da420004fe4820b65a9d",
+    "jsonPayload": {
+      "bucket": "ai-ocr-smart-pipeline-ocr-input-staging",
+      "environment": "development",
+      "event": "document_received",
+      "execution_id": "ocr-processor-00009-qom",
+      "function_name": "ocr-processor",
+      "gcs_uri": "gs://ai-ocr-smart-pipeline-ocr-input-staging/order_form.pdf",
+      "level": "info",
+      "object_name": "order_form.pdf",
+      "project_id": "local",
+      "timestamp": "2026-01-25T08:54:26.327592Z"
+    },
+    "labels": {
+      "execution_id": "zDhBwnUMMiKu",
+      "goog-drz-cloudfunctions-id": "ocr-processor",
+      "goog-drz-cloudfunctions-location": "asia-northeast1",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974cd48625ab6f90274179b3366e24b0dc8194f7ea11ef06ac0605682d211262f10d22b86a246d6149d40cac0a2957b99d06da80438b77689b01087dee403a8acf6611188b8da1a434cc39db1a080d",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T08:54:26.328999519Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-processor",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-processor-00009-qom",
+        "service_name": "ocr-processor"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "3851975386057384416",
+    "timestamp": "2026-01-25T08:54:26.327240Z"
+  }
+]

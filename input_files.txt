@@ -1,0 +1,3 @@
+gs://ai-ocr-smart-pipeline-ocr-input-staging/config/filename_config.yaml
+gs://ai-ocr-smart-pipeline-ocr-input-staging/delivery_note.pdf
+gs://ai-ocr-smart-pipeline-ocr-input-staging/order_form.pdf
