@@ -10,7 +10,7 @@ See: docs/specs/07_monitoring.md, docs/specs/11_conflict.md
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Any
 
@@ -43,6 +43,33 @@ else:
         firestore.transactional = lambda f: f
 
 logger = structlog.get_logger(__name__)
+
+
+def _convert_dates_to_strings(data: Any) -> Any:
+    """
+    Recursively convert datetime.date objects to ISO format strings.
+
+    Firestore cannot directly store datetime.date objects, only datetime.datetime.
+    This function converts all date objects to strings for compatibility.
+
+    Args:
+        data: Data structure (dict, list, or primitive) to convert
+
+    Returns:
+        Data with date objects converted to ISO format strings
+    """
+    if isinstance(data, dict):
+        return {key: _convert_dates_to_strings(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [_convert_dates_to_strings(item) for item in data]
+    elif isinstance(data, date) and not isinstance(data, datetime):
+        # date but not datetime - convert to ISO string
+        return data.isoformat()
+    elif isinstance(data, datetime):
+        # datetime is supported by Firestore, keep as-is
+        return data
+    else:
+        return data
 
 
 class DocumentStatus(str, Enum):
@@ -409,8 +436,11 @@ class DatabaseClient:
         try:
             doc_ref = self._client.collection(self.DOCUMENTS_COLLECTION).document(doc_id)
 
+            # Convert datetime.date objects to strings for Firestore compatibility
+            safe_extracted_data = _convert_dates_to_strings(extracted_data)
+
             update_data = {
-                "extracted_data": extracted_data,
+                "extracted_data": safe_extracted_data,
                 "attempts": attempts,
                 "schema_version": schema_version,
                 "updated_at": datetime.now(UTC),
