@@ -1,0 +1,15 @@
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:1b0c3499e9b2a2e22ecd8c2260e9ea02eb85c4a9329e1b9fac5b2555e09ccd87/FAILED_REPORT.md
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:1b0c3499e9b2a2e22ecd8c2260e9ea02eb85c4a9329e1b9fac5b2555e09ccd87/extracted_data.json
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:1b0c3499e9b2a2e22ecd8c2260e9ea02eb85c4a9329e1b9fac5b2555e09ccd87/original_test_会議メモ_20250125.pdf
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:38067ce3cbd82cf7dce6ca57f90bd5aa281fa03d3746daddb45aa8ade0d30464/FAILED_REPORT.md
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:38067ce3cbd82cf7dce6ca57f90bd5aa281fa03d3746daddb45aa8ade0d30464/extracted_data.json
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:38067ce3cbd82cf7dce6ca57f90bd5aa281fa03d3746daddb45aa8ade0d30464/original_test_注文書_ABC商会.pdf
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:38067ce3cbd82cf7dce6ca57f90bd5aa281fa03d3746daddb45aa8ade0d30464/sha256:38067ce3cbd82cf7dce6ca57f90bd5aa281fa03d3746daddb45aa8ade0d30464_docai.md
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:d0c5783901b128af3ca02551faba686424fcd0b57301fad5839db21314a90734/FAILED_REPORT.md
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:d0c5783901b128af3ca02551faba686424fcd0b57301fad5839db21314a90734/extracted_data.json
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:d0c5783901b128af3ca02551faba686424fcd0b57301fad5839db21314a90734/original_test_納品書_山田商事2.pdf
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:d0c5783901b128af3ca02551faba686424fcd0b57301fad5839db21314a90734/sha256:d0c5783901b128af3ca02551faba686424fcd0b57301fad5839db21314a90734_docai.md
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:ed6e0f52532b8c19d1f71276cb1dfb95cf48df80c3f58ba00761db04128f9fac/FAILED_REPORT.md
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:ed6e0f52532b8c19d1f71276cb1dfb95cf48df80c3f58ba00761db04128f9fac/extracted_data.json
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:ed6e0f52532b8c19d1f71276cb1dfb95cf48df80c3f58ba00761db04128f9fac/original_test_請求書_田中工業1.pdf
+gs://ai-ocr-smart-pipeline-ocr-quarantine-staging/quarantine/sha256:ed6e0f52532b8c19d1f71276cb1dfb95cf48df80c3f58ba00761db04128f9fac/sha256:ed6e0f52532b8c19d1f71276cb1dfb95cf48df80c3f58ba00761db04128f9fac_docai.md
