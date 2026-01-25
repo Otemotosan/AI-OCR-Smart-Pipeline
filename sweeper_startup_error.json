@@ -1,0 +1,931 @@
+[
+  {
+    "insertId": "2jfy8xe10wyw",
+    "logName": "projects/ai-ocr-smart-pipeline/logs/cloudaudit.googleapis.com%2Fsystem_event",
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "methodName": "/InternalServices.DeleteInternalService",
+      "resourceName": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+      "response": {
+        "@type": "type.googleapis.com/google.cloud.run.v1.Service",
+        "apiVersion": "serving.knative.dev/v1",
+        "kind": "Service",
+        "metadata": {
+          "annotations": {
+            "cloudfunctions.googleapis.com/function-id": "ocr-recovery-sweeper",
+            "run.googleapis.com/build-base-image": "asia-northeast1-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311",
+            "run.googleapis.com/build-enable-automatic-updates": "true",
+            "run.googleapis.com/build-function-target": "recover_stuck_files",
+            "run.googleapis.com/build-image-uri": "asia-northeast1-docker.pkg.dev/ai-ocr-smart-pipeline/gcf-artifacts/ai--ocr--smart--pipeline__asia--northeast1__ocr--recovery--sweeper:version_1",
+            "run.googleapis.com/build-name": "projects/672754156190/locations/asia-northeast1/builds/9f2a854e-5d6e-4295-889d-b862ca5f80d2",
+            "run.googleapis.com/build-service-account": "projects/ai-ocr-smart-pipeline/serviceAccounts/672754156190-compute@developer.gserviceaccount.com",
+            "run.googleapis.com/build-source-location": "gs://gcf-v2-sources-672754156190-asia-northeast1/ocr-recovery-sweeper/function-source.zip#1769332972168073",
+            "run.googleapis.com/client-name": "gcloud",
+            "run.googleapis.com/custom-audiences": "[\"https://asia-northeast1-ai-ocr-smart-pipeline.cloudfunctions.net/ocr-recovery-sweeper\"]",
+            "run.googleapis.com/ingress": "all",
+            "run.googleapis.com/ingress-status": "all",
+            "run.googleapis.com/maxScale": "33",
+            "run.googleapis.com/operation-id": "7e7e616d-ec24-4b82-8116-ae455fd5ada6",
+            "run.googleapis.com/urls": "[\"https://ocr-recovery-sweeper-672754156190.asia-northeast1.run.app\",\"https://asia-northeast1-ai-ocr-smart-pipeline.cloudfunctions.net/ocr-recovery-sweeper\"]",
+            "serving.knative.dev/creator": "service-672754156190@gcf-admin-robot.iam.gserviceaccount.com",
+            "serving.knative.dev/lastModifier": "service-672754156190@gcf-admin-robot.iam.gserviceaccount.com"
+          },
+          "creationTimestamp": "2026-01-25T09:23:37.161445Z",
+          "deletionTimestamp": "2026-01-25T09:23:46.218111Z",
+          "generation": 2,
+          "labels": {
+            "cloud.googleapis.com/location": "asia-northeast1",
+            "goog-cloudfunctions-runtime": "python311",
+            "goog-drz-cloudfunctions-id": "ocr-recovery-sweeper",
+            "goog-drz-cloudfunctions-location": "asia-northeast1",
+            "goog-managed-by": "cloudfunctions"
+          },
+          "name": "ocr-recovery-sweeper",
+          "namespace": "672754156190",
+          "resourceVersion": "AAZJMvKdjY8",
+          "selfLink": "/apis/serving.knative.dev/v1/namespaces/672754156190/services/ocr-recovery-sweeper",
+          "uid": "4a4fc3c4-d2b6-4368-a9c1-19252d06f34f"
+        },
+        "spec": {
+          "template": {
+            "metadata": {
+              "annotations": {
+                "cloudfunctions.googleapis.com/trigger-type": "HTTP_TRIGGER",
+                "run.googleapis.com/base-images": "{\"worker\":\"asia-northeast1-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311\"}",
+                "run.googleapis.com/client-name": "gcloud",
+                "run.googleapis.com/startup-cpu-boost": "true"
+              },
+              "labels": {
+                "run.googleapis.com/startupProbeType": "Default"
+              },
+              "name": "ocr-recovery-sweeper-00001-roy"
+            },
+            "spec": {
+              "containerConcurrency": 1,
+              "containers": [
+                {
+                  "env": [
+                    {
+                      "name": "GCP_PROJECT_ID",
+                      "value": "ai-ocr-smart-pipeline"
+                    },
+                    {
+                      "name": "INPUT_BUCKET",
+                      "value": "ai-ocr-smart-pipeline-ocr-input-staging"
+                    },
+                    {
+                      "name": "OCR_PROCESSOR_URL",
+                      "value": "https://ocr-processor-6fn7reqyra-an.a.run.app"
+                    },
+                    {
+                      "name": "LOG_EXECUTION_ID",
+                      "value": "true"
+                    }
+                  ],
+                  "image": "asia-northeast1-docker.pkg.dev/ai-ocr-smart-pipeline/gcf-artifacts/ai--ocr--smart--pipeline__asia--northeast1__ocr--recovery--sweeper:version_1",
+                  "name": "worker",
+                  "ports": [
+                    {
+                      "containerPort": 8080,
+                      "name": "http1"
+                    }
+                  ],
+                  "resources": {
+                    "limits": {
+                      "cpu": "0.1666",
+                      "memory": "256M"
+                    }
+                  },
+                  "startupProbe": {
+                    "failureThreshold": 1,
+                    "periodSeconds": 240,
+                    "tcpSocket": {
+                      "port": 8080
+                    },
+                    "timeoutSeconds": 240
+                  }
+                }
+              ],
+              "runtimeClassName": "run.googleapis.com/linux-base-image-update",
+              "serviceAccountName": "672754156190-compute@developer.gserviceaccount.com",
+              "timeoutSeconds": 60
+            }
+          },
+          "traffic": [
+            {
+              "latestRevision": true,
+              "percent": 100
+            }
+          ]
+        },
+        "status": {
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-01-25T09:23:47.868047Z",
+              "status": "True",
+              "type": "Ready"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:46.252366Z",
+              "status": "Unknown",
+              "type": "ConfigurationsReady"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:46.252366Z",
+              "message": "Deletion in progress.",
+              "status": "Unknown",
+              "type": "RoutesReady"
+            }
+          ],
+          "latestCreatedRevisionName": "ocr-recovery-sweeper-00001-roy",
+          "observedGeneration": 2
+        }
+      },
+      "serviceName": "run.googleapis.com",
+      "status": {
+        "message": "Ready condition status changed to True for Service ocr-recovery-sweeper."
+      }
+    },
+    "receiveTimestamp": "2026-01-25T09:23:48.666145307Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "timestamp": "2026-01-25T09:23:47.883884Z"
+  },
+  {
+    "insertId": "8bqw2fe1ezrs",
+    "logName": "projects/ai-ocr-smart-pipeline/logs/cloudaudit.googleapis.com%2Fsystem_event",
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "methodName": "/InternalServices.DeleteInternalService",
+      "resourceName": "namespaces/ai-ocr-smart-pipeline/revisions/ocr-recovery-sweeper-00001-roy",
+      "response": {
+        "@type": "type.googleapis.com/google.cloud.run.v1.Revision",
+        "apiVersion": "serving.knative.dev/v1",
+        "kind": "Revision",
+        "metadata": {
+          "annotations": {
+            "cloudfunctions.googleapis.com/trigger-type": "HTTP_TRIGGER",
+            "run.googleapis.com/base-images": "{\"worker\":\"asia-northeast1-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311\"}",
+            "run.googleapis.com/build-function-target": "{\"worker\":\"recover_stuck_files\"}",
+            "run.googleapis.com/build-id": "{\"worker\":\"9f2a854e-5d6e-4295-889d-b862ca5f80d2\"}",
+            "run.googleapis.com/build-source-location": "{\"worker\":\"gs://gcf-v2-sources-672754156190-asia-northeast1/ocr-recovery-sweeper/function-source.zip#1769332972168073\"}",
+            "run.googleapis.com/client-name": "gcloud",
+            "run.googleapis.com/operation-id": "7e7e616d-ec24-4b82-8116-ae455fd5ada6",
+            "run.googleapis.com/startup-cpu-boost": "true",
+            "serving.knative.dev/creator": "service-672754156190@gcf-admin-robot.iam.gserviceaccount.com"
+          },
+          "creationTimestamp": "2026-01-25T09:23:37.449741Z",
+          "deletionTimestamp": "2026-01-25T09:23:47.507463Z",
+          "generation": 2,
+          "labels": {
+            "cloud.googleapis.com/location": "asia-northeast1",
+            "goog-cloudfunctions-runtime": "python311",
+            "goog-managed-by": "cloudfunctions",
+            "run.googleapis.com/cascadeDelete": "true",
+            "run.googleapis.com/startupProbeType": "Default",
+            "serving.knative.dev/configuration": "ocr-recovery-sweeper",
+            "serving.knative.dev/configurationGeneration": "1",
+            "serving.knative.dev/route": "ocr-recovery-sweeper",
+            "serving.knative.dev/service": "ocr-recovery-sweeper",
+            "serving.knative.dev/serviceUid": "4a4fc3c4-d2b6-4368-a9c1-19252d06f34f"
+          },
+          "name": "ocr-recovery-sweeper-00001-roy",
+          "namespace": "672754156190",
+          "ownerReferences": [
+            {
+              "apiVersion": "serving.knative.dev/v1",
+              "blockOwnerDeletion": true,
+              "controller": true,
+              "kind": "Configuration",
+              "name": "ocr-recovery-sweeper",
+              "uid": "63661fb5-870f-44ad-903e-4a6678e3f80c"
+            }
+          ],
+          "resourceVersion": "AAZJMvKYhdg",
+          "selfLink": "/apis/serving.knative.dev/v1/namespaces/672754156190/revisions/ocr-recovery-sweeper-00001-roy",
+          "uid": "a3780085-6b55-41a3-ba2d-21695315e460"
+        },
+        "spec": {
+          "containerConcurrency": 1,
+          "containers": [
+            {
+              "env": [
+                {
+                  "name": "GCP_PROJECT_ID",
+                  "value": "ai-ocr-smart-pipeline"
+                },
+                {
+                  "name": "INPUT_BUCKET",
+                  "value": "ai-ocr-smart-pipeline-ocr-input-staging"
+                },
+                {
+                  "name": "OCR_PROCESSOR_URL",
+                  "value": "https://ocr-processor-6fn7reqyra-an.a.run.app"
+                },
+                {
+                  "name": "LOG_EXECUTION_ID",
+                  "value": "true"
+                }
+              ],
+              "image": "asia-northeast1-docker.pkg.dev/ai-ocr-smart-pipeline/gcf-artifacts/ai--ocr--smart--pipeline__asia--northeast1__ocr--recovery--sweeper@sha256:c33e1c8495dc755a71e081dc115bdd9b798eca50c7bd5f1e6f63cab6c8c16634",
+              "name": "worker",
+              "ports": [
+                {
+                  "containerPort": 8080,
+                  "name": "http1"
+                }
+              ],
+              "resources": {
+                "limits": {
+                  "cpu": "0.1666",
+                  "memory": "256M"
+                }
+              },
+              "startupProbe": {
+                "failureThreshold": 1,
+                "periodSeconds": 240,
+                "tcpSocket": {
+                  "port": 8080
+                },
+                "timeoutSeconds": 240
+              }
+            }
+          ],
+          "runtimeClassName": "run.googleapis.com/linux-base-image-update",
+          "serviceAccountName": "672754156190-compute@developer.gserviceaccount.com",
+          "timeoutSeconds": 60
+        },
+        "status": {
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-01-25T09:23:47.538392Z",
+              "message": "The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start",
+              "reason": "Retired",
+              "status": "True",
+              "type": "Ready"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:47.538392Z",
+              "message": "Revision retired.",
+              "reason": "Retired",
+              "severity": "Info",
+              "status": "False",
+              "type": "Active"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:45.636983Z",
+              "message": "The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start",
+              "reason": "HealthCheckContainerError",
+              "status": "False",
+              "type": "ContainerHealthy"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:40.653071Z",
+              "message": "Container image import completed in 2.45s.",
+              "status": "True",
+              "type": "ContainerReady"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:47.538392Z",
+              "message": "Revision retired.",
+              "reason": "Retired",
+              "status": "Unknown",
+              "type": "ResourcesAvailable"
+            }
+          ],
+          "containerStatuses": [
+            {
+              "imageDigest": "asia-northeast1-docker.pkg.dev/ai-ocr-smart-pipeline/gcf-artifacts/ai--ocr--smart--pipeline__asia--northeast1__ocr--recovery--sweeper@sha256:c33e1c8495dc755a71e081dc115bdd9b798eca50c7bd5f1e6f63cab6c8c16634",
+              "name": "worker"
+            }
+          ],
+          "imageDigest": "asia-northeast1-docker.pkg.dev/ai-ocr-smart-pipeline/gcf-artifacts/ai--ocr--smart--pipeline__asia--northeast1__ocr--recovery--sweeper@sha256:c33e1c8495dc755a71e081dc115bdd9b798eca50c7bd5f1e6f63cab6c8c16634",
+          "logUrl": "https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22",
+          "observedGeneration": 2
+        }
+      },
+      "serviceName": "run.googleapis.com",
+      "status": {
+        "message": "Ready condition status changed to True for Revision ocr-recovery-sweeper-00001-roy with message: The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start"
+      }
+    },
+    "receiveTimestamp": "2026-01-25T09:23:47.620389753Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-roy",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "timestamp": "2026-01-25T09:23:47.550577Z"
+  },
+  {
+    "insertId": "-9xpy8gdeouu",
+    "logName": "projects/ai-ocr-smart-pipeline/logs/cloudaudit.googleapis.com%2Factivity",
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "service-672754156190@gcf-admin-robot.iam.gserviceaccount.com"
+      },
+      "authorizationInfo": [
+        {
+          "granted": true,
+          "permission": "run.services.delete",
+          "permissionType": "ADMIN_WRITE",
+          "resource": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+          "resourceAttributes": {}
+        }
+      ],
+      "methodName": "google.cloud.serverless.internal.InternalServices.DeleteInternalService",
+      "requestMetadata": {
+        "destinationAttributes": {},
+        "requestAttributes": {
+          "auth": {},
+          "time": "2026-01-25T09:23:46.237294Z"
+        }
+      },
+      "resourceLocation": {
+        "currentLocations": [
+          "asia-northeast1"
+        ]
+      },
+      "resourceName": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+      "serviceName": "run.googleapis.com"
+    },
+    "receiveTimestamp": "2026-01-25T09:23:46.817573476Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "NOTICE",
+    "timestamp": "2026-01-25T09:23:46.189147Z"
+  },
+  {
+    "insertId": "-djvfp7dfw1q",
+    "logName": "projects/ai-ocr-smart-pipeline/logs/cloudaudit.googleapis.com%2Fsystem_event",
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "methodName": "/InternalServices.CreateInternalService",
+      "resourceName": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+      "response": {
+        "@type": "type.googleapis.com/google.cloud.run.v1.Service",
+        "apiVersion": "serving.knative.dev/v1",
+        "kind": "Service",
+        "metadata": {
+          "annotations": {
+            "cloudfunctions.googleapis.com/function-id": "ocr-recovery-sweeper",
+            "run.googleapis.com/build-base-image": "asia-northeast1-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311",
+            "run.googleapis.com/build-enable-automatic-updates": "true",
+            "run.googleapis.com/build-function-target": "recover_stuck_files",
+            "run.googleapis.com/build-image-uri": "asia-northeast1-docker.pkg.dev/ai-ocr-smart-pipeline/gcf-artifacts/ai--ocr--smart--pipeline__asia--northeast1__ocr--recovery--sweeper:version_1",
+            "run.googleapis.com/build-name": "projects/672754156190/locations/asia-northeast1/builds/9f2a854e-5d6e-4295-889d-b862ca5f80d2",
+            "run.googleapis.com/build-service-account": "projects/ai-ocr-smart-pipeline/serviceAccounts/672754156190-compute@developer.gserviceaccount.com",
+            "run.googleapis.com/build-source-location": "gs://gcf-v2-sources-672754156190-asia-northeast1/ocr-recovery-sweeper/function-source.zip#1769332972168073",
+            "run.googleapis.com/client-name": "gcloud",
+            "run.googleapis.com/custom-audiences": "[\"https://asia-northeast1-ai-ocr-smart-pipeline.cloudfunctions.net/ocr-recovery-sweeper\"]",
+            "run.googleapis.com/ingress": "all",
+            "run.googleapis.com/ingress-status": "all",
+            "run.googleapis.com/maxScale": "33",
+            "run.googleapis.com/operation-id": "7dcc9bc9-0b03-49ab-b5b9-96fe2dc0962f",
+            "run.googleapis.com/urls": "[\"https://ocr-recovery-sweeper-672754156190.asia-northeast1.run.app\",\"https://asia-northeast1-ai-ocr-smart-pipeline.cloudfunctions.net/ocr-recovery-sweeper\"]",
+            "serving.knative.dev/creator": "service-672754156190@gcf-admin-robot.iam.gserviceaccount.com",
+            "serving.knative.dev/lastModifier": "service-672754156190@gcf-admin-robot.iam.gserviceaccount.com"
+          },
+          "creationTimestamp": "2026-01-25T09:23:37.161445Z",
+          "generation": 1,
+          "labels": {
+            "cloud.googleapis.com/location": "asia-northeast1",
+            "goog-cloudfunctions-runtime": "python311",
+            "goog-drz-cloudfunctions-id": "ocr-recovery-sweeper",
+            "goog-drz-cloudfunctions-location": "asia-northeast1",
+            "goog-managed-by": "cloudfunctions"
+          },
+          "name": "ocr-recovery-sweeper",
+          "namespace": "672754156190",
+          "resourceVersion": "AAZJMvJ82bQ",
+          "selfLink": "/apis/serving.knative.dev/v1/namespaces/672754156190/services/ocr-recovery-sweeper",
+          "uid": "4a4fc3c4-d2b6-4368-a9c1-19252d06f34f"
+        },
+        "spec": {
+          "template": {
+            "metadata": {
+              "annotations": {
+                "cloudfunctions.googleapis.com/trigger-type": "HTTP_TRIGGER",
+                "run.googleapis.com/base-images": "{\"worker\":\"asia-northeast1-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311\"}",
+                "run.googleapis.com/client-name": "gcloud",
+                "run.googleapis.com/startup-cpu-boost": "true"
+              },
+              "labels": {
+                "run.googleapis.com/startupProbeType": "Default"
+              },
+              "name": "ocr-recovery-sweeper-00001-roy"
+            },
+            "spec": {
+              "containerConcurrency": 1,
+              "containers": [
+                {
+                  "env": [
+                    {
+                      "name": "GCP_PROJECT_ID",
+                      "value": "ai-ocr-smart-pipeline"
+                    },
+                    {
+                      "name": "INPUT_BUCKET",
+                      "value": "ai-ocr-smart-pipeline-ocr-input-staging"
+                    },
+                    {
+                      "name": "OCR_PROCESSOR_URL",
+                      "value": "https://ocr-processor-6fn7reqyra-an.a.run.app"
+                    },
+                    {
+                      "name": "LOG_EXECUTION_ID",
+                      "value": "true"
+                    }
+                  ],
+                  "image": "asia-northeast1-docker.pkg.dev/ai-ocr-smart-pipeline/gcf-artifacts/ai--ocr--smart--pipeline__asia--northeast1__ocr--recovery--sweeper:version_1",
+                  "name": "worker",
+                  "ports": [
+                    {
+                      "containerPort": 8080,
+                      "name": "http1"
+                    }
+                  ],
+                  "resources": {
+                    "limits": {
+                      "cpu": "0.1666",
+                      "memory": "256M"
+                    }
+                  },
+                  "startupProbe": {
+                    "failureThreshold": 1,
+                    "periodSeconds": 240,
+                    "tcpSocket": {
+                      "port": 8080
+                    },
+                    "timeoutSeconds": 240
+                  }
+                }
+              ],
+              "runtimeClassName": "run.googleapis.com/linux-base-image-update",
+              "serviceAccountName": "672754156190-compute@developer.gserviceaccount.com",
+              "timeoutSeconds": 60
+            }
+          },
+          "traffic": [
+            {
+              "latestRevision": true,
+              "percent": 100
+            }
+          ]
+        },
+        "status": {
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-01-25T09:23:45.679089Z",
+              "message": "The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start",
+              "reason": "HealthCheckContainerError",
+              "status": "False",
+              "type": "Ready"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:45.679089Z",
+              "message": "The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start",
+              "reason": "HealthCheckContainerError",
+              "status": "False",
+              "type": "ConfigurationsReady"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:40.776711Z",
+              "message": "Provisioning revision instances to receive traffic.",
+              "status": "Unknown",
+              "type": "RoutesReady"
+            }
+          ],
+          "latestCreatedRevisionName": "ocr-recovery-sweeper-00001-roy",
+          "observedGeneration": 1
+        }
+      },
+      "serviceName": "run.googleapis.com",
+      "status": {
+        "code": 9,
+        "message": "Ready condition status changed to False for Service ocr-recovery-sweeper with message: The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start"
+      }
+    },
+    "receiveTimestamp": "2026-01-25T09:23:46.443688240Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "ERROR",
+    "timestamp": "2026-01-25T09:23:45.755275Z"
+  },
+  {
+    "insertId": "8bqw2fe1ezrq",
+    "logName": "projects/ai-ocr-smart-pipeline/logs/cloudaudit.googleapis.com%2Fsystem_event",
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "methodName": "/InternalServices.CreateInternalService",
+      "resourceName": "namespaces/ai-ocr-smart-pipeline/revisions/ocr-recovery-sweeper-00001-roy",
+      "response": {
+        "@type": "type.googleapis.com/google.cloud.run.v1.Revision",
+        "apiVersion": "serving.knative.dev/v1",
+        "kind": "Revision",
+        "metadata": {
+          "annotations": {
+            "cloudfunctions.googleapis.com/trigger-type": "HTTP_TRIGGER",
+            "run.googleapis.com/base-images": "{\"worker\":\"asia-northeast1-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311\"}",
+            "run.googleapis.com/build-function-target": "{\"worker\":\"recover_stuck_files\"}",
+            "run.googleapis.com/build-id": "{\"worker\":\"9f2a854e-5d6e-4295-889d-b862ca5f80d2\"}",
+            "run.googleapis.com/build-source-location": "{\"worker\":\"gs://gcf-v2-sources-672754156190-asia-northeast1/ocr-recovery-sweeper/function-source.zip#1769332972168073\"}",
+            "run.googleapis.com/client-name": "gcloud",
+            "run.googleapis.com/operation-id": "7dcc9bc9-0b03-49ab-b5b9-96fe2dc0962f",
+            "run.googleapis.com/startup-cpu-boost": "true",
+            "serving.knative.dev/creator": "service-672754156190@gcf-admin-robot.iam.gserviceaccount.com"
+          },
+          "creationTimestamp": "2026-01-25T09:23:37.449741Z",
+          "generation": 1,
+          "labels": {
+            "cloud.googleapis.com/location": "asia-northeast1",
+            "goog-cloudfunctions-runtime": "python311",
+            "goog-managed-by": "cloudfunctions",
+            "run.googleapis.com/startupProbeType": "Default",
+            "serving.knative.dev/configuration": "ocr-recovery-sweeper",
+            "serving.knative.dev/configurationGeneration": "1",
+            "serving.knative.dev/route": "ocr-recovery-sweeper",
+            "serving.knative.dev/service": "ocr-recovery-sweeper",
+            "serving.knative.dev/serviceUid": "4a4fc3c4-d2b6-4368-a9c1-19252d06f34f"
+          },
+          "name": "ocr-recovery-sweeper-00001-roy",
+          "namespace": "672754156190",
+          "ownerReferences": [
+            {
+              "apiVersion": "serving.knative.dev/v1",
+              "blockOwnerDeletion": true,
+              "controller": true,
+              "kind": "Configuration",
+              "name": "ocr-recovery-sweeper",
+              "uid": "63661fb5-870f-44ad-903e-4a6678e3f80c"
+            }
+          ],
+          "resourceVersion": "AAZJMvJ7gnc",
+          "selfLink": "/apis/serving.knative.dev/v1/namespaces/672754156190/revisions/ocr-recovery-sweeper-00001-roy",
+          "uid": "a3780085-6b55-41a3-ba2d-21695315e460"
+        },
+        "spec": {
+          "containerConcurrency": 1,
+          "containers": [
+            {
+              "env": [
+                {
+                  "name": "GCP_PROJECT_ID",
+                  "value": "ai-ocr-smart-pipeline"
+                },
+                {
+                  "name": "INPUT_BUCKET",
+                  "value": "ai-ocr-smart-pipeline-ocr-input-staging"
+                },
+                {
+                  "name": "OCR_PROCESSOR_URL",
+                  "value": "https://ocr-processor-6fn7reqyra-an.a.run.app"
+                },
+                {
+                  "name": "LOG_EXECUTION_ID",
+                  "value": "true"
+                }
+              ],
+              "image": "asia-northeast1-docker.pkg.dev/ai-ocr-smart-pipeline/gcf-artifacts/ai--ocr--smart--pipeline__asia--northeast1__ocr--recovery--sweeper@sha256:c33e1c8495dc755a71e081dc115bdd9b798eca50c7bd5f1e6f63cab6c8c16634",
+              "name": "worker",
+              "ports": [
+                {
+                  "containerPort": 8080,
+                  "name": "http1"
+                }
+              ],
+              "resources": {
+                "limits": {
+                  "cpu": "0.1666",
+                  "memory": "256M"
+                }
+              },
+              "startupProbe": {
+                "failureThreshold": 1,
+                "periodSeconds": 240,
+                "tcpSocket": {
+                  "port": 8080
+                },
+                "timeoutSeconds": 240
+              }
+            }
+          ],
+          "runtimeClassName": "run.googleapis.com/linux-base-image-update",
+          "serviceAccountName": "672754156190-compute@developer.gserviceaccount.com",
+          "timeoutSeconds": 60
+        },
+        "status": {
+          "conditions": [
+            {
+              "lastTransitionTime": "2026-01-25T09:23:45.636983Z",
+              "message": "The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start",
+              "reason": "HealthCheckContainerError",
+              "status": "False",
+              "type": "Ready"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:45.636983Z",
+              "message": "The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start",
+              "reason": "HealthCheckContainerError",
+              "status": "False",
+              "type": "ContainerHealthy"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:40.653071Z",
+              "message": "Container image import completed in 2.45s.",
+              "status": "True",
+              "type": "ContainerReady"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:43.239606Z",
+              "message": "Provisioning imported containers completed in 2.59s. Checking container health. This will wait for up to 4m for the configured startup probe, including an initial delay of 0s.",
+              "status": "True",
+              "type": "ResourcesAvailable"
+            },
+            {
+              "lastTransitionTime": "2026-01-25T09:23:43.239606Z",
+              "message": "System will retry after 00:00 from lastTransitionTime for attempt 0.",
+              "reason": "ImmediateRetry",
+              "severity": "Info",
+              "status": "True",
+              "type": "Retry"
+            }
+          ],
+          "containerStatuses": [
+            {
+              "imageDigest": "asia-northeast1-docker.pkg.dev/ai-ocr-smart-pipeline/gcf-artifacts/ai--ocr--smart--pipeline__asia--northeast1__ocr--recovery--sweeper@sha256:c33e1c8495dc755a71e081dc115bdd9b798eca50c7bd5f1e6f63cab6c8c16634",
+              "name": "worker"
+            }
+          ],
+          "imageDigest": "asia-northeast1-docker.pkg.dev/ai-ocr-smart-pipeline/gcf-artifacts/ai--ocr--smart--pipeline__asia--northeast1__ocr--recovery--sweeper@sha256:c33e1c8495dc755a71e081dc115bdd9b798eca50c7bd5f1e6f63cab6c8c16634",
+          "logUrl": "https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22",
+          "observedGeneration": 1
+        }
+      },
+      "serviceName": "run.googleapis.com",
+      "status": {
+        "code": 9,
+        "message": "Ready condition status changed to False for Revision ocr-recovery-sweeper-00001-roy with message: The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.\n\nLogs URL: https://console.cloud.google.com/logs/viewer?project=ai-ocr-smart-pipeline&resource=cloud_run_revision/service_name/ocr-recovery-sweeper/revision_name/ocr-recovery-sweeper-00001-roy&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22ocr-recovery-sweeper%22%0Aresource.labels.revision_name%3D%22ocr-recovery-sweeper-00001-roy%22 \nFor more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start"
+      }
+    },
+    "receiveTimestamp": "2026-01-25T09:23:46.646543798Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-roy",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "ERROR",
+    "timestamp": "2026-01-25T09:23:45.649948Z"
+  },
+  {
+    "insertId": "6975e1210009b49ac6cdfe24",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c61a21d69e0896506ffea1fa320cbdef6ed0f75e7a1880b967a565bf7de8e28386f4512331bfdadf6401333c8f39c317dc1a8ea9295a524016b9574c30e8f4392b846adb743d3dfeda70eedb2b305",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2026-01-25T09:23:45.738897743Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-roy",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "ERROR",
+    "textPayload": "Default STARTUP TCP probe failed 1 time consecutively for container \"worker\" on port 8080. The instance was not started.\nConnection failed with status CANCELLED.",
+    "timestamp": "2026-01-25T09:23:45.636058Z"
+  },
+  {
+    "insertId": "6975e12100087472a4290feb",
+    "labels": {
+      "container_name": "worker",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c61a21d69e0896506ffea1fa320cbdef6ed0f75e7a1880b967a565bf7de8e28386f4512331bfdadf6401333c8f39c317dc1a8ea9295a524016b9574c30e8f4392b846adb743d3dfeda70eedb2b305",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2026-01-25T09:23:45.738897743Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-roy",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "WARNING",
+    "textPayload": "Container called exit(1).",
+    "timestamp": "2026-01-25T09:23:45.554016305Z"
+  },
+  {
+    "errorGroups": [
+      {
+        "id": "CMme4uiN8Mf7Iw"
+      }
+    ],
+    "insertId": "6975e120000e25905cf48e10",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c61a21d69e0896506ffea1fa320cbdef6ed0f75e7a1880b967a565bf7de8e28386f4512331bfdadf6401333c8f39c317dc1a8ea9295a524016b9574c30e8f4392b846adb743d3dfeda70eedb2b305",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-01-25T09:23:44.931522827Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-roy",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "ERROR",
+    "textPayload": "Traceback (most recent call last):\n  File \"/layers/google.python.pip/pip/bin/functions-framework\", line 7, in <module>\n    sys.exit(_cli())\n             ^^^^^^\n  File \"/layers/google.python.pip/pip/lib/python3.11/site-packages/click/core.py\", line 1485, in __call__\n    return self.main(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/layers/google.python.pip/pip/lib/python3.11/site-packages/click/core.py\", line 1406, in main\n    rv = self.invoke(ctx)\n         ^^^^^^^^^^^^^^^^\n  File \"/layers/google.python.pip/pip/lib/python3.11/site-packages/click/core.py\", line 1269, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/layers/google.python.pip/pip/lib/python3.11/site-packages/click/core.py\", line 824, in invoke\n    return callback(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/layers/google.python.pip/pip/lib/python3.11/site-packages/functions_framework/_cli.py\", line 47, in _cli\n    app = create_app(target, source, signature_type)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/layers/google.python.pip/pip/lib/python3.11/site-packages/functions_framework/__init__.py\", line 406, in create_app\n    raise e from None\n  File \"/layers/google.python.pip/pip/lib/python3.11/site-packages/functions_framework/__init__.py\", line 387, in create_app\n    spec.loader.exec_module(source_module)\n  File \"<frozen importlib._bootstrap_external>\", line 940, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 241, in _call_with_frames_removed\n  File \"/workspace/main.py\", line 31, in <module>\n    def recover_stuck_files(request: functions_framework.Request) -> str:\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: module 'functions_framework' has no attribute 'Request'",
+    "timestamp": "2026-01-25T09:23:44.927120Z"
+  },
+  {
+    "insertId": "6975e11f00062ad258ccd5e0",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c61a21d69e0896506ffea1fa320cbdef6ed0f75e7a1880b967a565bf7de8e28386f4512331bfdadf6401333c8f39c317dc1a8ea9295a524016b9574c30e8f4392b846adb743d3dfeda70eedb2b305",
+      "scaling_reason": "DEPLOYMENT_ROLLOUT"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2026-01-25T09:23:43.410344315Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-roy",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "textPayload": "Starting new instance. Reason: DEPLOYMENT_ROLLOUT - Instance started due to traffic shifting between revisions due to deployment, traffic split adjustment, or deployment health check.",
+    "timestamp": "2026-01-25T09:23:43.404178Z"
+  },
+  {
+    "insertId": "-djvfp7dfw1a",
+    "logName": "projects/ai-ocr-smart-pipeline/logs/cloudaudit.googleapis.com%2Factivity",
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "service-672754156190@gcf-admin-robot.iam.gserviceaccount.com"
+      },
+      "authorizationInfo": [
+        {
+          "granted": true,
+          "permission": "run.services.create",
+          "permissionType": "ADMIN_WRITE",
+          "resource": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+          "resourceAttributes": {}
+        },
+        {
+          "granted": true,
+          "permission": "run.services.create",
+          "permissionType": "ADMIN_WRITE",
+          "resource": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+          "resourceAttributes": {
+            "name": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+            "service": "run.googleapis.com/",
+            "type": "run.googleapis.com/Service"
+          }
+        }
+      ],
+      "methodName": "google.cloud.serverless.internal.InternalServices.CreateInternalService",
+      "requestMetadata": {
+        "destinationAttributes": {},
+        "requestAttributes": {
+          "auth": {},
+          "time": "2026-01-25T09:23:37.405535Z"
+        }
+      },
+      "resourceLocation": {
+        "currentLocations": [
+          "asia-northeast1"
+        ]
+      },
+      "resourceName": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+      "serviceName": "run.googleapis.com"
+    },
+    "receiveTimestamp": "2026-01-25T09:23:37.442663637Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "NOTICE",
+    "timestamp": "2026-01-25T09:23:36.935289Z"
+  },
+  {
+    "insertId": "-lc9yk1e1061i",
+    "logName": "projects/ai-ocr-smart-pipeline/logs/cloudaudit.googleapis.com%2Factivity",
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "service-672754156190@gcf-admin-robot.iam.gserviceaccount.com"
+      },
+      "authorizationInfo": [
+        {
+          "granted": true,
+          "permission": "run.services.create",
+          "permissionType": "ADMIN_WRITE",
+          "resource": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+          "resourceAttributes": {}
+        },
+        {
+          "granted": true,
+          "permission": "run.services.create",
+          "permissionType": "ADMIN_WRITE",
+          "resource": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+          "resourceAttributes": {
+            "name": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+            "service": "run.googleapis.com/",
+            "type": "run.googleapis.com/Service"
+          }
+        }
+      ],
+      "methodName": "google.cloud.serverless.internal.InternalServices.CreateInternalService",
+      "requestMetadata": {
+        "destinationAttributes": {},
+        "requestAttributes": {
+          "auth": {},
+          "time": "2026-01-25T09:22:52.767992Z"
+        }
+      },
+      "resourceLocation": {
+        "currentLocations": [
+          "asia-northeast1"
+        ]
+      },
+      "resourceName": "namespaces/ai-ocr-smart-pipeline/services/ocr-recovery-sweeper",
+      "serviceName": "run.googleapis.com"
+    },
+    "receiveTimestamp": "2026-01-25T09:22:53.590425672Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "NOTICE",
+    "timestamp": "2026-01-25T09:22:52.229485Z"
+  }
+]

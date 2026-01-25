@@ -3,6 +3,7 @@ import os
 import time
 from datetime import UTC, datetime, timedelta
 
+import flask
 import functions_framework
 import google.auth.transport.requests
 import google.oauth2.id_token
@@ -28,7 +29,7 @@ def get_processor_token() -> str:
     return google.oauth2.id_token.fetch_id_token(auth_req, OCR_PROCESSOR_URL)
 
 @functions_framework.http
-def recover_stuck_files(request: functions_framework.Request) -> str:
+def recover_stuck_files(request: flask.Request) -> str:
     """
     Cloud Scheduler entry point.
     Sweeps input bucket and re-triggers stuck files.
