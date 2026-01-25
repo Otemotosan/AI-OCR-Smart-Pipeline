@@ -1,0 +1,4 @@
+gs://ai-ocr-smart-pipeline-ocr-input-staging/chumon_01.pdf
+gs://ai-ocr-smart-pipeline-ocr-input-staging/config/filename_config.yaml
+gs://ai-ocr-smart-pipeline-ocr-input-staging/test_邏榊刀譖ｸ_螻ｱ逕ｰ蝠・ｺ・.pdf
+gs://ai-ocr-smart-pipeline-ocr-input-staging/test_隲区ｱよ嶌_逕ｰ荳ｭ蟾･讌ｭ1.pdf

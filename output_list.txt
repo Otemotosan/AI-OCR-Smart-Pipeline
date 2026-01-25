@@ -1,0 +1,4 @@
+gs://ai-ocr-smart-pipeline-ocr-output-staging/202601/order_forms/unknown_unknown_unknown.pdf
+gs://ai-ocr-smart-pipeline-ocr-output-staging/202601/order_forms/unknown_unknown_unknown_docai.md
+gs://ai-ocr-smart-pipeline-ocr-output-staging/202601/unknown/test_豕ｨ譁・嶌_ABC蝠・ｼ・pdf
+gs://ai-ocr-smart-pipeline-ocr-output-staging/202601/unknown/test_豕ｨ譁・嶌_ABC蝠・ｼ喟docai.md

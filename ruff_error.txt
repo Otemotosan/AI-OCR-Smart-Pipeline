@@ -1,0 +1,1739 @@
+warning: The following rules have been removed and ignoring them has no effect:
+    - ANN101
+    - ANN102
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:118:13
+    |
+116 |         Status message string
+117 |     """
+118 |     Returns:
+    |             ^
+119 |         Status message string
+120 |     """
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:119:1
+    |
+117 |     """
+118 |     Returns:
+119 |         Status message string
+    | ^^^^^^^^
+120 |     """
+121 |     try:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:119:16
+    |
+117 |     """
+118 |     Returns:
+119 |         Status message string
+    |                ^^^^^^^
+120 |     """
+121 |     try:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:119:24
+    |
+117 |     """
+118 |     Returns:
+119 |         Status message string
+    |                        ^^^^^^
+120 |     """
+121 |     try:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:226:14
+    |
+224 | ) -> str:
+225 |     """
+226 |     Internal document processing logic.
+    |              ^^^^^^^^
+227 |
+228 |     Args:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:226:23
+    |
+224 | ) -> str:
+225 |     """
+226 |     Internal document processing logic.
+    |                       ^^^^^^^^^^
+227 |
+228 |     Args:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:226:34
+    |
+224 | ) -> str:
+225 |     """
+226 |     Internal document processing logic.
+    |                                  ^^^^^
+227 |
+228 |     Args:
+    |
+
+invalid-syntax: Expected an identifier
+   --> src\functions\processor\main.py:226:40
+    |
+224 | ) -> str:
+225 |     """
+226 |     Internal document processing logic.
+    |                                        ^
+227 |
+228 |     Args:
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:228:10
+    |
+226 |     Internal document processing logic.
+227 |
+228 |     Args:
+    |          ^
+229 |         doc_hash: Document hash for tracking
+230 |         gcs_uri: Source GCS URI
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:229:1
+    |
+228 |     Args:
+229 |         doc_hash: Document hash for tracking
+    | ^^^^^^^^
+230 |         gcs_uri: Source GCS URI
+231 |         storage_client: GCS client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:229:28
+    |
+228 |     Args:
+229 |         doc_hash: Document hash for tracking
+    |                            ^^^^
+230 |         gcs_uri: Source GCS URI
+231 |         storage_client: GCS client
+    |
+
+invalid-syntax: Compound statements are not allowed on the same line as simple statements
+   --> src\functions\processor\main.py:229:33
+    |
+228 |     Args:
+229 |         doc_hash: Document hash for tracking
+    |                                 ^^^
+230 |         gcs_uri: Source GCS URI
+231 |         storage_client: GCS client
+    |
+
+invalid-syntax: Expected `in`, found newline
+   --> src\functions\processor\main.py:229:45
+    |
+228 |     Args:
+229 |         doc_hash: Document hash for tracking
+    |                                             ^
+230 |         gcs_uri: Source GCS URI
+231 |         storage_client: GCS client
+    |
+
+invalid-syntax: Expected an indented block after `for` statement
+   --> src\functions\processor\main.py:230:9
+    |
+228 |     Args:
+229 |         doc_hash: Document hash for tracking
+230 |         gcs_uri: Source GCS URI
+    |         ^^^^^^^
+231 |         storage_client: GCS client
+232 |         firestore_client: Firestore client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:230:25
+    |
+228 |     Args:
+229 |         doc_hash: Document hash for tracking
+230 |         gcs_uri: Source GCS URI
+    |                         ^^^
+231 |         storage_client: GCS client
+232 |         firestore_client: Firestore client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:230:29
+    |
+228 |     Args:
+229 |         doc_hash: Document hash for tracking
+230 |         gcs_uri: Source GCS URI
+    |                             ^^^
+231 |         storage_client: GCS client
+232 |         firestore_client: Firestore client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:231:29
+    |
+229 |         doc_hash: Document hash for tracking
+230 |         gcs_uri: Source GCS URI
+231 |         storage_client: GCS client
+    |                             ^^^^^^
+232 |         firestore_client: Firestore client
+233 |         storage_ops: Storage operations client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:232:37
+    |
+230 |         gcs_uri: Source GCS URI
+231 |         storage_client: GCS client
+232 |         firestore_client: Firestore client
+    |                                     ^^^^^^
+233 |         storage_ops: Storage operations client
+234 |         db_client: Database client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:233:30
+    |
+231 |         storage_client: GCS client
+232 |         firestore_client: Firestore client
+233 |         storage_ops: Storage operations client
+    |                              ^^^^^^^^^^
+234 |         db_client: Database client
+235 |         bq_client: BigQuery client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:233:41
+    |
+231 |         storage_client: GCS client
+232 |         firestore_client: Firestore client
+233 |         storage_ops: Storage operations client
+    |                                         ^^^^^^
+234 |         db_client: Database client
+235 |         bq_client: BigQuery client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:234:29
+    |
+232 |         firestore_client: Firestore client
+233 |         storage_ops: Storage operations client
+234 |         db_client: Database client
+    |                             ^^^^^^
+235 |         bq_client: BigQuery client
+236 |         start_time: Processing start time
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:235:29
+    |
+233 |         storage_ops: Storage operations client
+234 |         db_client: Database client
+235 |         bq_client: BigQuery client
+    |                             ^^^^^^
+236 |         start_time: Processing start time
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:236:32
+    |
+234 |         db_client: Database client
+235 |         bq_client: BigQuery client
+236 |         start_time: Processing start time
+    |                                ^^^^^
+237 |
+238 |     Returns:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:236:38
+    |
+234 |         db_client: Database client
+235 |         bq_client: BigQuery client
+236 |         start_time: Processing start time
+    |                                      ^^^^
+237 |
+238 |     Returns:
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:238:5
+    |
+236 |         start_time: Processing start time
+237 |
+238 |     Returns:
+    |     ^
+239 |         Status message string
+240 |     """
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:238:13
+    |
+236 |         start_time: Processing start time
+237 |
+238 |     Returns:
+    |             ^
+239 |         Status message string
+240 |     """
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:239:1
+    |
+238 |     Returns:
+239 |         Status message string
+    | ^^^^^^^^
+240 |     """
+241 |     attempts: list[dict[str, Any]] = []
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:239:16
+    |
+238 |     Returns:
+239 |         Status message string
+    |                ^^^^^^^
+240 |     """
+241 |     attempts: list[dict[str, Any]] = []
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:239:24
+    |
+238 |     Returns:
+239 |         Status message string
+    |                        ^^^^^^
+240 |     """
+241 |     attempts: list[dict[str, Any]] = []
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:240:5
+    |
+238 |     Returns:
+239 |         Status message string
+240 |     """
+    |     ^
+241 |     attempts: list[dict[str, Any]] = []
+242 |     errors: list[str] = []
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:647:13
+    |
+645 | def _convert_pdf_to_image(pdf_bytes: bytes, dpi: int = 150) -> bytes | None:
+646 |     """
+647 |     Convert first page of PDF to PNG image.
+    |             ^^^^^
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:647:19
+    |
+645 | def _convert_pdf_to_image(pdf_bytes: bytes, dpi: int = 150) -> bytes | None:
+646 |     """
+647 |     Convert first page of PDF to PNG image.
+    |                   ^^^^
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:647:24
+    |
+645 | def _convert_pdf_to_image(pdf_bytes: bytes, dpi: int = 150) -> bytes | None:
+646 |     """
+647 |     Convert first page of PDF to PNG image.
+    |                        ^^
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:647:27
+    |
+645 | def _convert_pdf_to_image(pdf_bytes: bytes, dpi: int = 150) -> bytes | None:
+646 |     """
+647 |     Convert first page of PDF to PNG image.
+    |                           ^^^
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:647:31
+    |
+645 | def _convert_pdf_to_image(pdf_bytes: bytes, dpi: int = 150) -> bytes | None:
+646 |     """
+647 |     Convert first page of PDF to PNG image.
+    |                               ^^
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:647:34
+    |
+645 | def _convert_pdf_to_image(pdf_bytes: bytes, dpi: int = 150) -> bytes | None:
+646 |     """
+647 |     Convert first page of PDF to PNG image.
+    |                                  ^^^
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:647:38
+    |
+645 | def _convert_pdf_to_image(pdf_bytes: bytes, dpi: int = 150) -> bytes | None:
+646 |     """
+647 |     Convert first page of PDF to PNG image.
+    |                                      ^^^^^
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |
+
+invalid-syntax: Expected an identifier
+   --> src\functions\processor\main.py:647:44
+    |
+645 | def _convert_pdf_to_image(pdf_bytes: bytes, dpi: int = 150) -> bytes | None:
+646 |     """
+647 |     Convert first page of PDF to PNG image.
+    |                                            ^
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:649:10
+    |
+647 |     Convert first page of PDF to PNG image.
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |          ^^^^^^^
+650 |
+651 |     Args:
+    |
+
+invalid-syntax: Compound statements are not allowed on the same line as simple statements
+   --> src\functions\processor\main.py:649:25
+    |
+647 |     Convert first page of PDF to PNG image.
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |                         ^^^
+650 |
+651 |     Args:
+    |
+
+invalid-syntax: Expected `in`, found name
+   --> src\functions\processor\main.py:649:40
+    |
+647 |     Convert first page of PDF to PNG image.
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |                                        ^^^^^^^
+650 |
+651 |     Args:
+    |
+
+invalid-syntax: Expected `:`, found name
+   --> src\functions\processor\main.py:649:48
+    |
+647 |     Convert first page of PDF to PNG image.
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |                                                ^^^^^^
+650 |
+651 |     Args:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:649:55
+    |
+647 |     Convert first page of PDF to PNG image.
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |                                                       ^^^^^^^^^^^^
+650 |
+651 |     Args:
+    |
+
+invalid-syntax: Expected an identifier
+   --> src\functions\processor\main.py:649:68
+    |
+647 |     Convert first page of PDF to PNG image.
+648 |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+    |                                                                    ^
+650 |
+651 |     Args:
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:651:10
+    |
+649 |     Uses PyMuPDF (fitz) for conversion without system dependencies.
+650 |
+651 |     Args:
+    |          ^
+652 |         pdf_bytes: PDF file content as bytes
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:652:1
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+    | ^^^^^^^^
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:652:24
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+    |                        ^^^^
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:652:29
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+    |                             ^^^^^^^
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:652:37
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+    |                                     ^^
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |
+
+invalid-syntax: Compound statements are not allowed on the same line as simple statements
+   --> src\functions\processor\main.py:653:25
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |                         ^^^
+654 |
+655 |     Returns:
+    |
+
+invalid-syntax: Invalid assignment target
+   --> src\functions\processor\main.py:653:29
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+654 |
+655 |     Returns:
+    |
+
+invalid-syntax: Expected `,`, found `:`
+   --> src\functions\processor\main.py:653:47
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |                                               ^
+654 |
+655 |     Returns:
+    |
+
+invalid-syntax: Unparenthesized generator expression cannot be used here
+   --> src\functions\processor\main.py:653:49
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |                                                 ^^^^^^^^^^^^^^^^^^
+654 |
+655 |     Returns:
+    |
+
+invalid-syntax: Expected `in`, found name
+   --> src\functions\processor\main.py:653:65
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |                                                                 ^^
+654 |
+655 |     Returns:
+    |
+
+invalid-syntax: Expected `,`, found name
+   --> src\functions\processor\main.py:653:68
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |                                                                    ^^^^^^^
+654 |
+655 |     Returns:
+    |
+
+invalid-syntax: Expected `in`, found newline
+   --> src\functions\processor\main.py:653:81
+    |
+651 |     Args:
+652 |         pdf_bytes: PDF file content as bytes
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+    |                                                                                 ^
+654 |
+655 |     Returns:
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:655:5
+    |
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+654 |
+655 |     Returns:
+    |     ^
+656 |         PNG image bytes, or None if conversion fails
+657 |     """
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:655:13
+    |
+653 |         dpi: Resolution for rendering (default: 150 for balance of quality/size)
+654 |
+655 |     Returns:
+    |             ^
+656 |         PNG image bytes, or None if conversion fails
+657 |     """
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:656:1
+    |
+655 |     Returns:
+656 |         PNG image bytes, or None if conversion fails
+    | ^^^^^^^^
+657 |     """
+658 |     try:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:656:13
+    |
+655 |     Returns:
+656 |         PNG image bytes, or None if conversion fails
+    |             ^^^^^
+657 |     """
+658 |     try:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:656:19
+    |
+655 |     Returns:
+656 |         PNG image bytes, or None if conversion fails
+    |                   ^^^^^
+657 |     """
+658 |     try:
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:656:26
+    |
+655 |     Returns:
+656 |         PNG image bytes, or None if conversion fails
+    |                          ^^
+657 |     """
+658 |     try:
+    |
+
+invalid-syntax: Expected `else`, found name
+   --> src\functions\processor\main.py:656:48
+    |
+655 |     Returns:
+656 |         PNG image bytes, or None if conversion fails
+    |                                                ^^^^^
+657 |     """
+658 |     try:
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:657:5
+    |
+655 |     Returns:
+656 |         PNG image bytes, or None if conversion fails
+657 |     """
+    |     ^
+658 |     try:
+659 |         import fitz  # PyMuPDF
+    |
+
+invalid-syntax: missing closing quote in string literal
+   --> src\functions\processor\main.py:692:16
+    |
+690 | def _check_timeout(start_time: float, phase: str) -> None:
+691 |     """
+692 |     Check if we're approaching the function timeout.
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+693 |
+694 |     Args:
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:694:10
+    |
+692 |     Check if we're approaching the function timeout.
+693 |
+694 |     Args:
+    |          ^
+695 |         start_time: Processing start time
+696 |         phase: Current processing phase name
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:695:1
+    |
+694 |     Args:
+695 |         start_time: Processing start time
+    | ^^^^^^^^
+696 |         phase: Current processing phase name
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:695:32
+    |
+694 |     Args:
+695 |         start_time: Processing start time
+    |                                ^^^^^
+696 |         phase: Current processing phase name
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:695:38
+    |
+694 |     Args:
+695 |         start_time: Processing start time
+    |                                      ^^^^
+696 |         phase: Current processing phase name
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:696:24
+    |
+694 |     Args:
+695 |         start_time: Processing start time
+696 |         phase: Current processing phase name
+    |                        ^^^^^^^^^^
+697 |
+698 |     Raises:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:696:35
+    |
+694 |     Args:
+695 |         start_time: Processing start time
+696 |         phase: Current processing phase name
+    |                                   ^^^^^
+697 |
+698 |     Raises:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:696:41
+    |
+694 |     Args:
+695 |         start_time: Processing start time
+696 |         phase: Current processing phase name
+    |                                         ^^^^
+697 |
+698 |     Raises:
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:698:5
+    |
+696 |         phase: Current processing phase name
+697 |
+698 |     Raises:
+    |     ^
+699 |         TimeoutError: If approaching timeout
+700 |     """
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:698:12
+    |
+696 |         phase: Current processing phase name
+697 |
+698 |     Raises:
+    |            ^
+699 |         TimeoutError: If approaching timeout
+700 |     """
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:699:1
+    |
+698 |     Raises:
+699 |         TimeoutError: If approaching timeout
+    | ^^^^^^^^
+700 |     """
+701 |     elapsed = time.time() - start_time
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:699:26
+    |
+698 |     Raises:
+699 |         TimeoutError: If approaching timeout
+    |                          ^^^^^^^^^^^
+700 |     """
+701 |     elapsed = time.time() - start_time
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:699:38
+    |
+698 |     Raises:
+699 |         TimeoutError: If approaching timeout
+    |                                      ^^^^^^^
+700 |     """
+701 |     elapsed = time.time() - start_time
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:700:5
+    |
+698 |     Raises:
+699 |         TimeoutError: If approaching timeout
+700 |     """
+    |     ^
+701 |     elapsed = time.time() - start_time
+702 |     remaining = FUNCTION_TIMEOUT_SECONDS - elapsed
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:721:10
+    |
+719 | ) -> None:
+720 |     """
+721 |     Move failed document to quarantine with report.
+    |          ^^^^^^
+722 |
+723 |     Args:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:721:17
+    |
+719 | ) -> None:
+720 |     """
+721 |     Move failed document to quarantine with report.
+    |                 ^^^^^^^^
+722 |
+723 |     Args:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:721:26
+    |
+719 | ) -> None:
+720 |     """
+721 |     Move failed document to quarantine with report.
+    |                          ^^
+722 |
+723 |     Args:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:721:29
+    |
+719 | ) -> None:
+720 |     """
+721 |     Move failed document to quarantine with report.
+    |                             ^^^^^^^^^^
+722 |
+723 |     Args:
+    |
+
+invalid-syntax: Compound statements are not allowed on the same line as simple statements
+   --> src\functions\processor\main.py:721:40
+    |
+719 | ) -> None:
+720 |     """
+721 |     Move failed document to quarantine with report.
+    |                                        ^^^^
+722 |
+723 |     Args:
+    |
+
+invalid-syntax: Expected an identifier
+   --> src\functions\processor\main.py:721:52
+    |
+719 | ) -> None:
+720 |     """
+721 |     Move failed document to quarantine with report.
+    |                                                    ^
+722 |
+723 |     Args:
+    |
+
+invalid-syntax: Expected an indented block after `with` statement
+   --> src\functions\processor\main.py:723:5
+    |
+721 |     Move failed document to quarantine with report.
+722 |
+723 |     Args:
+    |     ^^^^
+724 |         doc_hash: Document hash
+725 |         gcs_uri: Original GCS URI
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:723:10
+    |
+721 |     Move failed document to quarantine with report.
+722 |
+723 |     Args:
+    |          ^
+724 |         doc_hash: Document hash
+725 |         gcs_uri: Original GCS URI
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:724:1
+    |
+723 |     Args:
+724 |         doc_hash: Document hash
+    | ^^^^^^^^
+725 |         gcs_uri: Original GCS URI
+726 |         attempts: List of extraction attempts
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:724:28
+    |
+723 |     Args:
+724 |         doc_hash: Document hash
+    |                            ^^^^
+725 |         gcs_uri: Original GCS URI
+726 |         attempts: List of extraction attempts
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:725:27
+    |
+723 |     Args:
+724 |         doc_hash: Document hash
+725 |         gcs_uri: Original GCS URI
+    |                           ^^^
+726 |         attempts: List of extraction attempts
+727 |         errors: List of error messages
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:725:31
+    |
+723 |     Args:
+724 |         doc_hash: Document hash
+725 |         gcs_uri: Original GCS URI
+    |                               ^^^
+726 |         attempts: List of extraction attempts
+727 |         errors: List of error messages
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:726:24
+    |
+724 |         doc_hash: Document hash
+725 |         gcs_uri: Original GCS URI
+726 |         attempts: List of extraction attempts
+    |                        ^^
+727 |         errors: List of error messages
+728 |         storage_client: GCS client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:726:27
+    |
+724 |         doc_hash: Document hash
+725 |         gcs_uri: Original GCS URI
+726 |         attempts: List of extraction attempts
+    |                           ^^^^^^^^^^
+727 |         errors: List of error messages
+728 |         storage_client: GCS client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:726:38
+    |
+724 |         doc_hash: Document hash
+725 |         gcs_uri: Original GCS URI
+726 |         attempts: List of extraction attempts
+    |                                      ^^^^^^^^
+727 |         errors: List of error messages
+728 |         storage_client: GCS client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:727:22
+    |
+725 |         gcs_uri: Original GCS URI
+726 |         attempts: List of extraction attempts
+727 |         errors: List of error messages
+    |                      ^^
+728 |         storage_client: GCS client
+729 |         db_client: Database client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:727:25
+    |
+725 |         gcs_uri: Original GCS URI
+726 |         attempts: List of extraction attempts
+727 |         errors: List of error messages
+    |                         ^^^^^
+728 |         storage_client: GCS client
+729 |         db_client: Database client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:727:31
+    |
+725 |         gcs_uri: Original GCS URI
+726 |         attempts: List of extraction attempts
+727 |         errors: List of error messages
+    |                               ^^^^^^^^
+728 |         storage_client: GCS client
+729 |         db_client: Database client
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:728:29
+    |
+726 |         attempts: List of extraction attempts
+727 |         errors: List of error messages
+728 |         storage_client: GCS client
+    |                             ^^^^^^
+729 |         db_client: Database client
+730 |         docai_markdown: Optional Document AI markdown content
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:729:29
+    |
+727 |         errors: List of error messages
+728 |         storage_client: GCS client
+729 |         db_client: Database client
+    |                             ^^^^^^
+730 |         docai_markdown: Optional Document AI markdown content
+731 |     """
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:730:34
+    |
+728 |         storage_client: GCS client
+729 |         db_client: Database client
+730 |         docai_markdown: Optional Document AI markdown content
+    |                                  ^^^^^^^^
+731 |     """
+732 |     logger.info(
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:730:43
+    |
+728 |         storage_client: GCS client
+729 |         db_client: Database client
+730 |         docai_markdown: Optional Document AI markdown content
+    |                                           ^^
+731 |     """
+732 |     logger.info(
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:730:46
+    |
+728 |         storage_client: GCS client
+729 |         db_client: Database client
+730 |         docai_markdown: Optional Document AI markdown content
+    |                                              ^^^^^^^^
+731 |     """
+732 |     logger.info(
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:730:55
+    |
+728 |         storage_client: GCS client
+729 |         db_client: Database client
+730 |         docai_markdown: Optional Document AI markdown content
+    |                                                       ^^^^^^^
+731 |     """
+732 |     logger.info(
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:731:5
+    |
+729 |         db_client: Database client
+730 |         docai_markdown: Optional Document AI markdown content
+731 |     """
+    |     ^
+732 |     logger.info(
+733 |         "quarantining_document",
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:834:12
+    |
+832 | def health_check(request: Any) -> tuple[dict[str, Any], int]:
+833 |     """
+834 |     Health check endpoint for monitoring.
+    |            ^^^^^
+835 |
+836 |     Returns system health status including:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:834:18
+    |
+832 | def health_check(request: Any) -> tuple[dict[str, Any], int]:
+833 |     """
+834 |     Health check endpoint for monitoring.
+    |                  ^^^^^^^^
+835 |
+836 |     Returns system health status including:
+    |
+
+invalid-syntax: Compound statements are not allowed on the same line as simple statements
+   --> src\functions\processor\main.py:834:27
+    |
+832 | def health_check(request: Any) -> tuple[dict[str, Any], int]:
+833 |     """
+834 |     Health check endpoint for monitoring.
+    |                           ^^^
+835 |
+836 |     Returns system health status including:
+    |
+
+invalid-syntax: Expected an identifier
+   --> src\functions\processor\main.py:834:42
+    |
+832 | def health_check(request: Any) -> tuple[dict[str, Any], int]:
+833 |     """
+834 |     Health check endpoint for monitoring.
+    |                                          ^
+835 |
+836 |     Returns system health status including:
+    |
+
+invalid-syntax: Expected an indented block after `for` statement
+   --> src\functions\processor\main.py:836:5
+    |
+834 |     Health check endpoint for monitoring.
+835 |
+836 |     Returns system health status including:
+    |     ^^^^^^^
+837 |     - Service availability
+838 |     - Firestore connectivity
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:836:13
+    |
+834 |     Health check endpoint for monitoring.
+835 |
+836 |     Returns system health status including:
+    |             ^^^^^^
+837 |     - Service availability
+838 |     - Firestore connectivity
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:836:20
+    |
+834 |     Health check endpoint for monitoring.
+835 |
+836 |     Returns system health status including:
+    |                    ^^^^^^
+837 |     - Service availability
+838 |     - Firestore connectivity
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:836:27
+    |
+834 |     Health check endpoint for monitoring.
+835 |
+836 |     Returns system health status including:
+    |                           ^^^^^^
+837 |     - Service availability
+838 |     - Firestore connectivity
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:836:34
+    |
+834 |     Health check endpoint for monitoring.
+835 |
+836 |     Returns system health status including:
+    |                                  ^^^^^^^^^
+837 |     - Service availability
+838 |     - Firestore connectivity
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:836:44
+    |
+834 |     Health check endpoint for monitoring.
+835 |
+836 |     Returns system health status including:
+    |                                            ^
+837 |     - Service availability
+838 |     - Firestore connectivity
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:837:15
+    |
+836 |     Returns system health status including:
+837 |     - Service availability
+    |               ^^^^^^^^^^^^
+838 |     - Firestore connectivity
+839 |     - Storage connectivity
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:838:17
+    |
+836 |     Returns system health status including:
+837 |     - Service availability
+838 |     - Firestore connectivity
+    |                 ^^^^^^^^^^^^
+839 |     - Storage connectivity
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:839:15
+    |
+837 |     - Service availability
+838 |     - Firestore connectivity
+839 |     - Storage connectivity
+    |               ^^^^^^^^^^^^
+840 |
+841 |     Args:
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:841:10
+    |
+839 |     - Storage connectivity
+840 |
+841 |     Args:
+    |          ^
+842 |         request: Flask request object
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:842:1
+    |
+841 |     Args:
+842 |         request: Flask request object
+    | ^^^^^^^^
+843 |
+844 |     Returns:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:842:24
+    |
+841 |     Args:
+842 |         request: Flask request object
+    |                        ^^^^^^^
+843 |
+844 |     Returns:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:842:32
+    |
+841 |     Args:
+842 |         request: Flask request object
+    |                                ^^^^^^
+843 |
+844 |     Returns:
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:844:5
+    |
+842 |         request: Flask request object
+843 |
+844 |     Returns:
+    |     ^
+845 |         Tuple of (response dict, HTTP status code)
+846 |     """
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:844:13
+    |
+842 |         request: Flask request object
+843 |
+844 |     Returns:
+    |             ^
+845 |         Tuple of (response dict, HTTP status code)
+846 |     """
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:845:1
+    |
+844 |     Returns:
+845 |         Tuple of (response dict, HTTP status code)
+    | ^^^^^^^^
+846 |     """
+847 |     health_status: dict[str, Any] = {
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:845:15
+    |
+844 |     Returns:
+845 |         Tuple of (response dict, HTTP status code)
+    |               ^^
+846 |     """
+847 |     health_status: dict[str, Any] = {
+    |
+
+invalid-syntax: Expected `,`, found name
+   --> src\functions\processor\main.py:845:28
+    |
+844 |     Returns:
+845 |         Tuple of (response dict, HTTP status code)
+    |                            ^^^^
+846 |     """
+847 |     health_status: dict[str, Any] = {
+    |
+
+invalid-syntax: Expected `,`, found name
+   --> src\functions\processor\main.py:845:39
+    |
+844 |     Returns:
+845 |         Tuple of (response dict, HTTP status code)
+    |                                       ^^^^^^
+846 |     """
+847 |     health_status: dict[str, Any] = {
+    |
+
+invalid-syntax: Expected `,`, found name
+   --> src\functions\processor\main.py:845:46
+    |
+844 |     Returns:
+845 |         Tuple of (response dict, HTTP status code)
+    |                                              ^^^^
+846 |     """
+847 |     health_status: dict[str, Any] = {
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:846:5
+    |
+844 |     Returns:
+845 |         Tuple of (response dict, HTTP status code)
+846 |     """
+    |     ^
+847 |     health_status: dict[str, Any] = {
+848 |         "status": "healthy",
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:891:12
+    |
+889 | def handle_dead_letter(event: CloudEvent) -> str:
+890 |     """
+891 |     Handle messages from dead letter queue.
+    |            ^^^^^^^^
+892 |
+893 |     Sends Slack notification for failed documents that
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:891:21
+    |
+889 | def handle_dead_letter(event: CloudEvent) -> str:
+890 |     """
+891 |     Handle messages from dead letter queue.
+    |                     ^^^^
+892 |
+893 |     Sends Slack notification for failed documents that
+    |
+
+invalid-syntax: Expected `import`, found name
+   --> src\functions\processor\main.py:891:31
+    |
+889 | def handle_dead_letter(event: CloudEvent) -> str:
+890 |     """
+891 |     Handle messages from dead letter queue.
+    |                               ^^^^^^
+892 |
+893 |     Sends Slack notification for failed documents that
+    |
+
+invalid-syntax: Expected `,`, found name
+   --> src\functions\processor\main.py:891:38
+    |
+889 | def handle_dead_letter(event: CloudEvent) -> str:
+890 |     """
+891 |     Handle messages from dead letter queue.
+    |                                      ^^^^^
+892 |
+893 |     Sends Slack notification for failed documents that
+    |
+
+invalid-syntax: Expected `,`, found `.`
+   --> src\functions\processor\main.py:891:43
+    |
+889 | def handle_dead_letter(event: CloudEvent) -> str:
+890 |     """
+891 |     Handle messages from dead letter queue.
+    |                                           ^
+892 |
+893 |     Sends Slack notification for failed documents that
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:893:11
+    |
+891 |     Handle messages from dead letter queue.
+892 |
+893 |     Sends Slack notification for failed documents that
+    |           ^^^^^
+894 |     require human attention.
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:893:17
+    |
+891 |     Handle messages from dead letter queue.
+892 |
+893 |     Sends Slack notification for failed documents that
+    |                 ^^^^^^^^^^^^
+894 |     require human attention.
+    |
+
+invalid-syntax: Compound statements are not allowed on the same line as simple statements
+   --> src\functions\processor\main.py:893:30
+    |
+891 |     Handle messages from dead letter queue.
+892 |
+893 |     Sends Slack notification for failed documents that
+    |                              ^^^
+894 |     require human attention.
+    |
+
+invalid-syntax: Expected `in`, found name
+   --> src\functions\processor\main.py:893:41
+    |
+891 |     Handle messages from dead letter queue.
+892 |
+893 |     Sends Slack notification for failed documents that
+    |                                         ^^^^^^^^^
+894 |     require human attention.
+    |
+
+invalid-syntax: Expected `:`, found name
+   --> src\functions\processor\main.py:893:51
+    |
+891 |     Handle messages from dead letter queue.
+892 |
+893 |     Sends Slack notification for failed documents that
+    |                                                   ^^^^
+894 |     require human attention.
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:894:13
+    |
+893 |     Sends Slack notification for failed documents that
+894 |     require human attention.
+    |             ^^^^^
+895 |
+896 |     Args:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:894:19
+    |
+893 |     Sends Slack notification for failed documents that
+894 |     require human attention.
+    |                   ^^^^^^^^^
+895 |
+896 |     Args:
+    |
+
+invalid-syntax: Expected an identifier
+   --> src\functions\processor\main.py:894:29
+    |
+893 |     Sends Slack notification for failed documents that
+894 |     require human attention.
+    |                             ^
+895 |
+896 |     Args:
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:896:10
+    |
+894 |     require human attention.
+895 |
+896 |     Args:
+    |          ^
+897 |         event: CloudEvent from Pub/Sub dead letter topic
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:897:1
+    |
+896 |     Args:
+897 |         event: CloudEvent from Pub/Sub dead letter topic
+    | ^^^^^^^^
+898 |
+899 |     Returns:
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:897:27
+    |
+896 |     Args:
+897 |         event: CloudEvent from Pub/Sub dead letter topic
+    |                           ^^^^
+898 |
+899 |     Returns:
+    |
+
+invalid-syntax: Expected `import`, found `/`
+   --> src\functions\processor\main.py:897:35
+    |
+896 |     Args:
+897 |         event: CloudEvent from Pub/Sub dead letter topic
+    |                                   ^
+898 |
+899 |     Returns:
+    |
+
+invalid-syntax: Expected `,`, found name
+   --> src\functions\processor\main.py:897:40
+    |
+896 |     Args:
+897 |         event: CloudEvent from Pub/Sub dead letter topic
+    |                                        ^^^^
+898 |
+899 |     Returns:
+    |
+
+invalid-syntax: Expected `,`, found name
+   --> src\functions\processor\main.py:897:45
+    |
+896 |     Args:
+897 |         event: CloudEvent from Pub/Sub dead letter topic
+    |                                             ^^^^^^
+898 |
+899 |     Returns:
+    |
+
+invalid-syntax: Expected `,`, found name
+   --> src\functions\processor\main.py:897:52
+    |
+896 |     Args:
+897 |         event: CloudEvent from Pub/Sub dead letter topic
+    |                                                    ^^^^^
+898 |
+899 |     Returns:
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:899:5
+    |
+897 |         event: CloudEvent from Pub/Sub dead letter topic
+898 |
+899 |     Returns:
+    |     ^
+900 |         Status message string
+901 |     """
+    |
+
+invalid-syntax: Expected an expression
+   --> src\functions\processor\main.py:899:13
+    |
+897 |         event: CloudEvent from Pub/Sub dead letter topic
+898 |
+899 |     Returns:
+    |             ^
+900 |         Status message string
+901 |     """
+    |
+
+invalid-syntax: Unexpected indentation
+   --> src\functions\processor\main.py:900:1
+    |
+899 |     Returns:
+900 |         Status message string
+    | ^^^^^^^^
+901 |     """
+902 |     import base64
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:900:16
+    |
+899 |     Returns:
+900 |         Status message string
+    |                ^^^^^^^
+901 |     """
+902 |     import base64
+    |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+   --> src\functions\processor\main.py:900:24
+    |
+899 |     Returns:
+900 |         Status message string
+    |                        ^^^^^^
+901 |     """
+902 |     import base64
+    |
+
+invalid-syntax: missing closing quote in string literal
+   --> src\functions\processor\main.py:901:5
+    |
+899 |       Returns:
+900 |           Status message string
+901 | /     """
+902 | |     import base64
+903 | |     import json
+904 | |
+905 | |     import requests
+906 | |
+907 | |     logger.info("dead_letter_received", event_type=event["type"])
+908 | |
+909 | |     # Decode Pub/Sub message
+910 | |     try:
+911 | |         message_data = event.data.get("message", {}).get("data", "")
+912 | |         decoded = base64.b64decode(message_data).decode("utf-8")
+913 | |         payload = json.loads(decoded)
+914 | |     except Exception as e:
+915 | |         logger.error("dead_letter_decode_failed", error=str(e))
+916 | |         payload = {"raw_event": str(event.data)}
+917 | |
+918 | |     # Prepare Slack notification
+919 | |     slack_webhook_url = os.environ.get("SLACK_WEBHOOK_URL", "")
+920 | |
+921 | |     if not slack_webhook_url:
+922 | |         logger.warning("slack_webhook_not_configured")
+923 | |         return "SKIPPED: Slack webhook not configured"
+924 | |
+925 | |     environment = os.environ.get("ENVIRONMENT", "unknown")
+926 | |     doc_hash = payload.get("doc_hash", "unknown")
+927 | |     error_message = payload.get("error", "Unknown error")
+928 | |
+929 | |     slack_message = {
+930 | |         "blocks": [
+931 | |             {
+932 | |                 "type": "header",
+933 | |                 "text": {
+934 | |                     "type": "plain_text",
+935 | |                     "text": f"圷 OCR蜃ｦ逅・､ｱ謨・({environment})",
+936 | |                     "emoji": True,
+937 | |                 },
+938 | |             },
+939 | |             {
+940 | |                 "type": "section",
+941 | |                 "fields": [
+942 | |                     {"type": "mrkdwn", "text": f"*Document ID:*\n`{doc_hash}`"},
+943 | |                     {"type": "mrkdwn", "text": f"*Environment:*\n{environment}"},
+944 | |                 ],
+945 | |             },
+946 | |             {
+947 | |                 "type": "section",
+948 | |                 "text": {
+949 | |                     "type": "mrkdwn",
+950 | |                     "text": f"*Error:*\n```{error_message[:500]}```",
+951 | |                 },
+952 | |             },
+953 | |             {
+954 | |                 "type": "context",
+955 | |                 "elements": [
+956 | |                     {
+957 | |                         "type": "mrkdwn",
+958 | |                         "text": "搭 Review UI 縺ｧ遒ｺ隱阪＠縺ｦ縺上□縺輔＞",
+959 | |                     },
+960 | |                 ],
+961 | |             },
+962 | |         ],
+963 | |     }
+964 | |
+965 | |     try:
+966 | |         response = requests.post(
+967 | |             slack_webhook_url,
+968 | |             json=slack_message,
+969 | |             timeout=10,
+970 | |         )
+971 | |         response.raise_for_status()
+972 | |         logger.info("slack_notification_sent", doc_hash=doc_hash)
+973 | |         return "NOTIFIED: Slack message sent"
+974 | |     except Exception as e:
+975 | |         logger.error("slack_notification_failed", error=str(e))
+976 | |         return f"FAILED: Slack notification error: {e}"
+977 | |
+978 | |
+979 | | # For local testing
+980 | | if __name__ == "__main__":
+981 | |     # Test with a mock event
+982 | |
+983 | |     test_event = CloudEvent(
+984 | |         attributes={
+985 | |             "type": "google.cloud.storage.object.v1.finalized",
+986 | |             "source": "//storage.googleapis.com/projects/_/buckets/test-bucket",
+987 | |         },
+988 | |         data={
+989 | |             "bucket": "test-bucket",
+990 | |             "name": "input/test-document.pdf",
+991 | |         },
+992 | |     )
+993 | |
+994 | |     print("Testing process_document with mock event...")
+995 | |     result = process_document(test_event)
+996 | |     print(f"Result: {result}")
+    | |_______________________________^
+    |
+
+invalid-syntax: Expected a statement
+   --> src\functions\processor\main.py:997:1
+    |
+995 |     result = process_document(test_event)
+996 |     print(f"Result: {result}")
+    |                               ^
+    |
+
+Found 155 errors.

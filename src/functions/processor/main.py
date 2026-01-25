@@ -115,97 +115,99 @@ def process_document(event: CloudEvent) -> str:
     Returns:
         Status message string
     """
-    start_time = time.time()
-    execution_id = os.environ.get("FUNCTION_EXECUTION_ID", "local")
-
-    # Extract event data
-    data = event.data
-    bucket_name = data.get("bucket", "")
-    object_name = data.get("name", "")
-    gcs_uri = f"gs://{bucket_name}/{object_name}"
-
-    logger.info(
-        "document_received",
-        execution_id=execution_id,
-        bucket=bucket_name,
-        object_name=object_name,
-        gcs_uri=gcs_uri,
-    )
-
-    # Skip non-PDF files
-    if not object_name.lower().endswith(".pdf"):
-        logger.info(
-            "skipping_non_pdf",
-            object_name=object_name,
-        )
-        return "SKIPPED: Not a PDF file"
-
-    # Initialize clients
-    storage_client = storage.Client()
-    firestore_client = firestore.Client()
-    db_client = DatabaseClient(firestore_client)
-    storage_ops = StorageClient(storage_client)
-
-    # Initialize BigQuery client
-    bq_config = BigQueryConfig(
-        project_id=PROJECT_ID,
-        dataset_id=BIGQUERY_DATASET,
-    )
-    bq_client = BigQueryClient(bq_config)
-
-    # Compute file hash for idempotency
-    bucket_name, blob_name = parse_gcs_path(gcs_uri)
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(blob_name)
-    file_content = blob.download_as_bytes()
-    doc_hash = DistributedLock.compute_file_hash(file_content)
-
-    logger.info(
-        "document_hash_computed",
-        doc_hash=doc_hash,
-        gcs_uri=gcs_uri,
-    )
-
-    # Try to acquire distributed lock
-    lock_manager = DistributedLock(firestore_client)
     try:
-        with lock_manager.acquire(doc_hash):
-            logger.info(
-                "lock_acquired",
-                doc_hash=doc_hash,
-                ttl_seconds=lock_manager.ttl_seconds,
-            )
+        start_time = time.time()
 
-            # Process the document
-            result = _process_document_internal(
-                doc_hash=doc_hash,
-                gcs_uri=gcs_uri,
-                storage_client=storage_client,
-                firestore_client=firestore_client,
-                storage_ops=storage_ops,
-                db_client=db_client,
-                bq_client=bq_client,
-                start_time=start_time,
-            )
+        execution_id = os.environ.get("FUNCTION_EXECUTION_ID", "local")
 
-            return result
+        # Extract event data
+        data = event.data
+        bucket_name = data.get("bucket", "")
+        object_name = data.get("name", "")
+        gcs_uri = f"gs://{bucket_name}/{object_name}"
 
-    except LockNotAcquiredError as e:
         logger.info(
-            "lock_skipped_duplicate",
-            doc_hash=doc_hash,
-            reason=str(e),
+            "document_received",
+            execution_id=execution_id,
+            bucket=bucket_name,
+            object_name=object_name,
+            gcs_uri=gcs_uri,
         )
-        return f"SKIPPED: {e}"
+
+        # Skip non-PDF files
+        if not object_name.lower().endswith(".pdf"):
+            logger.info(
+                "skipping_non_pdf",
+                object_name=object_name,
+            )
+            return "SKIPPED: Not a PDF file"
+
+        # Initialize clients
+        storage_client = storage.Client()
+        firestore_client = firestore.Client()
+        db_client = DatabaseClient(firestore_client)
+        storage_ops = StorageClient(storage_client)
+
+        # Initialize BigQuery client
+        bq_config = BigQueryConfig(
+            project_id=PROJECT_ID,
+            dataset_id=BIGQUERY_DATASET,
+        )
+        bq_client = BigQueryClient(bq_config)
+
+        # Compute file hash for idempotency
+        bucket_name, blob_name = parse_gcs_path(gcs_uri)
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(blob_name)
+        file_content = blob.download_as_bytes()
+        doc_hash = DistributedLock.compute_file_hash(file_content)
+
+        logger.info(
+            "document_hash_computed",
+            doc_hash=doc_hash,
+            gcs_uri=gcs_uri,
+        )
+
+        # Try to acquire distributed lock
+        lock_manager = DistributedLock(firestore_client)
+        try:
+            with lock_manager.acquire(doc_hash):
+                logger.info(
+                    "lock_acquired",
+                    doc_hash=doc_hash,
+                    ttl_seconds=lock_manager.ttl_seconds,
+                )
+
+                # Process the document
+                result = _process_document_internal(
+                    doc_hash=doc_hash,
+                    gcs_uri=gcs_uri,
+                    storage_client=storage_client,
+                    firestore_client=firestore_client,
+                    storage_ops=storage_ops,
+                    db_client=db_client,
+                    bq_client=bq_client,
+                    start_time=start_time,
+                )
+
+                return result
+
+        except LockNotAcquiredError as e:
+            logger.info(
+                "lock_skipped_duplicate",
+                doc_hash=doc_hash,
+                reason=str(e),
+            )
+            return f"SKIPPED: {e}"
 
     except Exception as e:
-        logger.error(
-            "processing_failed_unexpected",
-            doc_hash=doc_hash,
+        logger.exception(
+            "processing_failed_critical",
             error=str(e),
             error_type=type(e).__name__,
         )
-        return f"FAILED: Unexpected error: {e}"
+        # Re-raise to ensure Cloud Functions marks it as failed (triggering retry)
+        raise
 
 
 def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires multiple steps
