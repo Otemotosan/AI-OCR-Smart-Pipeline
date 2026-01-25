@@ -1,0 +1,1 @@
+"ExtractionAttempt(model='flash', prompt_tokens=2000, output_tokens=51, cost_usd=0.000269125, error=None, data={'management_id': 'INV-2025-0456', 'company_name': '田中工業株式会社', 'issue_date': '2025-01-25', 'delivery_date': '2025-01-25', 'payment_due_date': '2025-02-28', 'total_amount': 330000})"

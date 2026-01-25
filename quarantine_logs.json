@@ -1,0 +1,144 @@
+[
+  {
+    "insertId": "6975e3620000d2ad55eb56f4",
+    "labels": {
+      "execution_id": "ak05I9Ous1i6",
+      "goog-drz-cloudfunctions-id": "ocr-processor",
+      "goog-drz-cloudfunctions-location": "asia-northeast1",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c0103875fcdd8714dd88aed42dc32b7812a672b252b71848eebfb7f57b823b27567861459ef4514326866e98ca693b1e9e5e550ad027b62f01294f617a8c33594c4e1cdca3d9b3940fbb3e76fa0",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T09:33:22.391822963Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-processor",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-processor-00009-qom",
+        "service_name": "ocr-processor"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "10092743577527357249",
+    "textPayload": "2026-01-25 09:33:22 [info     ] skipping_non_pdf               object_name=config/filename_config.yaml",
+    "timestamp": "2026-01-25T09:33:22.053933Z"
+  },
+  {
+    "insertId": "6975e3620000d1ff587444df",
+    "labels": {
+      "execution_id": "ak05I9Ous1i6",
+      "goog-drz-cloudfunctions-id": "ocr-processor",
+      "goog-drz-cloudfunctions-location": "asia-northeast1",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c0103875fcdd8714dd88aed42dc32b7812a672b252b71848eebfb7f57b823b27567861459ef4514326866e98ca693b1e9e5e550ad027b62f01294f617a8c33594c4e1cdca3d9b3940fbb3e76fa0",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T09:33:22.058914942Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-processor",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-processor-00009-qom",
+        "service_name": "ocr-processor"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "10092743577527357249",
+    "textPayload": "2026-01-25 09:33:22 [info     ] document_received              bucket=ai-ocr-smart-pipeline-ocr-input-staging execution_id=local gcs_uri=gs://ai-ocr-smart-pipeline-ocr-input-staging/config/filename_config.yaml object_name=config/filename_config.yaml",
+    "timestamp": "2026-01-25T09:33:22.053759Z"
+  },
+  {
+    "insertId": "6975e36200004e9287eeded4",
+    "labels": {
+      "goog-drz-cloudfunctions-id": "ocr-processor",
+      "goog-drz-cloudfunctions-location": "asia-northeast1",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c0103875fcdd8714dd88aed42dc32b7812a672b252b71848eebfb7f57b823b27567861459ef4514326866e98ca693b1e9e5e550ad027b62f01294f617a8c33594c4e1cdca3d9b3940fbb3e76fa0",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2026-01-25T09:33:22.289627490Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-processor",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-processor-00009-qom",
+        "service_name": "ocr-processor"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "textPayload": "Default STARTUP TCP probe succeeded after 1 attempt for container \"worker\" on port 8080.",
+    "timestamp": "2026-01-25T09:33:22.020114Z"
+  },
+  {
+    "insertId": "6975e35f000e95712fedfa77",
+    "labels": {
+      "goog-drz-cloudfunctions-id": "ocr-processor",
+      "goog-drz-cloudfunctions-location": "asia-northeast1",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c0103875fcdd8714dd88aed42dc32b7812a672b252b71848eebfb7f57b823b27567861459ef4514326866e98ca693b1e9e5e550ad027b62f01294f617a8c33594c4e1cdca3d9b3940fbb3e76fa0",
+      "scaling_reason": "AUTOSCALING"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2026-01-25T09:33:19.960730163Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-processor",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-processor-00009-qom",
+        "service_name": "ocr-processor"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "textPayload": "Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.",
+    "timestamp": "2026-01-25T09:33:19.955761Z"
+  },
+  {
+    "httpRequest": {
+      "latency": "1.661837530s",
+      "protocol": "HTTP/1.1",
+      "remoteIp": "107.178.225.2",
+      "requestMethod": "POST",
+      "requestSize": "3269",
+      "requestUrl": "https://ocr-processor-6fn7reqyra-an.a.run.app/?__GCP_CloudEventsMode=GCS_NOTIFICATION",
+      "responseSize": "130",
+      "serverIp": "34.143.79.2",
+      "status": 200,
+      "userAgent": "APIs-Google; (+https://developers.google.com/webmasters/APIs-Google.html)"
+    },
+    "insertId": "6975e3620000f3b3d90da20a",
+    "labels": {
+      "goog-drz-cloudfunctions-id": "ocr-processor",
+      "goog-drz-cloudfunctions-location": "asia-northeast1",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c0103875fcdd8714dd88aed42dc32b7812a672b252b71848eebfb7f57b823b27567861459ef4514326866e98ca693b1e9e5e550ad027b62f01294f617a8c33594c4e1cdca3d9b3940fbb3e76fa0",
+      "run.googleapis.com/cloud_event_id": "17991984817566872",
+      "run.googleapis.com/cloud_event_source": "//storage.googleapis.com/projects/_/buckets/ai-ocr-smart-pipeline-ocr-input-staging"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Frequests",
+    "receiveTimestamp": "2026-01-25T09:33:22.067772948Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-processor",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-processor-00009-qom",
+        "service_name": "ocr-processor"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "8c10a0cf639f8f41",
+    "timestamp": "2026-01-25T09:33:19.936864Z",
+    "trace": "projects/ai-ocr-smart-pipeline/traces/08d8eec7f8f2365c40aa565cd3f929d0",
+    "traceSampled": true
+  }
+]

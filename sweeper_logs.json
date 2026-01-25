@@ -1,0 +1,971 @@
+[
+  {
+    "insertId": "6975eab70003d65cf8611171",
+    "labels": {
+      "execution_id": "b9cgqOghPXJv",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974cf0d6f0ce45675cea0c752e1cc0176daffdc65aa1f888ea159736b2f41e9fef454ffbc849b2173a7770a36742ea8c1ead6e2e7c9d6facebada6a17e72e3763f63a41ab64d38cec213922c58963c40",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:39.384023096Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "Failed to retrigger test_???_????1.pdf: 'latin-1' codec can't encode characters in position 13-15: ordinal not in range(256)",
+    "timestamp": "2026-01-25T10:04:39.251484Z"
+  },
+  {
+    "insertId": "6975eab60009d5353180c9a9",
+    "labels": {
+      "execution_id": "b9cgqOghPXJv",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974cf0d6f0ce45675cea0c752e1cc0176daffdc65aa1f888ea159736b2f41e9fef454ffbc849b2173a7770a36742ea8c1ead6e2e7c9d6facebada6a17e72e3763f63a41ab64d38cec213922c58963c40",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:38.715864806Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "[No execution record (Trigger dropped)] Retriggering: test_???_????1.pdf",
+    "timestamp": "2026-01-25T10:04:38.644405Z"
+  },
+  {
+    "insertId": "6975eab60003bec456b7a906",
+    "labels": {
+      "execution_id": "b9cgqOghPXJv",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974cf0d6f0ce45675cea0c752e1cc0176daffdc65aa1f888ea159736b2f41e9fef454ffbc849b2173a7770a36742ea8c1ead6e2e7c9d6facebada6a17e72e3763f63a41ab64d38cec213922c58963c40",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-01-25T10:04:38.247038753Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "/layers/google.python.pip/pip/lib/python3.11/site-packages/google/cloud/firestore_v1/base_collection.py:316: UserWarning: Detected filter using positional arguments. Prefer using the 'filter' keyword argument instead.\n  return query.where(field_path, op_string, value)",
+    "timestamp": "2026-01-25T10:04:38.245444Z"
+  },
+  {
+    "insertId": "6975eab5000e6d7cb1c5664e",
+    "labels": {
+      "execution_id": "jJcTF3VeXRoH",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:38.050787927Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "15756635993716362506",
+    "textPayload": "Failed to retrigger test_???_????1.pdf: 'latin-1' codec can't encode characters in position 13-15: ordinal not in range(256)",
+    "timestamp": "2026-01-25T10:04:37.945532Z"
+  },
+  {
+    "insertId": "6975eab5000774440e91a28a",
+    "labels": {
+      "execution_id": "jJcTF3VeXRoH",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:37.718529550Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "15756635993716362506",
+    "textPayload": "[No execution record (Trigger dropped)] Retriggering: test_???_????1.pdf",
+    "timestamp": "2026-01-25T10:04:37.488516Z"
+  },
+  {
+    "insertId": "6975eab50006d445c49f6f43",
+    "labels": {
+      "execution_id": "b9cgqOghPXJv",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974cf0d6f0ce45675cea0c752e1cc0176daffdc65aa1f888ea159736b2f41e9fef454ffbc849b2173a7770a36742ea8c1ead6e2e7c9d6facebada6a17e72e3763f63a41ab64d38cec213922c58963c40",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:37.718529550Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "Starting recovery sweep for bucket: ai-ocr-smart-pipeline-ocr-input-staging",
+    "timestamp": "2026-01-25T10:04:37.447557Z"
+  },
+  {
+    "httpRequest": {
+      "latency": "1.867062217s",
+      "protocol": "HTTP/1.1",
+      "remoteIp": "98.91.77.46",
+      "requestMethod": "GET",
+      "requestSize": "599",
+      "requestUrl": "https://ocr-recovery-sweeper-672754156190.asia-northeast1.run.app/",
+      "responseSize": "169",
+      "serverIp": "34.143.75.2",
+      "status": 200,
+      "userAgent": "Mozilla/5.0 (compatible)"
+    },
+    "insertId": "6975eab70003df35201d5b97",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974cf0d6f0ce45675cea0c752e1cc0176daffdc65aa1f888ea159736b2f41e9fef454ffbc849b2173a7770a36742ea8c1ead6e2e7c9d6facebada6a17e72e3763f63a41ab64d38cec213922c58963c40"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Frequests",
+    "receiveTimestamp": "2026-01-25T10:04:39.283137727Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "058f5aa8c5585fb0",
+    "timestamp": "2026-01-25T10:04:37.385343Z",
+    "trace": "projects/ai-ocr-smart-pipeline/traces/29a243bdbbcc9a5cc9a69dafffd1e948"
+  },
+  {
+    "insertId": "6975eab50005d3b23c289940",
+    "labels": {
+      "execution_id": "jJcTF3VeXRoH",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:37.384590794Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "15756635993716362506",
+    "textPayload": "Starting recovery sweep for bucket: ai-ocr-smart-pipeline-ocr-input-staging",
+    "timestamp": "2026-01-25T10:04:37.381874Z"
+  },
+  {
+    "httpRequest": {
+      "latency": "0.566602022s",
+      "protocol": "HTTP/1.1",
+      "remoteIp": "98.91.77.46",
+      "requestMethod": "GET",
+      "requestSize": "617",
+      "requestUrl": "https://asia-northeast1-ai-ocr-smart-pipeline.cloudfunctions.net/ocr-recovery-sweeper",
+      "responseSize": "169",
+      "serverIp": "216.239.36.54",
+      "status": 200,
+      "userAgent": "Mozilla/5.0 (compatible)"
+    },
+    "insertId": "6975eab5000e72824e424289",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Frequests",
+    "receiveTimestamp": "2026-01-25T10:04:37.954001327Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "daaad0f43c990d0a",
+    "timestamp": "2026-01-25T10:04:37.378672Z",
+    "trace": "projects/ai-ocr-smart-pipeline/traces/29a243bdbbcc9a5cc9a69dafffd1e948",
+    "traceSampled": true
+  },
+  {
+    "insertId": "6975ea99000c2193b84bfd93",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974cf0d6f0ce45675cea0c752e1cc0176daffdc65aa1f888ea159736b2f41e9fef454ffbc849b2173a7770a36742ea8c1ead6e2e7c9d6facebada6a17e72e3763f63a41ab64d38cec213922c58963c40",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2026-01-25T10:04:09.901441336Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "textPayload": "Default STARTUP TCP probe succeeded after 1 attempt for container \"worker\" on port 8080.",
+    "timestamp": "2026-01-25T10:04:09.795027Z"
+  },
+  {
+    "insertId": "6975ea990006d3a3c1cfad71",
+    "labels": {
+      "execution_id": "SDZqk8eZIUo7",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:09.621872752Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "Failed to retrigger test_???_????1.pdf: 'latin-1' codec can't encode characters in position 13-15: ordinal not in range(256)",
+    "timestamp": "2026-01-25T10:04:09.447395Z"
+  },
+  {
+    "insertId": "6975ea98000e3eda60d51032",
+    "labels": {
+      "execution_id": "SDZqk8eZIUo7",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:08.955018492Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "[No execution record (Trigger dropped)] Retriggering: test_???_????1.pdf",
+    "timestamp": "2026-01-25T10:04:08.933594Z"
+  },
+  {
+    "insertId": "6975ea98000cc49944b88b56",
+    "labels": {
+      "execution_id": "SDZqk8eZIUo7",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:08.955018492Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "Starting recovery sweep for bucket: ai-ocr-smart-pipeline-ocr-input-staging",
+    "timestamp": "2026-01-25T10:04:08.836761Z"
+  },
+  {
+    "insertId": "6975ea98000cb7b217d9482c",
+    "labels": {
+      "execution_id": "i39oJDJFodMV",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:08.955018492Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "Failed to retrigger test_???_????1.pdf: 'latin-1' codec can't encode characters in position 13-15: ordinal not in range(256)",
+    "timestamp": "2026-01-25T10:04:08.833458Z"
+  },
+  {
+    "insertId": "6975ea980004702235138836",
+    "labels": {
+      "execution_id": "i39oJDJFodMV",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:08.621910628Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "[No execution record (Trigger dropped)] Retriggering: test_???_????1.pdf",
+    "timestamp": "2026-01-25T10:04:08.290850Z"
+  },
+  {
+    "insertId": "6975ea9800038fdbb5edb7f7",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974cf0d6f0ce45675cea0c752e1cc0176daffdc65aa1f888ea159736b2f41e9fef454ffbc849b2173a7770a36742ea8c1ead6e2e7c9d6facebada6a17e72e3763f63a41ab64d38cec213922c58963c40",
+      "scaling_reason": "AUTOSCALING"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2026-01-25T10:04:08.234957642Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "textPayload": "Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.",
+    "timestamp": "2026-01-25T10:04:08.233435Z"
+  },
+  {
+    "httpRequest": {
+      "latency": "0.697457001s",
+      "protocol": "HTTP/1.1",
+      "remoteIp": "98.91.77.46",
+      "requestMethod": "GET",
+      "requestSize": "617",
+      "requestUrl": "https://asia-northeast1-ai-ocr-smart-pipeline.cloudfunctions.net/ocr-recovery-sweeper",
+      "responseSize": "169",
+      "serverIp": "216.239.36.54",
+      "status": 200,
+      "userAgent": "Mozilla/5.0 (compatible)"
+    },
+    "insertId": "6975ea99000821d19ada453c",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Frequests",
+    "receiveTimestamp": "2026-01-25T10:04:09.806657745Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "119b43610c9a2bf4",
+    "timestamp": "2026-01-25T10:04:08.231164Z",
+    "trace": "projects/ai-ocr-smart-pipeline/traces/85d4932684d69412d0c4e322b33321ef"
+  },
+  {
+    "insertId": "6975ea9800037b3c9fff2f67",
+    "labels": {
+      "execution_id": "i39oJDJFodMV",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:08.289921161Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "textPayload": "Starting recovery sweep for bucket: ai-ocr-smart-pipeline-ocr-input-staging",
+    "timestamp": "2026-01-25T10:04:08.228156Z"
+  },
+  {
+    "httpRequest": {
+      "latency": "0.608725381s",
+      "protocol": "HTTP/1.1",
+      "remoteIp": "98.91.77.46",
+      "requestMethod": "GET",
+      "requestSize": "625",
+      "requestUrl": "https://ocr-recovery-sweeper-672754156190.asia-northeast1.run.app/",
+      "responseSize": "169",
+      "serverIp": "34.143.74.2",
+      "status": 200,
+      "userAgent": "Mozilla/5.0 (compatible)"
+    },
+    "insertId": "6975ea98000cbdf16806a64e",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Frequests",
+    "receiveTimestamp": "2026-01-25T10:04:09.137675318Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "1993d926c279ef7f",
+    "timestamp": "2026-01-25T10:04:08.224461Z",
+    "trace": "projects/ai-ocr-smart-pipeline/traces/85d4932684d69412d0c4e322b33321ef"
+  },
+  {
+    "insertId": "6975ea9800020e00e96498e6",
+    "labels": {
+      "execution_id": "un1FbA1sTv0k",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:08.289921161Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "12648364689071241226",
+    "textPayload": "Failed to retrigger test_???_????1.pdf: 'latin-1' codec can't encode characters in position 13-15: ordinal not in range(256)",
+    "timestamp": "2026-01-25T10:04:08.134656Z"
+  },
+  {
+    "insertId": "6975ea970008dcc2bf30d520",
+    "labels": {
+      "execution_id": "un1FbA1sTv0k",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:07.622600051Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "12648364689071241226",
+    "textPayload": "[No execution record (Trigger dropped)] Retriggering: test_???_????1.pdf",
+    "timestamp": "2026-01-25T10:04:07.580802Z"
+  },
+  {
+    "insertId": "6975ea96000e8cadc3525f0f",
+    "labels": {
+      "execution_id": "un1FbA1sTv0k",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:04:06.958233941Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "12648364689071241226",
+    "textPayload": "Starting recovery sweep for bucket: ai-ocr-smart-pipeline-ocr-input-staging",
+    "timestamp": "2026-01-25T10:04:06.953517Z"
+  },
+  {
+    "httpRequest": {
+      "latency": "1.184103381s",
+      "protocol": "HTTP/1.1",
+      "remoteIp": "98.91.77.46",
+      "requestMethod": "GET",
+      "requestSize": "617",
+      "requestUrl": "https://asia-northeast1-ai-ocr-smart-pipeline.cloudfunctions.net/ocr-recovery-sweeper",
+      "responseSize": "169",
+      "serverIp": "216.239.36.54",
+      "status": 200,
+      "userAgent": "Mozilla/5.0 (compatible)"
+    },
+    "insertId": "6975ea9800021271c8aa8d91",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Frequests",
+    "receiveTimestamp": "2026-01-25T10:04:08.139780332Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "af8804abb9af780a",
+    "timestamp": "2026-01-25T10:04:06.944884Z",
+    "trace": "projects/ai-ocr-smart-pipeline/traces/2ab62879eb42edbf91bde09d615d48b6",
+    "traceSampled": true
+  },
+  {
+    "insertId": "6975e9a2000ce9bf6eee8283",
+    "labels": {
+      "execution_id": "tSZtNT6FXYxL",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:00:02.968170428Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "3972114652469606171",
+    "textPayload": "Failed to retrigger test_???_????1.pdf: 'latin-1' codec can't encode characters in position 13-15: ordinal not in range(256)",
+    "timestamp": "2026-01-25T10:00:02.846271Z"
+  },
+  {
+    "insertId": "6975e9a200061f0129a18ddc",
+    "labels": {
+      "execution_id": "tSZtNT6FXYxL",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:00:02.635804161Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "3972114652469606171",
+    "textPayload": "[No execution record (Trigger dropped)] Retriggering: test_???_????1.pdf",
+    "timestamp": "2026-01-25T10:00:02.401153Z"
+  },
+  {
+    "insertId": "6975e9a200048b9ae7ccb4a8",
+    "labels": {
+      "execution_id": "tSZtNT6FXYxL",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T10:00:02.302122331Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "3972114652469606171",
+    "textPayload": "Starting recovery sweep for bucket: ai-ocr-smart-pipeline-ocr-input-staging",
+    "timestamp": "2026-01-25T10:00:02.297882Z"
+  },
+  {
+    "httpRequest": {
+      "latency": "0.551627121s",
+      "protocol": "HTTP/1.1",
+      "remoteIp": "107.178.225.1",
+      "requestMethod": "GET",
+      "requestSize": "429",
+      "requestUrl": "https://ocr-recovery-sweeper-6fn7reqyra-an.a.run.app/",
+      "responseSize": "169",
+      "serverIp": "34.143.79.2",
+      "status": 200,
+      "userAgent": "Google-Cloud-Scheduler"
+    },
+    "insertId": "6975e9a2000cee2d063b43c6",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Frequests",
+    "receiveTimestamp": "2026-01-25T10:00:02.853862767Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "371fc93b3393371b",
+    "timestamp": "2026-01-25T10:00:02.289980Z",
+    "trace": "projects/ai-ocr-smart-pipeline/traces/38f443a4acec797a17b831f1210d6cc5",
+    "traceSampled": true
+  },
+  {
+    "insertId": "6975e8be0003c494d6f5b081",
+    "labels": {
+      "execution_id": "KoIfC4hdAQDT",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T09:56:14.539703028Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "10308710208448961968",
+    "textPayload": "Failed to retrigger test_???_????1.pdf: 'latin-1' codec can't encode characters in position 13-15: ordinal not in range(256)",
+    "timestamp": "2026-01-25T09:56:14.246932Z"
+  },
+  {
+    "insertId": "6975e8bd000b7ce3ac322c3f",
+    "labels": {
+      "execution_id": "KoIfC4hdAQDT",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T09:56:13.871350167Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "10308710208448961968",
+    "textPayload": "[No execution record (Trigger dropped)] Retriggering: test_???_????1.pdf",
+    "timestamp": "2026-01-25T09:56:13.752867Z"
+  },
+  {
+    "insertId": "6975e8bd0002ae0a8e4bb132",
+    "labels": {
+      "execution_id": "KoIfC4hdAQDT",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2026-01-25T09:56:13.184495554Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "10308710208448961968",
+    "textPayload": "/layers/google.python.pip/pip/lib/python3.11/site-packages/google/cloud/firestore_v1/base_collection.py:316: UserWarning: Detected filter using positional arguments. Prefer using the 'filter' keyword argument instead.\n  return query.where(field_path, op_string, value)",
+    "timestamp": "2026-01-25T09:56:13.175626Z"
+  },
+  {
+    "insertId": "6975e8bc0008315a5c85f53e",
+    "labels": {
+      "execution_id": "KoIfC4hdAQDT",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T09:56:12.539027708Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "10308710208448961968",
+    "textPayload": "Starting recovery sweep for bucket: ai-ocr-smart-pipeline-ocr-input-staging",
+    "timestamp": "2026-01-25T09:56:12.536922Z"
+  },
+  {
+    "httpRequest": {
+      "latency": "1.798429241s",
+      "protocol": "HTTP/1.1",
+      "remoteIp": "34.116.20.36",
+      "requestMethod": "GET",
+      "requestSize": "430",
+      "requestUrl": "https://ocr-recovery-sweeper-6fn7reqyra-an.a.run.app/",
+      "responseSize": "169",
+      "serverIp": "34.143.78.2",
+      "status": 200,
+      "userAgent": "Google-Cloud-Scheduler"
+    },
+    "insertId": "6975e8be00051626f7b4167d",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Frequests",
+    "receiveTimestamp": "2026-01-25T09:56:14.337248282Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "8f0fe551130b1db0",
+    "timestamp": "2026-01-25T09:56:12.529031Z",
+    "trace": "projects/ai-ocr-smart-pipeline/traces/256fffb03a060bfe4fd68a4deea67afa",
+    "traceSampled": true
+  },
+  {
+    "insertId": "6975e61d0008308f2e456509",
+    "labels": {
+      "execution_id": "NyuVS1IWT5gU",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T09:45:01.791630152Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "2294745507427520967",
+    "textPayload": "Skipping order_form.pdf: Too new (28.153271s old)",
+    "timestamp": "2026-01-25T09:45:01.536719Z"
+  },
+  {
+    "insertId": "6975e61d00083018b2b7c94b",
+    "labels": {
+      "execution_id": "NyuVS1IWT5gU",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T09:45:01.791630152Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "2294745507427520967",
+    "textPayload": "Skipping meeting_note.pdf: Too new (33.686151s old)",
+    "timestamp": "2026-01-25T09:45:01.536600Z"
+  },
+  {
+    "insertId": "6975e61d00082faa687d56ba",
+    "labels": {
+      "execution_id": "NyuVS1IWT5gU",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T09:45:01.791630152Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "2294745507427520967",
+    "textPayload": "Skipping invoice.pdf: Too new (36.940939s old)",
+    "timestamp": "2026-01-25T09:45:01.536490Z"
+  },
+  {
+    "insertId": "6975e61c000c098fda94752a",
+    "labels": {
+      "execution_id": "NyuVS1IWT5gU",
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6",
+      "run.googleapis.com/base_image_versions": "us-docker.pkg.dev/serverless-runtimes/google-22-full/runtimes/python311:python311_20260111_3_11_14_RC00"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2026-01-25T09:45:00.793705350Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "spanId": "2294745507427520967",
+    "textPayload": "Starting recovery sweep for bucket: ai-ocr-smart-pipeline-ocr-input-staging",
+    "timestamp": "2026-01-25T09:45:00.788879Z"
+  },
+  {
+    "httpRequest": {
+      "latency": "0.757972399s",
+      "protocol": "HTTP/1.1",
+      "remoteIp": "107.178.225.3",
+      "requestMethod": "GET",
+      "requestSize": "423",
+      "requestUrl": "https://ocr-recovery-sweeper-6fn7reqyra-an.a.run.app/",
+      "responseSize": "169",
+      "serverIp": "34.143.79.2",
+      "status": 200,
+      "userAgent": "Google-Cloud-Scheduler"
+    },
+    "insertId": "6975e61d00083b7768951a4f",
+    "labels": {
+      "goog-managed-by": "cloudfunctions",
+      "instanceId": "005eb6974c762eccf956c3646f1c6a1505ee00acf37740df8f018bc6bd96a9b712bb0e640db9ea998b5f5db848ad350ba1f2107688164d4383486f041d8d0c973eb2221f0cf71484c8ce0cc5c4ab889f9779c6"
+    },
+    "logName": "projects/ai-ocr-smart-pipeline/logs/run.googleapis.com%2Frequests",
+    "receiveTimestamp": "2026-01-25T09:45:01.542230797Z",
+    "resource": {
+      "labels": {
+        "configuration_name": "ocr-recovery-sweeper",
+        "location": "asia-northeast1",
+        "project_id": "ai-ocr-smart-pipeline",
+        "revision_name": "ocr-recovery-sweeper-00001-tow",
+        "service_name": "ocr-recovery-sweeper"
+      },
+      "type": "cloud_run_revision"
+    },
+    "severity": "INFO",
+    "spanId": "1fd892e1842411c7",
+    "timestamp": "2026-01-25T09:45:00.776537Z",
+    "trace": "projects/ai-ocr-smart-pipeline/traces/02485399356a6c58d45dbb0ba73e448a",
+    "traceSampled": true
+  }
+]

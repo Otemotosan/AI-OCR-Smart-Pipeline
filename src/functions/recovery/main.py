@@ -1,6 +1,7 @@
 
 import os
 import time
+import urllib.parse
 from datetime import UTC, datetime, timedelta
 
 import flask
@@ -142,7 +143,7 @@ def trigger_processor(object_name: str) -> None:
         "Ce-Specversion": "1.0",
         "Ce-Type": "google.cloud.storage.object.v1.finalized",
         "Ce-Source": f"//storage.googleapis.com/projects/_/buckets/{INPUT_BUCKET}",
-        "Ce-Subject": f"objects/{object_name}"
+        "Ce-Subject": f"objects/{urllib.parse.quote(object_name)}"
     }
     
     data = {
