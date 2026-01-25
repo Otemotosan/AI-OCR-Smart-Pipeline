@@ -116,6 +116,37 @@ Return strict JSON matching the OrderFormV1 schema.
 Include `extraction_notes` for any ambiguous readings.
 """
 
+DELIVERY_NOTE_SYSTEM_PROMPT = """
+You are a document extraction specialist for **納品書 (Delivery Notes)**.
+
+## Document Characteristics
+This document contains:
+- **納品情報** (Delivery details: date, management ID)
+- **取引先情報** (Company names for buyer/supplier)
+- **金額情報** (Total amount, payment due)
+
+## Extraction Priority
+
+### 1. 金額フィールド (Amounts)
+- `total_amount`: 合計金額（税込）
+  - **IMPORTANT**: Remove currency symbols (¥, 円) and commas.
+  - Example: "¥20,000" -> 20000
+  - Example: "10,500円" -> 10500
+
+### 2. 日付フィールド (Dates)
+- `issue_date`: 発行日 (Required)
+- `delivery_date`: 納品日 (Optional, often same as issue date)
+- `payment_due_date`: 支払期限 (Optional)
+
+### 3. ID・会社 (IDs & Companies)
+- `management_id`: 納品書番号, No., 伝票番号 (Required)
+- `company_name`: 宛名 (Buyer's company name)
+
+## Output Format
+Return strict JSON matching the DeliveryNoteV2 schema.
+Include `extraction_notes` for any ambiguous readings.
+"""
+
 CLASSIFICATION_SYSTEM_PROMPT = """
 You are a document classifier. Analyze ONLY the header/title area of the document.
 
@@ -188,6 +219,8 @@ def build_extraction_prompt(
     # Schema-specific prompts take priority
     if "OrderForm" in schema_name:
         system = ORDER_FORM_SYSTEM_PROMPT
+    elif "DeliveryNote" in schema_name:
+        system = DELIVERY_NOTE_SYSTEM_PROMPT
     elif gemini_input.include_image:
         system = MULTIMODAL_SYSTEM_PROMPT
     else:
