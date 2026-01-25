@@ -403,15 +403,28 @@ def _process_document_internal(  # noqa: C901 - Pipeline orchestration requires 
             )
             # Convert date objects to strings for Firestore compatibility
             extracted_data = _convert_dates_to_strings(extracted_data)
-            document_type = extracted_data.get("document_type", "unknown")
 
-            # Get schema_version from the schema class field default,
-            # not from extracted_data (Gemini may return wrong values like class names)
+            # Get document_type and schema_version from the schema class field defaults,
+            # not from extracted_data (Gemini may return wrong values like Japanese text)
             schema_class = type(extraction_result.schema) if extraction_result.schema else None
             if schema_class and hasattr(schema_class, "model_fields"):
+                # Get document_type from schema default
+                doc_type_field = schema_class.model_fields.get("document_type")
+                document_type = (
+                    doc_type_field.default
+                    if doc_type_field and doc_type_field.default
+                    else "unknown"
+                )
+
+                # Get schema_version from schema default
                 version_field = schema_class.model_fields.get("schema_version")
                 version = version_field.default if version_field and version_field.default else "v1"
+
+                # Override extracted_data with correct values to ensure consistency
+                extracted_data["document_type"] = document_type
+                extracted_data["schema_version"] = version
             else:
+                document_type = extracted_data.get("document_type", "unknown")
                 version = "v1"
 
             # Build schema_version string
