@@ -14,9 +14,9 @@ if str(PROJECT_ROOT) not in sys.path:
 
 # Re-export the Cloud Function entry points
 from src.functions.processor.main import (
-    handle_dead_letter,
     health_check,
     process_document,
 )
+from src.functions.alert.main import handle_dead_letter
 
 __all__ = ["process_document", "health_check", "handle_dead_letter"]
