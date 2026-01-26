@@ -337,33 +337,33 @@ if [ "$SKIP_BUILD" = false ]; then
     if [ "$DRY_RUN" = false ]; then
         # Build processor image
         docker build \
-            -t "gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}" \
-            -t "gcr.io/${GCP_PROJECT_ID}/ocr-processor:latest" \
+            -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}" \
+            -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:latest" \
             -f deploy/Dockerfile .
 
-        docker push "gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}"
-        docker push "gcr.io/${GCP_PROJECT_ID}/ocr-processor:latest"
+        docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}"
+        docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:latest"
 
         # Build API image if Dockerfile exists
         if [ -f "deploy/Dockerfile.api" ]; then
             docker build \
-                -t "gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}" \
-                -t "gcr.io/${GCP_PROJECT_ID}/ocr-api:latest" \
+                -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}" \
+                -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:latest" \
                 -f deploy/Dockerfile.api .
 
-            docker push "gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}"
-            docker push "gcr.io/${GCP_PROJECT_ID}/ocr-api:latest"
+            docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}"
+            docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:latest"
         fi
 
         # Build UI image if Dockerfile exists
         if [ -f "deploy/Dockerfile.ui" ]; then
             docker build \
-                -t "gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}" \
-                -t "gcr.io/${GCP_PROJECT_ID}/ocr-ui:latest" \
+                -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}" \
+                -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:latest" \
                 -f deploy/Dockerfile.ui .
 
-            docker push "gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}"
-            docker push "gcr.io/${GCP_PROJECT_ID}/ocr-ui:latest"
+            docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}"
+            docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:latest"
         fi
 
         log_success "Images built and pushed"
