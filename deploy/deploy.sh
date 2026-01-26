@@ -335,40 +335,28 @@ if [ "$SKIP_BUILD" = false ]; then
     IMAGE_TAG="${GIT_SHA:-$(git rev-parse --short HEAD 2>/dev/null || echo 'latest')}"
 
     if [ "$DRY_RUN" = false ]; then
-        # Build processor image
-        docker build \
-            -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}" \
-            -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:latest" \
-            -f deploy/Dockerfile .
-
-        docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}"
-        docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:latest"
+        # Build processor image using Cloud Build
+        log_info "Submitting build for processor image..."
+        gcloud builds submit --tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}" --file deploy/Dockerfile . --quiet
+        gcloud container images add-tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}" "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:latest" --quiet
 
         # Build API image if Dockerfile exists
         if [ -f "deploy/Dockerfile.api" ]; then
-            docker build \
-                -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}" \
-                -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:latest" \
-                -f deploy/Dockerfile.api .
-
-            docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}"
-            docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:latest"
+            log_info "Submitting build for API image..."
+            gcloud builds submit --tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}" --file deploy/Dockerfile.api . --quiet
+            gcloud container images add-tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}" "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:latest" --quiet
         fi
 
         # Build UI image if Dockerfile exists
         if [ -f "deploy/Dockerfile.ui" ]; then
-            docker build \
-                -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}" \
-                -t "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:latest" \
-                -f deploy/Dockerfile.ui .
-
-            docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}"
-            docker push "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:latest"
+            log_info "Submitting build for UI image..."
+            gcloud builds submit --tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}" --file deploy/Dockerfile.ui . --quiet
+            gcloud container images add-tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}" "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:latest" --quiet
         fi
 
-        log_success "Images built and pushed"
+        log_success "Images built and pushed via Cloud Build"
     else
-        log_info "[DRY RUN] Would build and push Docker images"
+        log_info "[DRY RUN] Would build and push Docker images using Cloud Build"
     fi
 else
     log_warn "Skipping image build (--skip-build flag)"
