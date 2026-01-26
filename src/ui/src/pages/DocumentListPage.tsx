@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { fetchDocuments, fetchFailedDocuments } from '@/api/client'
-import { cn, formatDateTime, getStatusColor, truncateText } from '@/lib/utils'
+import { cn, formatDateTime, getStatusColor, truncateText } from '@/core_utils/utils'
 import type { DocumentStatus } from '@/types'
 
 const statusOptions: { value: DocumentStatus | 'ALL'; label: string }[] = [

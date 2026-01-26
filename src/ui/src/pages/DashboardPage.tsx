@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle, XCircle, Clock, Zap } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { fetchDashboard } from '@/api/client'
-import { formatTimeAgo, getStatusIcon } from '@/lib/utils'
+import { formatTimeAgo, getStatusIcon } from '@/core_utils/utils'
 
 export function DashboardPage() {
   const { data, isLoading, error } = useQuery({

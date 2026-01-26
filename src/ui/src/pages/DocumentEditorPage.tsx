@@ -21,7 +21,7 @@ import { useAutosave } from '@/hooks/useAutosave'
 import { useDraftRecovery } from '@/hooks/useDraftRecovery'
 import { useOptimisticSave } from '@/hooks/useOptimisticSave'
 import { useToast } from '@/hooks/useToast'
-import { cn, formatTimeAgo, getStatusColor } from '@/lib/utils'
+import { cn, formatTimeAgo, getStatusColor } from '@/core_utils/utils'
 
 export function DocumentEditorPage() {
   const { docHash } = useParams<{ docHash: string }>()
@@ -437,8 +437,8 @@ function EditableField({
         hasError
           ? 'bg-red-50 border-2 border-red-300'
           : isDefaulted
-          ? 'bg-amber-50 border-2 border-amber-300'
-          : 'bg-gray-50 border border-gray-200'
+            ? 'bg-amber-50 border-2 border-amber-300'
+            : 'bg-gray-50 border border-gray-200'
       )}
     >
       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -458,8 +458,8 @@ function EditableField({
           hasError
             ? 'border-red-400 focus:ring-red-500'
             : isDefaulted
-            ? 'border-amber-400 focus:ring-amber-500'
-            : ''
+              ? 'border-amber-400 focus:ring-amber-500'
+              : ''
         )}
       />
 

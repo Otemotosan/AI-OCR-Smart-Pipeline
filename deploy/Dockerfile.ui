@@ -20,8 +20,6 @@ ARG VITE_API_URL=""
 ENV VITE_API_URL=${VITE_API_URL}
 
 # Build the application
-RUN find . -type f -name "utils.ts" || echo "utils.ts not found"
-RUN ls -R src/lib || echo "src/lib not found"
 RUN npx vite build
 
 # Stage 2: Serve with nginx
