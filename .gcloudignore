@@ -79,3 +79,7 @@ out/
 # dist/ <-- Already listed above
 .vercel
 .firebase/
+
+# Force Include UI lib
+!src/ui/src/lib/
+!src/ui/src/lib/utils.ts
