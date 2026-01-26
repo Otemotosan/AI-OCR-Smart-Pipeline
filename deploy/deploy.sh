@@ -339,20 +339,27 @@ if [ "$SKIP_BUILD" = false ]; then
     if [ "$DRY_RUN" = false ]; then
         # Build processor image using Cloud Build
         log_info "Submitting build for processor image..."
-        gcloud builds submit --tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}" --file deploy/Dockerfile . --quiet
+        # gcloud builds submit requires Dockerfile at root or a cloudbuild.yaml
+        cp deploy/Dockerfile Dockerfile
+        gcloud builds submit --tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}" . --quiet
+        rm Dockerfile
         gcloud container images add-tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:${IMAGE_TAG}" "asia.gcr.io/${GCP_PROJECT_ID}/ocr-processor:latest" --quiet
 
         # Build API image if Dockerfile exists
         if [ -f "deploy/Dockerfile.api" ]; then
             log_info "Submitting build for API image..."
-            gcloud builds submit --tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}" --file deploy/Dockerfile.api . --quiet
+            cp deploy/Dockerfile.api Dockerfile
+            gcloud builds submit --tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}" . --quiet
+            rm Dockerfile
             gcloud container images add-tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:${IMAGE_TAG}" "asia.gcr.io/${GCP_PROJECT_ID}/ocr-api:latest" --quiet
         fi
 
         # Build UI image if Dockerfile exists
         if [ -f "deploy/Dockerfile.ui" ]; then
             log_info "Submitting build for UI image..."
-            gcloud builds submit --tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}" --file deploy/Dockerfile.ui . --quiet
+            cp deploy/Dockerfile.ui Dockerfile
+            gcloud builds submit --tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}" . --quiet
+            rm Dockerfile
             gcloud container images add-tag "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}" "asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:latest" --quiet
         fi
 
