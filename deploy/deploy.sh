@@ -260,6 +260,7 @@ if [ "$DRY_RUN" = false ]; then
         "roles/monitoring.metricWriter"
         "roles/pubsub.publisher"
         "roles/eventarc.eventReceiver"
+        "roles/secretmanager.secretAccessor"
     )
 
     log_info "Granting roles to service account..."
