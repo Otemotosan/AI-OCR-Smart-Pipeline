@@ -16,6 +16,8 @@
 #   - Environment file (deploy/.env.{environment})
 # =============================================================================
 
+
+# Validating environment...
 set -euo pipefail
 
 # Colors for output
