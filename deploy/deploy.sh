@@ -428,8 +428,28 @@ if [ "$DRY_RUN" = false ]; then
         --set-secrets="SLACK_WEBHOOK_URL=slack-webhook-${ENVIRONMENT}:latest" || true
 
     log_success "Cloud Functions deployed"
-else
-    log_info "[DRY RUN] Would deploy Cloud Functions"
+fi
+
+# =============================================================================
+# Step 9.5: Deploy UI to Cloud Run
+# =============================================================================
+if [ "$SKIP_BUILD" = false ] && [ -f "deploy/Dockerfile.ui" ]; then
+    log_info "Deploying UI to Cloud Run..."
+
+    if [ "$DRY_RUN" = false ]; then
+        gcloud run deploy "ocr-ui-${ENVIRONMENT}" \
+            --image="asia.gcr.io/${GCP_PROJECT_ID}/ocr-ui:${IMAGE_TAG}" \
+            --region="${GCP_REGION}" \
+            --platform=managed \
+            --allow-unauthenticated \
+            --port=5173 \
+            --set-env-vars="VITE_API_URL=https://${GCP_REGION}-${GCP_PROJECT_ID}.cloudfunctions.net/ocr-api-${ENVIRONMENT},ENVIRONMENT=${ENVIRONMENT}" \
+            --quiet
+
+        log_success "UI deployed to Cloud Run"
+    else
+        log_info "[DRY RUN] Would deploy UI to Cloud Run"
+    fi
 fi
 
 # =============================================================================
