@@ -1,0 +1,23 @@
+# Development Dependencies
+# AI-OCR Smart Pipeline
+
+# Include main requirements
+-r requirements.txt
+
+# Testing
+pytest>=7.4.0,<9.0.0
+pytest-cov>=4.1.0,<7.0.0
+pytest-asyncio>=0.23.0,<1.0.0
+hypothesis>=6.92.0,<7.0.0
+
+# Linting & Formatting
+ruff>=0.1.9,<1.0.0
+black>=24.1.0,<25.0.0
+mypy>=1.8.0,<2.0.0
+
+# Security
+bandit>=1.7.0,<2.0.0
+safety>=2.3.0,<3.0.0
+
+# HTTP client for testing
+httpx>=0.26.0,<1.0.0
