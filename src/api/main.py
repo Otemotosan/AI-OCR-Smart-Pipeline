@@ -103,26 +103,30 @@ async def log_requests(
     request_id = request.headers.get("X-Request-ID", str(start_time.timestamp()))
 
     # Add to structlog context
-    with structlog.contextvars.bind_contextvars(request_id=request_id):
-        logger.info(
-            "Request started",
-            method=request.method,
-            path=request.url.path,
-        )
+    structlog.contextvars.bind_contextvars(request_id=request_id)
 
-        response = await call_next(request)
+    logger.info(
+        "Request started",
+        method=request.method,
+        path=request.url.path,
+    )
 
-        duration_ms = (datetime.now() - start_time).total_seconds() * 1000
-        logger.info(
-            "Request completed",
-            method=request.method,
-            path=request.url.path,
-            status_code=response.status_code,
-            duration_ms=round(duration_ms, 2),
-        )
+    response = await call_next(request)
 
-        # Add request ID to response headers
-        response.headers["X-Request-ID"] = request_id
+    duration_ms = (datetime.now() - start_time).total_seconds() * 1000
+    logger.info(
+        "Request completed",
+        method=request.method,
+        path=request.url.path,
+        status_code=response.status_code,
+        duration_ms=round(duration_ms, 2),
+    )
+
+    # Add request ID to response headers
+    response.headers["X-Request-ID"] = request_id
+
+    # Clear context
+    structlog.contextvars.unbind_contextvars("request_id")
 
     return response
 
