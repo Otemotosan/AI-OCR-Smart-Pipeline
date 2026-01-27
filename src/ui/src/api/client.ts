@@ -9,9 +9,12 @@ import type {
   UpdateResponse,
 } from '@/types'
 
+// Get API URL from environment or use relative path for same-origin
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
+
 // Create axios instance
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

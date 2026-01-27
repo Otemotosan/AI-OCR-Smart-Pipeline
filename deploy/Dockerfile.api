@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY pyproject.toml ./
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -e ".[api]"
+RUN pip install --no-cache-dir -e .
 
 # Copy source code
 COPY src/ ./src/
