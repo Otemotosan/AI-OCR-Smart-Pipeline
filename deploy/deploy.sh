@@ -442,7 +442,7 @@ if [ "$SKIP_BUILD" = false ] && [ -f "deploy/Dockerfile.ui" ]; then
             --region="${GCP_REGION}" \
             --platform=managed \
             --allow-unauthenticated \
-            --port=5173 \
+            --port=80 \
             --set-env-vars="VITE_API_URL=https://${GCP_REGION}-${GCP_PROJECT_ID}.cloudfunctions.net/ocr-api-${ENVIRONMENT},ENVIRONMENT=${ENVIRONMENT}" \
             --quiet
 
