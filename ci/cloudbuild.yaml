@@ -178,6 +178,4 @@ options:
 # Timeout (30 minutes)
 timeout: '1800s'
 
-# Substitutions (can be overridden)
-substitutions:
-  _REGION: 'asia-northeast1'
+# No custom substitutions needed - using built-in $PROJECT_ID
