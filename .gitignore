@@ -83,3 +83,9 @@ dist/
 # Production
 .vercel
 .firebase/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
