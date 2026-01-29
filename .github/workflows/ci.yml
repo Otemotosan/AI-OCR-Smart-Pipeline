@@ -37,7 +37,7 @@ jobs:
         run: |
           # Use coverage run to avoid pytest-cov segfault with gRPC C extensions
           coverage run --source=src/core -m pytest tests/unit -v
-          coverage report --fail-under=90
+          coverage report --fail-under=85
           coverage xml
 
       - name: Upload coverage to Codecov

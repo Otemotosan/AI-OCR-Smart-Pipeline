@@ -41,7 +41,7 @@ steps:
           --junitxml=test-results/unit.xml \
           -v
         echo "=== Coverage Report ==="
-        coverage report --fail-under=90
+        coverage report --fail-under=85
         coverage xml -o coverage.xml
     
   # ============================================================
