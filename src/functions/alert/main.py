@@ -1,7 +1,7 @@
-
 import base64
 import json
 import os
+
 import functions_framework
 import requests
 import structlog

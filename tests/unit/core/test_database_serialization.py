@@ -5,10 +5,11 @@ Verifying fixes for datetime.date Firestore serialization bugs.
 
 from __future__ import annotations
 
-from datetime import date, datetime, UTC
-from unittest.mock import MagicMock, call
+from datetime import date
+from unittest.mock import MagicMock
 
 import pytest
+
 from src.core.database import AuditEventType, DatabaseClient
 
 class TestDatabaseSerialization:

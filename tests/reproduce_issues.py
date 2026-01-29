@@ -1,7 +1,9 @@
 from datetime import date
-from src.core.schemas import DeliveryNoteV2, OrderFormV1
-from src.core.linters.gate import GateLinter
+
 from pydantic import ValidationError
+
+from src.core.linters.gate import GateLinter
+from src.core.schemas import DeliveryNoteV2, OrderFormV1
 
 def test_delivery_note_none_date():
     print("Testing DeliveryNoteV2 with delivery_date=None...")
@@ -31,7 +33,7 @@ def test_order_form_gate_linter():
     }
     # Create model first (Pydantic check)
     try:
-        model = OrderFormV1(**data)
+        _model = OrderFormV1(**data)  # noqa: F841
         print("Pydantic Validation Passed.")
     except Exception as e:
         print(f"Pydantic Validation Failed: {e}")

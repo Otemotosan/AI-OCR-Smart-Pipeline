@@ -16,7 +16,6 @@ from typing import TYPE_CHECKING, Any, Literal
 import structlog
 
 from src.core.gemini import (
-    ProBudgetExhaustedError,
     SemanticValidationError,
     SyntaxValidationError,
 )
@@ -472,13 +471,13 @@ def extract_with_retry(  # noqa: C901
 
             # Enforce document_type from schema class if available to prevent case mismatches
             # e.g. Gemini returns "OrderForm" but schema expects "order_form"
-            if hasattr(schema_class, "model_fields") and "document_type" in schema_class.model_fields:
+            has_model_fields = hasattr(schema_class, "model_fields")
+            if has_model_fields and "document_type" in schema_class.model_fields:
                 field = schema_class.model_fields["document_type"]
                 # Only if default exists and is not None
                 if field.default is not None:
-                     # Using Pydantic V2 field access or V1? 
-                     # model_fields returns FieldInfo. default is the value.
-                     response.data["document_type"] = field.default
+                    # model_fields returns FieldInfo. default is the value.
+                    response.data["document_type"] = field.default
 
             # Validate with Gate Linter
             gate_result = gate_linter.validate(response.data)
