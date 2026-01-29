@@ -16,9 +16,30 @@ from typing import TYPE_CHECKING, Any, Literal
 import structlog
 
 from src.core.gemini import (
+    ProBudgetExhaustedError,
     SemanticValidationError,
     SyntaxValidationError,
 )
+
+# Re-export exception types for external use
+__all__ = [
+    "CONFIDENCE_THRESHOLD",
+    "FLASH_HTTP5XX_RETRIES",
+    "FLASH_HTTP429_RETRIES",
+    "FLASH_SYNTAX_RETRIES",
+    "FRAGILE_DOCUMENT_TYPES",
+    "ExtractionAttempt",
+    "ExtractionResult",
+    "GeminiInput",
+    "ProBudgetExhaustedError",
+    "SemanticValidationError",
+    "SyntaxValidationError",
+    "classify_error",
+    "extract_with_retry",
+    "prepare_gemini_input",
+    "select_model",
+    "should_attach_image",
+]
 
 if TYPE_CHECKING:
     from google.cloud.documentai_v1 import Document
