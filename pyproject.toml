@@ -66,8 +66,6 @@ select = [
 ]
 
 ignore = [
-    "ANN101",  # Missing type annotation for self
-    "ANN102",  # Missing type annotation for cls
     "ANN401",  # Dynamically typed expressions (Any)
     "S101",    # Use of assert (allowed in tests)
     "RUF001",  # String contains ambiguous chars (Japanese)

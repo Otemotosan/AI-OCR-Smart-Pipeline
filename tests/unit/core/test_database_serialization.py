@@ -9,8 +9,8 @@ from datetime import date
 from unittest.mock import MagicMock
 
 import pytest
-
 from src.core.database import AuditEventType, DatabaseClient
+
 
 class TestDatabaseSerialization:
     """Tests for automatic datetime.date serialization in DatabaseClient."""
