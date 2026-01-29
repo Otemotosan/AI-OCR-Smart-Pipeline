@@ -27,18 +27,22 @@ steps:
     id: 'unit-tests'
     waitFor: ['lint']
     entrypoint: 'bash'
+    env:
+      - 'GRPC_POLL_STRATEGY=poll'
+      - 'PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python'
     args:
       - '-c'
       - |
         pip install -r requirements-dev.txt --quiet
-        echo "=== Running Unit Tests ==="
-        pytest tests/unit \
-          --cov=src/core \
-          --cov-report=xml \
-          --cov-report=term \
-          --cov-fail-under=90 \
+        mkdir -p test-results
+        echo "=== Running Unit Tests with Coverage ==="
+        # Use coverage run to avoid pytest-cov segfault with gRPC extensions
+        coverage run --source=src/core -m pytest tests/unit \
           --junitxml=test-results/unit.xml \
           -v
+        echo "=== Coverage Report ==="
+        coverage report --fail-under=90
+        coverage xml -o coverage.xml
     
   # ============================================================
   # Stage 3: Security Scan
