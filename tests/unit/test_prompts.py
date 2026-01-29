@@ -44,7 +44,7 @@ class TestBuildExtractionPrompt:
     """Test build_extraction_prompt function."""
 
     def test_markdown_only_mode(self) -> None:
-        """Test prompt generation without image."""
+        """Test prompt generation without image for schema-specific prompt."""
         from dataclasses import dataclass
 
         @dataclass
@@ -56,8 +56,8 @@ class TestBuildExtractionPrompt:
 
         prompt = build_extraction_prompt(gemini_input, DeliveryNoteV2)
 
-        # Should use markdown-only system prompt
-        assert "Structural Markdown reconstructed from Document AI" in prompt
+        # DeliveryNoteV2 uses schema-specific prompt (DELIVERY_NOTE_SYSTEM_PROMPT)
+        assert "納品書 (Delivery Notes)" in prompt
         # Should include schema description
         assert "DeliveryNoteV2" in prompt
         # Should include markdown content
@@ -67,7 +67,7 @@ class TestBuildExtractionPrompt:
         assert "Return ONLY valid JSON" in prompt
 
     def test_multimodal_mode(self) -> None:
-        """Test prompt generation with image."""
+        """Test prompt generation with image for schema-specific prompt."""
         from dataclasses import dataclass
 
         @dataclass
@@ -79,10 +79,11 @@ class TestBuildExtractionPrompt:
 
         prompt = build_extraction_prompt(gemini_input, DeliveryNoteV2)
 
-        # Should use multimodal system prompt
-        assert "Priority Rules (CRITICAL)" in prompt
-        assert "STRUCTURE — Trust Markdown" in prompt
-        assert "TEXT DETAILS — Trust Image" in prompt
+        # DeliveryNoteV2 uses schema-specific prompt regardless of include_image
+        # The schema-specific prompt is used for better extraction accuracy
+        assert "納品書 (Delivery Notes)" in prompt
+        assert "金額フィールド" in prompt or "Amounts" in prompt
+        assert "management_id" in prompt
 
     def test_includes_schema_description(self) -> None:
         """Test that prompt includes schema field descriptions."""
