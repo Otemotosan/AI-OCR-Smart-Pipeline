@@ -41,7 +41,13 @@
       "Bash(bq rm:*)",
       "Bash(gcloud firestore documents list:*)",
       "Bash(bq query:*)",
-      "Bash(gsutil cat:*)"
+      "Bash(gsutil cat:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(ls:*)",
+      "Bash(dir:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }
