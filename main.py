@@ -13,10 +13,10 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 # Re-export the Cloud Function entry points
-from src.functions.processor.main import (
+from src.functions.alert.main import handle_dead_letter  # noqa: E402
+from src.functions.processor.main import (  # noqa: E402
     health_check,
     process_document,
 )
-from src.functions.alert.main import handle_dead_letter
 
-__all__ = ["process_document", "health_check", "handle_dead_letter"]
+__all__ = ["handle_dead_letter", "health_check", "process_document"]
