@@ -595,7 +595,7 @@ def extract_with_retry(  # noqa: C901
                     error=f"Syntax error: {e}",
                 )
                 attempts.append(attempt)
-                
+
                 # Retry logic
                 error_type = "syntax"
                 next_model = select_model(
@@ -604,7 +604,7 @@ def extract_with_retry(  # noqa: C901
                     pro_budget_available=False,
                 )
                 if next_model == "human":
-                     return ExtractionResult(
+                    return ExtractionResult(
                         schema=None,
                         status="FAILED",
                         attempts=attempts,
@@ -755,16 +755,16 @@ def extract_with_retry(  # noqa: C901
     except Exception as e:
         # Check for import mismatch
         if type(e).__name__ == "SyntaxValidationError":
-             logger.warning("pro_syntax_error_mismatch", error=str(e))
-             attempt = ExtractionAttempt(
+            logger.warning("pro_syntax_error_mismatch", error=str(e))
+            attempt = ExtractionAttempt(
                 model="pro",
                 prompt_tokens=10000,
                 output_tokens=100,
                 cost_usd=0.0,
                 error=f"Syntax error: {e}",
             )
-             attempts.append(attempt)
-             return ExtractionResult(
+            attempts.append(attempt)
+            return ExtractionResult(
                 schema=None,
                 status="FAILED",
                 attempts=attempts,

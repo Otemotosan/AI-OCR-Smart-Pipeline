@@ -12,7 +12,7 @@ def test_delivery_note_none_date():
         "company_name": "Test Co",
         "issue_date": date(2025, 1, 1),
         "delivery_date": None,  # EXPLICIT NONE
-        "total_amount": 1000
+        "total_amount": 1000,
     }
     try:
         model = DeliveryNoteV2(**data)
@@ -24,10 +24,11 @@ def test_delivery_note_none_date():
     except Exception as e:
         print(f"Unexpected error: {e}")
 
+
 def test_order_form_gate_linter():
     print("\nTesting OrderFormV1 with document_type='OrderForm'...")
     data = {
-        "document_type": "OrderForm", # PascalCase
+        "document_type": "OrderForm",  # PascalCase
         "order_number": "123",
         # other optional fields...
     }
@@ -45,8 +46,8 @@ def test_order_form_gate_linter():
     if hasattr(OrderFormV1, "model_fields") and "document_type" in OrderFormV1.model_fields:
         field = OrderFormV1.model_fields["document_type"]
         if field.default is not None:
-             data["document_type"] = field.default
-             print(f"Applied fix: document_type -> {data['document_type']}")
+            data["document_type"] = field.default
+            print(f"Applied fix: document_type -> {data['document_type']}")
 
     # GateLinter validates dict/json
     result = linter.validate(data)
@@ -55,6 +56,7 @@ def test_order_form_gate_linter():
     else:
         print("Gate Linter Failed:")
         print(result.errors)
+
 
 if __name__ == "__main__":
     test_delivery_note_none_date()

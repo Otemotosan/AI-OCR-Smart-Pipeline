@@ -9,6 +9,7 @@ from cloudevents.http import CloudEvent
 
 logger = structlog.get_logger(__name__)
 
+
 @functions_framework.cloud_event
 def handle_dead_letter(event: CloudEvent) -> str:
     """

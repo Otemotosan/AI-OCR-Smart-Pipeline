@@ -29,6 +29,7 @@ def _handle_index_error(func_name: str, error: FailedPrecondition) -> None:
         error=str(error),
     )
 
+
 # Constants
 JST = ZoneInfo("Asia/Tokyo")
 PRO_DAILY_LIMIT = 50
