@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 
 import structlog
 from fastapi import APIRouter
+from google.api_core.exceptions import FailedPrecondition
 from google.cloud.firestore_v1.base_query import FieldFilter
 
 from api.deps import CurrentUser, FirestoreClient
@@ -18,6 +19,15 @@ from api.models import (
 
 logger = structlog.get_logger(__name__)
 router = APIRouter()
+
+
+def _handle_index_error(func_name: str, error: FailedPrecondition) -> None:
+    """Log index errors with helpful message."""
+    logger.warning(
+        f"Firestore index missing for {func_name}. "
+        "Run 'firebase deploy --only firestore:indexes' to create indexes.",
+        error=str(error),
+    )
 
 # Constants
 JST = ZoneInfo("Asia/Tokyo")
@@ -58,55 +68,65 @@ async def _count_documents_today(db: FirestoreClient) -> int:
     """Count documents processed today (JST)."""
     today_start = datetime.now(JST).replace(hour=0, minute=0, second=0, microsecond=0)
 
-    docs = (
-        db.collection("processed_documents")
-        .where(filter=FieldFilter("created_at", ">=", today_start))
-        .count()
-        .get()
-    )
-
-    return docs[0][0].value if docs else 0
+    try:
+        docs = (
+            db.collection("processed_documents")
+            .where(filter=FieldFilter("created_at", ">=", today_start))
+            .count()
+            .get()
+        )
+        return docs[0][0].value if docs else 0
+    except FailedPrecondition as e:
+        _handle_index_error("_count_documents_today", e)
+        return 0
 
 
 async def _calculate_success_rate(db: FirestoreClient, days: int = 7) -> float:
     """Calculate success rate over the past N days."""
     start_date = datetime.now(JST) - timedelta(days=days)
 
-    # Count total documents
-    total_query = (
-        db.collection("processed_documents")
-        .where(filter=FieldFilter("created_at", ">=", start_date))
-        .count()
-        .get()
-    )
-    total = total_query[0][0].value if total_query else 0
+    try:
+        # Count total documents
+        total_query = (
+            db.collection("processed_documents")
+            .where(filter=FieldFilter("created_at", ">=", start_date))
+            .count()
+            .get()
+        )
+        total = total_query[0][0].value if total_query else 0
 
-    if total == 0:
+        if total == 0:
+            return 100.0
+
+        # Count successful documents
+        success_query = (
+            db.collection("processed_documents")
+            .where(filter=FieldFilter("created_at", ">=", start_date))
+            .where(filter=FieldFilter("status", "in", ["COMPLETED", "APPROVED"]))
+            .count()
+            .get()
+        )
+        success = success_query[0][0].value if success_query else 0
+
+        return round((success / total) * 100, 1)
+    except FailedPrecondition as e:
+        _handle_index_error("_calculate_success_rate", e)
         return 100.0
-
-    # Count successful documents
-    success_query = (
-        db.collection("processed_documents")
-        .where(filter=FieldFilter("created_at", ">=", start_date))
-        .where(filter=FieldFilter("status", "in", ["COMPLETED", "APPROVED"]))
-        .count()
-        .get()
-    )
-    success = success_query[0][0].value if success_query else 0
-
-    return round((success / total) * 100, 1)
 
 
 async def _count_pending_documents(db: FirestoreClient) -> int:
     """Count documents pending human review."""
-    docs = (
-        db.collection("processed_documents")
-        .where(filter=FieldFilter("status", "in", ["FAILED", "QUARANTINED"]))
-        .count()
-        .get()
-    )
-
-    return docs[0][0].value if docs else 0
+    try:
+        docs = (
+            db.collection("processed_documents")
+            .where(filter=FieldFilter("status", "in", ["FAILED", "QUARANTINED"]))
+            .count()
+            .get()
+        )
+        return docs[0][0].value if docs else 0
+    except FailedPrecondition as e:
+        _handle_index_error("_count_pending_documents", e)
+        return 0
 
 
 async def _get_pro_usage(db: FirestoreClient) -> ProUsageResponse:
@@ -143,27 +163,31 @@ async def _get_recent_activity(
     limit: int = 10,
 ) -> list[ActivityItem]:
     """Get recent activity from audit log."""
-    docs = (
-        db.collection("audit_log")
-        .order_by("timestamp", direction="DESCENDING")
-        .limit(limit)
-        .stream()
-    )
-
-    activities = []
-    for doc in docs:
-        data = doc.to_dict()
-        activities.append(
-            ActivityItem(
-                timestamp=data.get("timestamp", datetime.now(JST)),
-                event=data.get("event", "UNKNOWN"),
-                document_id=data.get("document_id", ""),
-                status=data.get("status", ""),
-                message=_format_activity_message(data),
-            )
+    try:
+        docs = (
+            db.collection("audit_log")
+            .order_by("timestamp", direction="DESCENDING")
+            .limit(limit)
+            .stream()
         )
 
-    return activities
+        activities = []
+        for doc in docs:
+            data = doc.to_dict()
+            activities.append(
+                ActivityItem(
+                    timestamp=data.get("timestamp", datetime.now(JST)),
+                    event=data.get("event", "UNKNOWN"),
+                    document_id=data.get("document_id", ""),
+                    status=data.get("status", ""),
+                    message=_format_activity_message(data),
+                )
+            )
+
+        return activities
+    except FailedPrecondition as e:
+        _handle_index_error("_get_recent_activity", e)
+        return []
 
 
 def _format_activity_message(data: dict) -> str:
