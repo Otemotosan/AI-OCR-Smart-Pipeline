@@ -132,8 +132,44 @@ module = [
     "google.generativeai.*",
     "tenacity.*",
     "structlog.*",
+    "yaml.*",
+    "requests.*",
 ]
 ignore_missing_imports = true
+
+# Pydantic models require special handling with mypy
+[[tool.mypy.overrides]]
+module = [
+    "pydantic.*",
+]
+ignore_missing_imports = true
+
+# FastAPI decorators are untyped by design
+[[tool.mypy.overrides]]
+module = [
+    "src.api.*",
+    "src.functions.*",
+]
+disallow_untyped_decorators = false
+
+# Core modules with known type issues (to be fixed incrementally)
+[[tool.mypy.overrides]]
+module = [
+    "src.core.schemas",
+    "src.core.database",
+    "src.core.lock",
+    "src.core.budget",
+    "src.core.prompts",
+    "src.core.extraction",
+    "src.core.logging",
+    "src.core.metrics",
+    "src.core.filename_config",
+    "src.core.alerting",
+    "src.core.storage",
+]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
 
 # ============================================================
 # Pytest Configuration

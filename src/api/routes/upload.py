@@ -122,7 +122,7 @@ async def upload_file(
             # Production/staging: upload to GCS
             bucket_name = settings.gcs_input_bucket
             if not bucket_name:
-                project_id = settings.gcp_project_id or "ai-ocr-smart-pipeline"
+                project_id = settings.project_id or "ai-ocr-smart-pipeline"
                 env_suffix = "staging" if settings.environment != "production" else "prod"
                 bucket_name = f"{project_id}-ocr-input-{env_suffix}"
 
