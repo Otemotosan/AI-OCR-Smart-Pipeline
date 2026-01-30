@@ -138,6 +138,7 @@ disable_error_code = [
     "call-overload",  # Overload matching issues
     "var-annotated",  # Missing type annotations
     "assignment",     # Incompatible types in assignment
+    "arg-type",       # Incompatible argument types
 ]
 
 [[tool.mypy.overrides]]

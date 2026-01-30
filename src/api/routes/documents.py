@@ -236,7 +236,6 @@ async def get_document(
     else:
         logger.warning("No source_uri found for document", doc_hash=doc_hash)
 
-
     # Parse attempts
     attempts = []
     for i, attempt in enumerate(data.get("attempts", [])):

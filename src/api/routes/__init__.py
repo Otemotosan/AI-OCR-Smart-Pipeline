@@ -19,4 +19,3 @@ api_router.include_router(drafts_router, tags=["drafts"])
 api_router.include_router(upload_router, tags=["upload"])
 
 __all__ = ["api_router"]
-
