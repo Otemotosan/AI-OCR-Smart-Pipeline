@@ -137,7 +137,9 @@ export async function deleteDraft(docHash: string): Promise<{ status: string }> 
 // =============================================================================
 
 export async function checkHealth(): Promise<{ status: string; version: string }> {
-  const response = await api.get<{ status: string; version: string }>('/health')
+  // Health endpoint is at root level, not under /api
+  const baseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || ''
+  const response = await axios.get<{ status: string; version: string }>(`${baseUrl}/health`)
   return response.data
 }
 
