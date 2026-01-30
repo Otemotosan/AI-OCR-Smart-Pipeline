@@ -71,8 +71,6 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/processor:$SHORT_SHA'
-      - '-t'
       - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/processor:latest'
       - '-f'
       - 'deploy/Dockerfile'
@@ -83,8 +81,6 @@ steps:
     waitFor: ['unit-tests', 'security-scan']
     args:
       - 'build'
-      - '-t'
-      - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/review-ui:$SHORT_SHA'
       - '-t'
       - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/review-ui:latest'
       - '--build-arg'
@@ -98,8 +94,6 @@ steps:
     waitFor: ['unit-tests', 'security-scan']
     args:
       - 'build'
-      - '-t'
-      - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/api:$SHORT_SHA'
       - '-t'
       - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/ocr-pipeline/api:latest'
       - '-f'
