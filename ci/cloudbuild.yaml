@@ -220,4 +220,6 @@ options:
 # Timeout (30 minutes)
 timeout: '1800s'
 
-# No custom substitutions needed - using built-in $PROJECT_ID
+# Substitutions (used by Cloud Build triggers)
+substitutions:
+  _REGION: 'asia-northeast1'
