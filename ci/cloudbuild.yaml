@@ -220,6 +220,4 @@ options:
 # Timeout (30 minutes)
 timeout: '1800s'
 
-# Substitutions (used by Cloud Build triggers)
-substitutions:
-  _REGION: 'asia-northeast1'
+# Note: Region is hardcoded to asia-northeast1 in the steps above
