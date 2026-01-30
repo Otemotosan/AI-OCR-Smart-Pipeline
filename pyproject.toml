@@ -124,16 +124,25 @@ disallow_untyped_decorators = true
 no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true
+# Ignore missing imports globally (many third-party libs lack stubs)
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = [
     "google.cloud.*",
     "google.api.*",
+    "google.api_core.*",
     "google.generativeai.*",
     "tenacity.*",
     "structlog.*",
     "yaml.*",
     "requests.*",
+    "fastapi.*",
+    "pydantic.*",
+    "httpx.*",
+    "functions_framework.*",
+    "cloudevents.*",
+    "fitz.*",
 ]
 ignore_missing_imports = true
 
