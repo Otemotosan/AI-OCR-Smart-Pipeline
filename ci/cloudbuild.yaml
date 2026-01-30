@@ -18,7 +18,7 @@ steps:
         echo "=== Running Black ==="
         black --check .
         echo "=== Running MyPy ==="
-        mypy src/ --strict --ignore-missing-imports
+        mypy src/ --config-file pyproject.toml
 
   # ============================================================
   # Stage 2: Unit Tests
