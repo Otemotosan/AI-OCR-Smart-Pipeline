@@ -60,6 +60,32 @@ export function getStatusColor(status: string): string {
   return colors[status] || 'bg-gray-100 text-gray-800'
 }
 
+export type StatusIconInfo = {
+  icon: 'clock' | 'loader' | 'check-circle' | 'x-circle' | 'alert-triangle' | 'ban' | 'file-text' | 'check' | 'edit'
+  colorClass: string
+  label: string
+}
+
+export function getStatusIconInfo(status: string): StatusIconInfo {
+  const icons: Record<string, StatusIconInfo> = {
+    // Status icons
+    PENDING: { icon: 'clock', colorClass: 'text-yellow-500', label: 'Pending' },
+    PROCESSING: { icon: 'loader', colorClass: 'text-blue-500', label: 'Processing' },
+    COMPLETED: { icon: 'check-circle', colorClass: 'text-green-500', label: 'Completed' },
+    APPROVED: { icon: 'check-circle', colorClass: 'text-green-600', label: 'Approved' },
+    FAILED: { icon: 'x-circle', colorClass: 'text-red-500', label: 'Failed' },
+    QUARANTINED: { icon: 'alert-triangle', colorClass: 'text-orange-500', label: 'Quarantined' },
+    REJECTED: { icon: 'ban', colorClass: 'text-gray-500', label: 'Rejected' },
+    // Event icons (for activity feed)
+    CREATED: { icon: 'file-text', colorClass: 'text-blue-500', label: 'Created' },
+    EXTRACTED: { icon: 'check-circle', colorClass: 'text-green-500', label: 'Extracted' },
+    VALIDATED: { icon: 'check', colorClass: 'text-green-600', label: 'Validated' },
+    CORRECTED: { icon: 'edit', colorClass: 'text-purple-500', label: 'Corrected' },
+  }
+  return icons[status] || { icon: 'file-text', colorClass: 'text-gray-400', label: 'Unknown' }
+}
+
+// Legacy function for backwards compatibility (returns emoji string)
 export function getStatusIcon(status: string): string {
   const icons: Record<string, string> = {
     PENDING: '⏳',
@@ -69,6 +95,11 @@ export function getStatusIcon(status: string): string {
     FAILED: '❌',
     QUARANTINED: '⚠️',
     REJECTED: '🚫',
+    CREATED: '📄',
+    EXTRACTED: '✅',
+    VALIDATED: '✔️',
+    CORRECTED: '✏️',
   }
   return icons[status] || '❓'
 }
+

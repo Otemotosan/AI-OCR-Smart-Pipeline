@@ -216,11 +216,25 @@ async def get_document(
     # Generate signed URL for PDF
     pdf_url = None
     source_uri = data.get("quarantine_path") or data.get("source_uri")
+    logger.info(
+        "Attempting to generate signed URL",
+        source_uri=source_uri,
+        has_quarantine_path=bool(data.get("quarantine_path")),
+    )
     if source_uri:
         try:
             pdf_url = generate_signed_url(storage, source_uri, expiry_seconds=3600)
+            logger.info("Generated signed URL successfully", pdf_url_prefix=pdf_url[:50] if pdf_url else None)
         except Exception as e:
-            logger.warning("Failed to generate signed URL", error=str(e))
+            logger.warning(
+                "Failed to generate signed URL",
+                error=str(e),
+                error_type=type(e).__name__,
+                source_uri=source_uri,
+            )
+    else:
+        logger.warning("No source_uri found for document", doc_hash=doc_hash)
+
 
     # Parse attempts
     attempts = []

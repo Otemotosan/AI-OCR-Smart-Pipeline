@@ -75,6 +75,19 @@ export interface MigrationMetadata {
   fields_defaulted: string[]
 }
 
+// Extracted data structure
+export interface ExtractedData {
+  schema_version?: string
+  extracted_text?: string
+  detected_fields?: Record<string, unknown>
+  document_id?: string
+  document_type?: string
+  title?: string | null
+  confidence_score?: number
+  // Allow additional fields
+  [key: string]: unknown
+}
+
 // Document detail
 export interface DocumentDetail {
   document_id: string
@@ -82,7 +95,7 @@ export interface DocumentDetail {
   document_type: string | null
   source_uri: string
   destination_uri: string | null
-  extracted_data: Record<string, unknown> | null
+  extracted_data: ExtractedData | null
   corrected_data: Record<string, unknown> | null
   validation_errors: string[]
   quality_warnings: string[]

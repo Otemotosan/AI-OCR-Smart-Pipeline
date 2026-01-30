@@ -1,9 +1,10 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { FileText, LayoutDashboard, AlertCircle } from 'lucide-react'
+import { FileText, LayoutDashboard, AlertCircle, Upload } from 'lucide-react'
 import { cn } from '@/core_utils/utils'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Upload', href: '/upload', icon: Upload },
   { name: 'Documents', href: '/documents', icon: FileText },
 ]
 

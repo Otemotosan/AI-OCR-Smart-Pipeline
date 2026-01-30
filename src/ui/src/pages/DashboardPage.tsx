@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, CheckCircle, XCircle, Clock, Zap } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { StatusBadge } from '@/components/StatusBadge'
 import { fetchDashboard } from '@/api/client'
-import { formatTimeAgo, getStatusIcon } from '@/core_utils/utils'
+import { formatTimeAgo } from '@/core_utils/utils'
 
 export function DashboardPage() {
   const { data, isLoading, error } = useQuery({
@@ -104,7 +105,7 @@ export function DashboardPage() {
                   className="flex items-center justify-between py-2 border-b last:border-0"
                 >
                   <div className="flex items-center space-x-3">
-                    <span className="text-lg">{getStatusIcon(activity.event)}</span>
+                    <StatusBadge status={activity.event} />
                     <div>
                       <p className="text-sm font-medium text-gray-900">{activity.message}</p>
                       <p className="text-xs text-gray-500">

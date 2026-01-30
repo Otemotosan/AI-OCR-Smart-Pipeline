@@ -140,3 +140,26 @@ export async function checkHealth(): Promise<{ status: string; version: string }
   const response = await api.get<{ status: string; version: string }>('/health')
   return response.data
 }
+
+// =============================================================================
+// Upload
+// =============================================================================
+
+export interface UploadResponse {
+  status: string
+  document_id: string
+  source_uri: string
+  message: string
+}
+
+export async function uploadFile(file: File): Promise<UploadResponse> {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const response = await api.post<UploadResponse>('/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  return response.data
+}

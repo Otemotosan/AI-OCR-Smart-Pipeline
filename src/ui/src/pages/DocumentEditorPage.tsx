@@ -12,6 +12,7 @@ import {
   RotateCcw,
   Trash2,
   RefreshCw,
+  FileText,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -243,7 +244,7 @@ export function DocumentEditorPage() {
 
       {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* PDF Viewer */}
+        {/* PDF Viewer / Source Info */}
         <Card>
           <CardHeader>
             <CardTitle>Document Preview</CardTitle>
@@ -256,8 +257,26 @@ export function DocumentEditorPage() {
                 title="Document Preview"
               />
             ) : (
-              <div className="flex items-center justify-center h-[600px] bg-gray-100 rounded">
-                <p className="text-gray-500">No preview available</p>
+              <div className="space-y-4">
+                {/* Source URI info */}
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center space-x-2 text-blue-800">
+                    <FileText className="h-4 w-4" />
+                    <span className="font-medium text-sm">Source File</span>
+                  </div>
+                  <p className="text-sm text-blue-700 mt-1 font-mono break-all">
+                    {document.source_uri || 'No source URI'}
+                  </p>
+                </div>
+
+                {/* Placeholder for preview */}
+                <div className="flex items-center justify-center h-[400px] bg-gray-100 rounded">
+                  <div className="text-center">
+                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                    <p className="text-gray-500">PDF preview not available</p>
+                    <p className="text-xs text-gray-400 mt-1">Signed URL generation pending</p>
+                  </div>
+                </div>
               </div>
             )}
           </CardContent>
@@ -269,6 +288,37 @@ export function DocumentEditorPage() {
             <CardTitle>Extraction Data</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Error message from processing */}
+            {document.error_message && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <div className="flex items-center space-x-2 text-red-800">
+                  <XCircle className="h-4 w-4" />
+                  <span className="font-medium text-sm">Processing Error</span>
+                </div>
+                <p className="text-sm text-red-700 mt-1 font-mono break-all">
+                  {document.error_message}
+                </p>
+              </div>
+            )}
+
+            {/* Extracted text fallback (when no structured fields) */}
+            {document.extracted_data?.extracted_text && (
+              <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="flex items-center justify-between text-gray-800">
+                  <div className="flex items-center space-x-2">
+                    <FileText className="h-4 w-4" />
+                    <span className="font-medium text-sm">Raw Extracted Text</span>
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    Confidence: {((document.extracted_data?.confidence_score || 0) * 100).toFixed(1)}%
+                  </span>
+                </div>
+                <pre className="text-sm text-gray-700 mt-2 whitespace-pre-wrap font-mono max-h-48 overflow-auto bg-white p-2 rounded border">
+                  {document.extracted_data.extracted_text}
+                </pre>
+              </div>
+            )}
+
             {/* Migration warning */}
             {migrationMetadata && migrationMetadata.fields_defaulted.length > 0 && (
               <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
@@ -296,6 +346,7 @@ export function DocumentEditorPage() {
                 </ul>
               </div>
             )}
+
 
             {/* Quality warnings */}
             {document.quality_warnings.length > 0 && (
