@@ -137,8 +137,20 @@ export async function deleteDraft(docHash: string): Promise<{ status: string }> 
 // =============================================================================
 
 export async function checkHealth(): Promise<{ status: string; version: string }> {
-  // Health endpoint is at root level, not under /api
-  const baseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || ''
+  // Health endpoint is at root level /health, not under /api
+  // VITE_API_URL typically ends with /api (e.g. https://domain.com/api)
+  let baseUrl = import.meta.env.VITE_API_URL || ''
+
+  // Remove trailing slash
+  if (baseUrl.endsWith('/')) {
+    baseUrl = baseUrl.slice(0, -1)
+  }
+
+  // Remove /api suffix if present
+  if (baseUrl.endsWith('/api')) {
+    baseUrl = baseUrl.slice(0, -4)
+  }
+
   const response = await axios.get<{ status: string; version: string }>(`${baseUrl}/health`)
   return response.data
 }
