@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
-import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
 
@@ -41,7 +40,7 @@ def save_to_local(content: bytes, filename: str) -> str:
     uploads_dir.mkdir(parents=True, exist_ok=True)
 
     # Generate unique filename with timestamp
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     safe_filename = f"{timestamp}_{filename}"
     file_path = uploads_dir / safe_filename
 
@@ -59,7 +58,7 @@ def save_to_gcs(content: bytes, filename: str, bucket_name: str) -> str:
     bucket = storage_client.bucket(bucket_name)
 
     # Generate a unique blob name using timestamp and original filename
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     blob_name = f"{timestamp}_{filename}"
     blob = bucket.blob(blob_name)
 
@@ -115,7 +114,10 @@ async def upload_file(
         # Development mode: save locally
         if settings.environment == "development":
             source_uri = save_to_local(content, file.filename)
-            message = "File saved locally. Note: OCR processing requires GCS upload in staging/production."
+            message = (
+                "File saved locally. "
+                "Note: OCR processing requires GCS upload in staging/production."
+            )
         else:
             # Production/staging: upload to GCS
             bucket_name = settings.gcs_input_bucket
@@ -148,6 +150,6 @@ async def upload_file(
         logger.exception("Failed to upload file")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to upload file: {str(e)}",
-        )
+            detail=f"Failed to upload file: {e!s}",
+        ) from e
 

@@ -224,7 +224,8 @@ async def get_document(
     if source_uri:
         try:
             pdf_url = generate_signed_url(storage, source_uri, expiry_seconds=3600)
-            logger.info("Generated signed URL successfully", pdf_url_prefix=pdf_url[:50] if pdf_url else None)
+            url_prefix = pdf_url[:50] if pdf_url else None
+            logger.info("Generated signed URL successfully", pdf_url_prefix=url_prefix)
         except Exception as e:
             logger.warning(
                 "Failed to generate signed URL",
